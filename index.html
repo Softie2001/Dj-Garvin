@@ -73,6 +73,16 @@ form{display:grid;gap:16px}
 .r{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
 label,legend{display:block;font-size:.88rem;font-weight:500;margin-bottom:6px}
 input,select,textarea{width:100%;min-height:50px;padding:12px 14px;background:#101010;border:1px solid #33312d;color:var(--fg);font:400 1rem "DM Sans",sans-serif;border-radius:12px}
+
+.r>div,form>div{min-width:0}
+input,select,textarea{display:block;max-width:100%;min-width:0;-webkit-appearance:none;appearance:none;text-align:left}
+input[type=date],input[type=time],input[type=number]{height:50px;line-height:1.2}
+input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:left;min-height:1.2em;margin:0;padding:0}
+input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit{padding:0}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);background-position:calc(100% - 20px) 22px,calc(100% - 14px) 22px;background-size:6px 6px;background-repeat:no-repeat;padding-right:38px}
+.ck input,.ck-list input[type=checkbox]{display:inline-block;-webkit-appearance:auto;appearance:auto}
 textarea{min-height:110px;resize:vertical}
 fieldset{border:0;margin:0;padding:0}
 .ck{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
