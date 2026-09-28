@@ -210,7 +210,18 @@ details.dropdown-select summary::-webkit-details-marker {
   <div class="r"><div><label for="phone">Phone / WhatsApp number</label><input id="phone" type="tel" autocomplete="tel"></div><div><label for="type">Event type</label><select id="type"><option value="">Select event type</option><option>Wedding</option><option>Birthday</option><option>Corporate Event</option><option>Club Event</option><option>Private Party</option><option>Special Occasion</option><option>Other</option></select></div></div>
   <div class="r"><div><label for="date">Event date</label><input id="date" type="date"></div><div><label for="venue">Venue / location</label><input id="venue"></div></div>
   <div class="r"><div><label for="start">Start time</label><input id="start" type="time"></div><div><label for="end">End time</label><input id="end" type="time"></div><div><label for="guests">Expected guests</label><input id="guests" type="number" min="1" inputmode="numeric"></div></div>
-  <fieldset><legend>What music would you like?</legend><div class="ck" id="ck"></div><div id="ow" hidden style="margin-top:12px"><label for="other">Please specify</label><input id="other"></div></fieldset>
+<fieldset>
+  <legend>What music would you like?</legend>
+  <details class="dropdown-select">
+    <summary>Select Music Genres</summary>
+    <div class="ck-list">
+      <label><input type="checkbox" name="genre" value="afrobeats"> Afrobeats</label>
+      <label><input type="checkbox" name="genre" value="amapiano"> Amapiano</label>
+      <label><input type="checkbox" name="genre" value="hiphop"> Hip Hop</label>
+      <label><input type="checkbox" name="genre" value="rb"> R&amp;B</label>
+    </div>
+  </details>
+  <div id="ow" hidden style="margin-top:12">
   <div><label for="info">Tell us about your event</label><textarea id="info" placeholder="Anything else you'd like DJ Garvin to know..."></textarea></div>
   <input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
   <div id="msg" role="alert" tabindex="-1"></div>
