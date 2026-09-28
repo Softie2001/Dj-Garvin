@@ -131,19 +131,30 @@ details.dropdown-select summary::-webkit-details-marker {
 .ck-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--line);
-  max-height: 200px;
-  overflow-y: auto;
+  max-height: none; /* Allows natural height so scrollbars only show when needed */
 }
 
 .ck-list label {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
   gap: 10px;
   cursor: pointer;
+  width: auto;
+}
+
+/* Force standard, clean checkbox sizing */
+.ck-list input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  accent-color: #ffffff; /* Modern browser checkmark accent color */
+  cursor: pointer;
+  margin: 0;
 }
 </style>
 </head>
