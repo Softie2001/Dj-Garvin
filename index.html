@@ -98,6 +98,30 @@ footer .w{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between}
  .reel iframe{height:560px}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+@media (max-width: 820px) {
+  /* Fix oversized main headline */
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  /* Fix oversized hero photo card */
+  .pic {
+    max-width: 280px;
+    max-height: 280px;
+    margin: 0 auto;
+  }
+
+  /* Fix wide and large stats section (9, 6, 2) */
+  .stats {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 18px 0;
+  }
+
+  .stats b {
+    font-size: 1.5rem;
+  }
+}
 </style>
 </head>
 <body>
