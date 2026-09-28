@@ -131,30 +131,32 @@ details.dropdown-select summary::-webkit-details-marker {
 .ck-list {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--line);
-  max-height: none; /* Allows natural height so scrollbars only show when needed */
+  max-height: 300px; /* Allows scrolling if list gets too tall */
+  overflow-y: auto;
 }
 
 .ck-list label {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 10px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
   cursor: pointer;
-  width: auto;
+  width: 100% !important;
+  font-size: 0.95rem;
 }
 
-/* Force standard, clean checkbox sizing */
+/* Fixes the giant white boxes and aligns checkmarks properly */
 .ck-list input[type="checkbox"] {
-  width: 18px;
-  height: 18px;
-  min-width: 18px;
-  accent-color: #ffffff; /* Modern browser checkmark accent color */
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  margin: 0 !important;
+  accent-color: #ffffff;
   cursor: pointer;
-  margin: 0;
 }
 </style>
 </head>
@@ -224,15 +226,20 @@ details.dropdown-select summary::-webkit-details-marker {
 <fieldset>
   <legend>What music would you like?</legend>
   <details class="dropdown-select">
-    <summary>Select Music Genres</summary>
-    <div class="ck-list">
-      <label><input type="checkbox" name="genre" value="afrobeats"> Afrobeats</label>
-      <label><input type="checkbox" name="genre" value="amapiano"> Amapiano</label>
-      <label><input type="checkbox" name="genre" value="hiphop"> Hip Hop</label>
-      <label><input type="checkbox" name="genre" value="rb"> R&amp;B</label>
-    </div>
-  </details>
-  <div id="ow" hidden style="margin-top:12">
+  <summary>Select Music Genres</summary>
+  <div class="ck-list">
+    <label><input type="checkbox" name="genre" value="afrobeats"> Afrobeats — Feel-good rhythms that fill the dance floor.</label>
+    <label><input type="checkbox" name="genre" value="amapiano"> Amapiano</label>
+    <label><input type="checkbox" name="genre" value="afrofusion"> Afrofusion</label>
+    <label><input type="checkbox" name="genre" value="hiphop"> Hip Hop</label>
+    <label><input type="checkbox" name="genre" value="rb"> R&amp;B</label>
+    <label><input type="checkbox" name="genre" value="dancehall"> Dancehall</label>
+    <label><input type="checkbox" name="genre" value="pop"> Pop</label>
+    <label><input type="checkbox" name="genre" value="house"> House</label>
+    <label><input type="checkbox" name="genre" value="edm"> EDM</label>
+  </div>
+</details>
+  <div id="ow" style="margin-top:12px;">
   <div><label for="info">Tell us about your event</label><textarea id="info" placeholder="Anything else you'd like DJ Garvin to know..."></textarea></div>
   <input id="hp" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px">
   <div id="msg" role="alert" tabindex="-1"></div>
