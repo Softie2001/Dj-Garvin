@@ -75,7 +75,7 @@ textarea{min-height:90px;resize:vertical}
         <div class="card"><div class="stat-label">CHECK-INS</div><div id="statCheckins" class="stat-value">0</div></div>
       </div>
       <div class="grid two">
-        <div class="card"><div class="section-head"><h2>Revenue overview</h2><span class="muted">Paid orders</span></div><div id="revenueBars" style="height:180px;display:flex;align-items:end;gap:8px"></div></div>
+        <div class="card"><div class="section-head"><h2>Revenue overview</h2><span class="muted">Paid orders</span></div><div id="revenueOverview" class="empty" style="height:180px;display:grid;place-items:center">No real sales data yet. The overview will populate automatically after paid orders are recorded.</div></div>
         <div class="card"><div class="section-head"><h2>Upcoming events</h2><button class="btn small secondary" data-page-link="events">View all</button></div><div id="dashEvents"></div></div>
       </div>
       <div class="card" style="margin-top:12px"><div class="section-head"><h2>Recent orders</h2><button class="btn small secondary" data-page-link="orders">View all</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Event</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="dashOrders"></tbody></table></div></div>
@@ -97,7 +97,7 @@ textarea{min-height:90px;resize:vertical}
     </section>
 
     <section id="bookings" class="page">
-      <div class="section-head"><h2>DJ Bookings</h2><span class="muted">Negotiated bookings • starting from $400</span></div>
+      <div class="section-head"><h2>DJ Bookings</h2><span class="muted">Negotiated bookings • starting from £400</span></div>
       <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Event</th><th>Date</th><th>Venue</th><th>Contact</th><th>Sent via</th></tr></thead><tbody id="bookingsTable"></tbody></table></div></div>
     </section>
 
@@ -179,7 +179,6 @@ function renderDashboard(){
  $('statTickets').textContent='—';$('statCheckins').textContent='—';
  $('dashEvents').innerHTML=events.filter(e=>e.status==='published').slice(0,5).map(e=>`<div style="padding:9px 0;border-bottom:1px solid #292929"><b>${esc(e.name)}</b><div class="muted">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div></div>`).join('')||'<div class="empty">No published events yet.</div>';
  $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(o.customer_name||((o.first_name||'')+' '+(o.last_name||'')))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${money(o.total_pence)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status)}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>`).join('')||'<tr><td colspan="5">No orders yet.</td></tr>';
- $('revenueBars').innerHTML=[0,1,2,3,4,5].map(i=>`<div style="flex:1;height:${20+(i+1)*12}px;background:${i%2?'#8f7647':'#c9a86a'};border-radius:5px 5px 0 0;opacity:.8"></div>`).join('');
 }
 function renderEvents(){
  $('eventList').innerHTML=events.map(e=>`<div class="card event-card"><img class="event-img" src="${esc(e.image_url||'')}" onerror="this.style.display='none'"><div class="event-body"><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div><div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':'gold'}">${esc(e.status)}</span> <span class="badge">${e.sales_open?'Sales open':'Sales closed'}</span></div><div class="event-actions"><button class="btn small manage-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button></div></div></div>`).join('')||'<div class="empty" style="grid-column:1/-1">No events yet. Click “Create event” to add the first one.</div>';
