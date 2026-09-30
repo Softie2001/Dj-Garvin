@@ -97,7 +97,17 @@ app.post("/api/checkin/:token", requireSupabase, async (req,res)=>{
   res.send("<h2>✓ CHECK-IN SUCCESSFUL</h2>");
 });
 
-app.use(express.static(path.join(__dirname,"public")));
-app.get("*", (req,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
+app.use(express.static(path.join(__dirname, "public")));
 
-app.listen(PORT, ()=>console.log(`DJ Garvin site running on ${BASE}`));
+// Express 5 wildcard route
+app.get("/{*splat}", (req, res) =>
+  res.sendFile(path.join(__dirname, "public", "index.html"))
+);
+
+// Run normally when started with npm start.
+// Vercel uses the exported Express app.
+if (require.main === module) {
+  app.listen(PORT, () => console.log(`DJ Garvin site running on ${BASE}`));
+}
+
+module.exports = app;
