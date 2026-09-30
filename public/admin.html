@@ -224,7 +224,7 @@ details.dropdown-select summary::-webkit-details-marker {
 #mbd.o{display:block}
 
 @media(min-width:760px){.vtrack .c.reel{flex:0 0 calc(50% - 11px)}}
-</style><style> .ticket-wrap{max-width:1140px;margin:0 auto;padding:90px 22px}.ticket-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.ticket-card{padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--card);transition:.25s}.ticket-card:hover{transform:translateY(-4px);border-color:var(--acc)}.ticket-price{font:800 2rem Syne;margin:12px 0}.qty{display:flex;align-items:center;gap:16px}.qty button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:1.3rem}.qty span{min-width:28px;text-align:center;font-weight:700}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-grid label{display:block;font-size:.85rem;margin-bottom:7px;color:var(--mut)}.form-grid input,.form-grid textarea,.form-grid select{width:100%;padding:14px;border:1px solid var(--line);background:#0f0f0e;color:var(--fg);border-radius:12px;font:inherit}.form-grid textarea{min-height:100px}.total{font:800 1.6rem Syne;margin:20px 0}.notice{padding:16px;border:1px dashed var(--line);border-radius:14px;color:var(--mut)}@media(max-width:820px){.ticket-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}</style></head><body><header><div class="w nav">
+</style><style> .ticket-wrap{max-width:1140px;margin:0 auto;padding:90px 22px}.ticket-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.ticket-card{padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--card);transition:.25s}.ticket-card:hover{transform:translateY(-4px);border-color:var(--acc)}.ticket-price{font:800 2rem Syne;margin:12px 0}.qty{display:flex;align-items:center;gap:16px}.qty button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:1.3rem}.qty span{min-width:28px;text-align:center;font-weight:700}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-grid label{display:block;font-size:.85rem;margin-bottom:7px;color:var(--mut)}.form-grid input,.form-grid textarea,.form-grid select{width:100%;padding:14px;border:1px solid var(--line);background:#0f0f0e;color:var(--fg);border-radius:12px;font:inherit}.form-grid textarea{min-height:100px}.total{font:800 1.6rem Syne;margin:20px 0}.notice{padding:16px;border:1px dashed var(--line);border-radius:14px;color:var(--mut)}@media(max-width:820px){.ticket-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head><body><header><div class="w nav">
  <a class="logo" href="#top" aria-label="DJ Garvin"><span class="lt" aria-hidden="true" data-t="DJ GARVIN">DJ GARVIN</span></a>
  <div class="links" id="ln"><a href="index.html">Home</a><a href="about.html">About</a><a href="about.html#music">Music</a><a href="about.html#videos">Videos</a><a href="events.html">Events</a><a href="#book">Contact</a><a class="btn f" href="#book" style="color:#111;display:none" id="mbk">Book now</a></div>
  <div class="rt">
@@ -233,4 +233,108 @@ details.dropdown-select summary::-webkit-details-marker {
   <button id="mb" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="ln"><span></span><span></span><span></span></button>
  </div>
 </div></header>
-<div id="mbd"></div><main><div class="ticket-wrap"><div class="bar"></div><h1>Admin Dashboard</h1><p class="mut">Manage events, ticket types, orders and check-ins. Authentication should be connected before production use.</p><div class="ticket-grid" style="margin-top:30px"><div class="ticket-card"><h2>Events</h2><p class="mut">Create and publish events.</p><a class="btn" href="events.html">View events</a></div><div class="ticket-card"><h2>Orders &amp; tickets</h2><p class="mut">Review paid orders and generated tickets.</p><button class="btn" onclick="loadOrders()">Load orders</button></div><div class="ticket-card"><h2>Check-in</h2><p class="mut">Open the staff QR verification page.</p><a class="btn f" href="checkin.html">Open check-in</a></div></div><div id="orders" style="margin-top:30px"></div></div></main><footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>&copy; 2026 DJ Garvin. All rights reserved.</div></div></footer><script>async function loadOrders(){const box=document.getElementById('orders');try{const r=await fetch('/api/admin/orders');const j=await r.json();box.innerHTML='<div class="ticket-card"><h2>Orders</h2><pre style="white-space:pre-wrap">'+JSON.stringify(j,null,2)+'</pre></div>'}catch(e){box.innerHTML='<div class="notice">Admin API is not connected yet.</div>'}}const setMenu=o=>{document.getElementById('ln').classList.toggle('o',o);document.getElementById('mbd').classList.toggle('o',o);document.getElementById('mb').classList.toggle('x',o)};document.getElementById('mb').onclick=()=>setMenu(!document.getElementById('ln').classList.contains('o'));document.getElementById('ln').onclick=e=>{if(e.target.closest('a'))setMenu(false)};</script></body></html>
+<div id="mbd"></div>
+<main>
+ <div class="ticket-wrap">
+  <div class="bar"></div>
+  <section id="loginPanel" class="ticket-card" style="max-width:520px;margin:20px auto 60px">
+   <h1>Admin Login</h1>
+   <p class="mut">Sign in with the DJ Garvin admin account.</p>
+   <form id="loginForm" class="form-grid" style="grid-template-columns:1fr">
+    <div><label for="adminEmail">Email</label><input id="adminEmail" type="email" autocomplete="username" required></div>
+    <div><label for="adminPassword">Password</label><input id="adminPassword" type="password" autocomplete="current-password" required></div>
+    <button class="btn f" type="submit">Sign in</button>
+   </form>
+   <div id="loginMsg" class="notice" style="margin-top:14px;display:none"></div>
+  </section>
+
+  <section id="dashboard" style="display:none">
+   <div style="display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap">
+    <div><h1>Admin Dashboard</h1><p class="mut">Manage events, tickets, orders and staff check-in access.</p></div>
+    <button class="btn" id="logoutBtn">Log out</button>
+   </div>
+
+   <div class="ticket-grid" style="margin-top:30px">
+    <div class="ticket-card"><h2>Events</h2><p class="mut">Create and publish events.</p><a class="btn" href="events.html">View events</a></div>
+    <div class="ticket-card"><h2>Orders &amp; tickets</h2><p class="mut">Review paid orders and generated tickets.</p><button class="btn" id="ordersBtn">Load orders</button></div>
+    <div class="ticket-card"><h2>Check-in</h2><p class="mut">Create temporary access for event staff.</p><button class="btn f" id="openCheckin">Open check-in</button></div>
+   </div>
+
+   <div id="checkinPanel" class="ticket-card" style="margin-top:24px;display:none">
+    <h2>Create Staff Check-in Access</h2>
+    <p class="mut">Staff use this access on the check-in page. It is separate from the admin login.</p>
+    <div class="form-grid">
+     <div><label for="eventSelect">Event</label><select id="eventSelect"><option value="">Loading events...</option></select></div>
+     <div><label for="expiresHours">Expires in hours</label><input id="expiresHours" type="number" min="1" max="168" value="12"></div>
+    </div>
+    <button class="btn f" id="createAccess" style="margin-top:16px">Create check-in access</button>
+    <div id="accessResult" class="notice" style="margin-top:16px;display:none"></div>
+   </div>
+
+   <div id="orders" style="margin-top:30px"></div>
+  </section>
+ </div>
+</main><footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>&copy; 2026 DJ Garvin. All rights reserved.</div></div></footer><script>
+// Supabase public client configuration. Replace these two values with the project's
+// Project URL and anon/public key. Never put the service_role key here.
+const SUPABASE_URL = window.DJ_GARVIN_SUPABASE_URL || 'PASTE_SUPABASE_URL_HERE';
+const SUPABASE_ANON_KEY = window.DJ_GARVIN_SUPABASE_ANON_KEY || 'PASTE_SUPABASE_ANON_KEY_HERE';
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const loginPanel=document.getElementById('loginPanel'), dashboard=document.getElementById('dashboard'), loginMsg=document.getElementById('loginMsg');
+function showLogin(msg=''){loginPanel.style.display='block';dashboard.style.display='none';loginMsg.textContent=msg;loginMsg.style.display=msg?'block':'none';}
+function showDashboard(){loginPanel.style.display='none';dashboard.style.display='block';loadEvents();}
+
+async function boot(){
+  if(SUPABASE_URL.includes('PASTE_')||SUPABASE_ANON_KEY.includes('PASTE_')){
+    showLogin('Supabase public configuration has not been added to this admin page yet.');
+    return;
+  }
+  const {data:{session}}=await sb.auth.getSession();
+  session ? showDashboard() : showLogin();
+  sb.auth.onAuthStateChange((_event,session)=>session?showDashboard():showLogin());
+}
+
+document.getElementById('loginForm').addEventListener('submit',async e=>{
+ e.preventDefault(); loginMsg.style.display='none';
+ const email=document.getElementById('adminEmail').value.trim(), password=document.getElementById('adminPassword').value;
+ const {error}=await sb.auth.signInWithPassword({email,password});
+ if(error){loginMsg.textContent=error.message;loginMsg.style.display='block';}
+});
+
+document.getElementById('logoutBtn').onclick=async()=>{await sb.auth.signOut();};
+document.getElementById('openCheckin').onclick=()=>{const p=document.getElementById('checkinPanel');p.style.display=p.style.display==='none'?'block':'none';};
+
+document.getElementById('ordersBtn').onclick=async()=>{
+ const box=document.getElementById('orders'); box.innerHTML='<div class="notice">Loading...</div>';
+ const {data,error}=await sb.from('orders').select('id,first_name,last_name,email,total_pence,currency,status,paypal_order_id,created_at').order('created_at',{ascending:false}).limit(100);
+ if(error){box.innerHTML='<div class="notice">'+escapeHtml(error.message)+'</div>';return;}
+ box.innerHTML='<div class="ticket-card"><h2>Orders</h2><pre style="white-space:pre-wrap;overflow:auto">'+escapeHtml(JSON.stringify(data||[],null,2))+'</pre></div>';
+};
+
+async function loadEvents(){
+ const select=document.getElementById('eventSelect');
+ const {data,error}=await sb.from('events').select('id,name,event_date,status').order('event_date',{ascending:true});
+ if(error){select.innerHTML='<option value="">Could not load events</option>';return;}
+ select.innerHTML='<option value="">Select an event</option>'+(data||[]).map(e=>`<option value="${e.id}">${escapeHtml(e.name)} — ${e.event_date} (${e.status})</option>`).join('');
+}
+
+document.getElementById('createAccess').onclick=async()=>{
+ const event_id=document.getElementById('eventSelect').value, hours=Math.max(1,Math.min(168,Number(document.getElementById('expiresHours').value)||12));
+ const result=document.getElementById('accessResult');
+ if(!event_id){result.textContent='Select an event first.';result.style.display='block';return;}
+ const code='STAFF-'+Math.random().toString(36).slice(2,8).toUpperCase();
+ const expires_at=new Date(Date.now()+hours*3600000).toISOString();
+ const {error}=await sb.from('checkin_sessions').insert({event_id,access_code:code,expires_at});
+ if(error){result.textContent=error.message;result.style.display='block';return;}
+ const link=location.origin+'/checkin.html?code='+encodeURIComponent(code);
+ result.innerHTML='<strong>Access created.</strong><br>Code: <b>'+code+'</b><br>Expires: '+new Date(expires_at).toLocaleString()+'<br><br><a class="btn f" href="'+link+'" target="_blank">Open staff check-in</a>';
+ result.style.display='block';
+};
+
+function escapeHtml(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+const setMenu=o=>{document.getElementById('ln').classList.toggle('o',o);document.getElementById('mbd').classList.toggle('o',o);document.getElementById('mb').classList.toggle('x',o)};
+document.getElementById('mb').onclick=()=>setMenu(!document.getElementById('ln').classList.contains('o'));
+document.getElementById('ln').onclick=e=>{if(e.target.closest('a'))setMenu(false)};
+boot();
+</script></body></html>
