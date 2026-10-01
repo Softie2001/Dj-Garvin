@@ -1,0 +1,386 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>DJ Garvin — Admin Dashboard</title>
+<style>
+:root{--bg:#0b0b0b;--panel:#151515;--panel2:#1b1b1b;--line:#292929;--text:#f5f0e6;--muted:#a7a29a;--gold:#c9a86a;--danger:#c95f5f;--green:#6fb08a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;font-size:14.5px}
+button,input,textarea,select{font:inherit}button{cursor:pointer}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(390px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px}
+.brand{font-size:20px;letter-spacing:.08em;font-weight:700}.muted{color:var(--muted);font-size:13.5px}
+label{display:block;margin:16px 0 7px;color:#d8d2c7;font-size:12px}
+input,textarea,select{width:100%;background:#101010;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px 12px;outline:none}
+textarea{min-height:90px;resize:vertical}
+.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--gold);color:#111;font-weight:700}.btn.secondary{background:#242424;color:var(--text);border:1px solid var(--line)}.btn.danger{background:#542323;color:#fff}.btn.small{padding:8px 10px;font-size:12px}
+.error{color:#e58b8b;font-size:12px;margin-top:10px}.hidden{display:none!important}
+.app{min-height:100vh;display:flex}.sidebar{width:220px;border-right:1px solid var(--line);background:#0f0f0f;padding:18px 12px;position:fixed;inset:0 auto 0 0;z-index:20}.brand small{display:block;color:var(--gold);font-size:10px;letter-spacing:.14em;margin-top:4px}.nav{margin-top:25px;display:grid;gap:4px}.nav button{border:0;background:transparent;color:#aaa;text-align:left;padding:10px 11px;border-radius:8px;font-size:13.5px}.nav button:hover,.nav button.active{background:#1d1d1d;color:#fff}.nav .group{margin-top:12px;color:#777;font-size:10px;text-transform:uppercase;letter-spacing:.12em;padding:7px 11px}.main{margin-left:220px;width:calc(100% - 220px);padding:22px;max-width:1500px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.topbar h1{font-size:22px;margin:0}.topbar-actions{display:flex;gap:8px}.mobile-menu{display:none}
+.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(5,minmax(0,1fr))}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}.stat-label{color:var(--muted);font-size:11.5px}.stat-value{font-size:22px;font-weight:700;margin-top:7px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 10px}.section-head h2{font-size:15px;margin:0}.two{grid-template-columns:1.2fr .8fr}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:12.5px}.table th{color:#888;font-weight:500}.badge{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:10px;background:#242424}.badge.green{color:#9bd5b2;background:#183025}.badge.gold{color:#e6c98f;background:#302719}.badge.red{color:#efaaaa;background:#321919}
+.page{display:none}.page.active{display:block}.event-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.event-card{overflow:hidden;padding:0}.event-img{width:100%;height:145px;object-fit:cover;background:#111;display:block}.event-body{padding:13px}.event-title{font-size:15px;font-weight:700}.event-meta{color:var(--muted);font-size:11.5px;margin-top:5px}.event-actions{display:flex;gap:7px;margin-top:12px}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.full{grid-column:1/-1}.upload{border:1px dashed #454545;border-radius:10px;padding:16px;text-align:center;color:#999}.ticket-row{display:grid;grid-template-columns:1.2fr .6fr .6fr auto;gap:8px;align-items:end;border-top:1px solid var(--line);padding:13px 0}.ticket-list{margin-top:15px}.empty{padding:28px;text-align:center;color:#888;border:1px dashed var(--line);border-radius:10px}
+.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center;padding:18px;z-index:50}.modal.open{display:grid}.modal-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h2{font-size:17px;margin:0}
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#1b1b1b;border:1px solid var(--line);color:#fff;border-radius:8px;padding:8px 10px}.mobile-open .sidebar{display:block;width:245px;box-shadow:20px 0 50px #000}.stats{grid-template-columns:repeat(2,1fr)}.stats .card:last-child{grid-column:1/-1}.two{grid-template-columns:1fr}.event-list{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.topbar h1{font-size:18px}.topbar{align-items:flex-start}.topbar-actions .btn{padding:8px 10px}.stats{grid-template-columns:1fr 1fr;gap:8px}.card{padding:12px}.stat-value{font-size:19px}.event-list{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.ticket-row{grid-template-columns:1fr 1fr}.ticket-row .remove-ticket{grid-column:1/-1}.table{min-width:560px}}
+
+.suggest-wrap{position:relative}
+.suggestions{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:80;background:#151515;border:1px solid #333;border-radius:10px;overflow:hidden;display:none;box-shadow:0 18px 35px rgba(0,0,0,.45)}
+.suggestions.open{display:block}
+.suggestion{display:block;width:100%;padding:10px 12px;border:0;background:transparent;color:#f5f0e6;text-align:left;font-size:12px;line-height:1.35}
+.suggestion:hover,.suggestion:focus{background:#242424;color:#f0c48a}
+.upload-name{margin-top:8px;color:#c9a86a;font-size:12px;word-break:break-word}
+.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
+@media(max-width:600px){.modal-actions{flex-direction:column}.modal-actions .btn{width:100%}}
+</style>
+</head>
+<body>
+<div id="login" class="login">
+  <div class="login-card">
+    <div class="brand">DJ GARVIN<small>ADMIN PORTAL</small></div>
+    <p class="muted">Sign in to manage events, tickets, orders and check-in.</p>
+    <form id="loginForm">
+      <label>Email</label><input id="email" type="email" required>
+      <label>Password</label><input id="password" type="password" required>
+      <button class="btn" style="width:100%;margin-top:18px">Sign in</button>
+      <div id="loginError" class="error"></div>
+    </form>
+  </div>
+</div>
+
+<div id="app" class="app hidden">
+  <aside class="sidebar">
+    <div class="brand">DJ GARVIN<small>ADMIN</small></div>
+    <nav class="nav">
+      <div class="group">Overview</div>
+      <button data-page="dashboard" class="active">Dashboard</button>
+      <div class="group">Management</div>
+      <button data-page="events">Events</button>
+      <button data-page="tickets">Tickets</button>
+      <button data-page="orders">Orders</button>
+      <button data-page="bookings">DJ Bookings</button>
+      <div class="group">Operations</div>
+      <button data-page="checkin">Check-in</button>
+      <button data-page="paypal">PayPal</button>
+      <button data-page="settings">Settings</button>
+    </nav>
+    <button id="logout" class="btn secondary" style="width:100%;margin-top:20px">Logout</button>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div style="display:flex;align-items:center;gap:9px">
+        <button id="mobileMenu" class="mobile-menu">☰</button>
+        <div><h1 id="pageTitle">Dashboard</h1><div class="muted">DJ Garvin event management</div></div>
+      </div>
+      <div class="topbar-actions"></div>
+    </header>
+
+    <section id="dashboard" class="page active">
+      <div class="grid stats">
+        <div class="card"><div class="stat-label">TOTAL REVENUE</div><div id="statRevenue" class="stat-value">£0</div></div>
+        <div class="card"><div class="stat-label">TICKETS SOLD</div><div id="statTickets" class="stat-value">0</div></div>
+        <div class="card"><div class="stat-label">PAID ORDERS</div><div id="statOrders" class="stat-value">0</div></div>
+        <div class="card"><div class="stat-label">UPCOMING EVENTS</div><div id="statEvents" class="stat-value">0</div></div>
+        <div class="card"><div class="stat-label">CHECK-INS</div><div id="statCheckins" class="stat-value">0</div></div>
+      </div>
+      <div class="grid two">
+        <div class="card"><div class="section-head"><h2>Revenue overview</h2><span class="muted">Paid orders</span></div><div id="revenueOverview" class="empty" style="height:180px;display:grid;place-items:center">No real sales data yet. The overview will populate automatically after paid orders are recorded.</div></div>
+        <div class="card"><div class="section-head"><h2>Upcoming events</h2><button class="btn small secondary" data-page-link="events">View all</button></div><div id="dashEvents"></div></div>
+      </div>
+      <div class="card" style="margin-top:12px"><div class="section-head"><h2>Recent orders</h2><button class="btn small secondary" data-page-link="orders">View all</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Event</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="dashOrders"></tbody></table></div></div>
+    </section>
+
+    <section id="events" class="page">
+      <div class="section-head"><h2>Events</h2><button id="newEvent" class="btn">+ Create event</button></div>
+      <div id="eventList" class="event-list"></div>
+    </section>
+
+    <section id="tickets" class="page">
+      <div class="section-head"><h2>Ticket types</h2><select id="ticketEventSelect" style="max-width:280px"><option value="">Select event</option></select></div>
+      <div id="ticketPanel" class="card"><div class="empty">Select an event to manage its ticket types.</div></div>
+    </section>
+
+    <section id="orders" class="page">
+      <div class="section-head"><h2>Orders</h2></div>
+      <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Email</th><th>Amount</th><th>Payment</th><th>PayPal ID</th><th>Date</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div>
+    </section>
+
+    <section id="bookings" class="page">
+      <div class="section-head"><h2>DJ Bookings</h2><span class="muted">Negotiated bookings • starting from £400</span></div>
+      <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Event</th><th>Date</th><th>Venue</th><th>Contact</th><th>Sent via</th></tr></thead><tbody id="bookingsTable"></tbody></table></div></div>
+    </section>
+
+    <section id="checkin" class="page">
+      <div class="section-head"><h2>Staff check-in</h2></div>
+      <div class="grid two">
+        <div class="card"><h2 style="font-size:15px;margin-top:0">Create staff access</h2><p class="muted">Give staff a temporary check-in link without giving them admin access.</p><label>Event</label><select id="checkinEvent"></select><label>Access duration</label><select id="checkinHours"><option value="4">4 hours</option><option value="8" selected>8 hours</option><option value="12">12 hours</option><option value="24">24 hours</option></select><button id="createAccess" class="btn" style="margin-top:15px">Generate access</button><div id="accessResult" style="margin-top:12px"></div></div>
+        <div class="card"><h2 style="font-size:15px;margin-top:0">How it works</h2><p class="muted">Staff use the generated link on their phone. They don't see the admin dashboard. The check-in page verifies a ticket and marks it used after successful entry.</p></div>
+      </div>
+    </section>
+
+    <section id="paypal" class="page"><div class="card"><h2 style="font-size:15px;margin-top:0">PayPal</h2><p class="muted">PayPal credentials will be connected server-side. Never enter a PayPal secret or Supabase service-role key into this page.</p><div class="badge gold">Server-side configuration</div></div></section>
+    <section id="settings" class="page"><div class="card"><h2 style="font-size:15px;margin-top:0">Settings</h2><p class="muted">Admin account and website settings can be managed here as the project grows.</p></div></section>
+  </main>
+</div>
+
+<div id="eventModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head"><h2 id="eventModalTitle">Create event</h2><button id="closeEvent" class="btn secondary small" type="button">Close</button></div>
+    <form id="eventForm">
+      <div class="form-grid">
+        <div><label>Event name</label><input id="evName" required></div>
+        <div><label>Slug</label><input id="evSlug" required placeholder="summer-jam"></div>
+        <div><label>Event date</label><input id="evDate" type="date" required></div>
+        <div><label>Start time</label><input id="evStart" type="time"></div>
+        <div><label>End time</label><input id="evEnd" type="time"></div>
+        <div class="suggest-wrap"><label>Venue</label><input id="evVenue" autocomplete="off" placeholder="Start typing venue"><div id="venueSuggestions" class="suggestions"></div></div>
+        <div class="full suggest-wrap"><label>Address</label><input id="evAddress" autocomplete="off" placeholder="Start typing address"><div id="addressSuggestions" class="suggestions"></div></div>
+        <div class="full"><label>Description</label><textarea id="evDescription"></textarea></div>
+        <div class="full"><label>Event flyer</label><div class="upload"><input id="evImage" type="file" accept="image/*"><div id="flyerStatus" class="muted" style="margin-top:7px">Choose the event flyer. It will be uploaded to Supabase Storage.</div><div id="flyerName" class="upload-name"></div></div></div>
+        <div><label>Event status</label><select id="evStatus"><option value="draft">Draft</option><option value="published">Published</option></select></div>
+        <div><label>Ticket sales</label><select id="evSales"><option value="false">Closed</option><option value="true">Open</option></select></div>
+      </div>
+      <div class="modal-actions">
+        <button id="eventSubmit" class="btn" type="submit">Create event</button>
+        <button id="eventCancel" class="btn secondary" type="button">Cancel</button>
+      </div>
+      <div id="eventError" class="error"></div>
+    </form>
+  </div>
+</div>
+
+<div id="ticketModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head"><h2>Add ticket type</h2><button id="closeTicket" class="btn secondary small">Close</button></div>
+    <form id="ticketForm">
+      <label>Ticket name</label><input id="ttName" required placeholder="VIP">
+      <label>Price (£)</label><input id="ttPrice" type="number" min="0" step="0.01" required>
+      <label>Capacity</label><input id="ttCapacity" type="number" min="1" required>
+      <label>Description</label><textarea id="ttDescription"></textarea>
+      <label>What's included</label><textarea id="ttIncluded"></textarea>
+      <button class="btn" style="margin-top:16px">Add ticket type</button>
+      <div id="ticketError" class="error"></div>
+    </form>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://ocmediklvhioadhyzzwd.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jbWVkaWtsdmhpb2FkaHl6endkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3NjYyODUsImV4cCI6MjEwNjM0MjI4NX0.8Ftoo3gRBWubqUaRckI3WjbxdIzvWrdrkOZHOL8aBjc';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+let events=[],orders=[],selectedEvent=null,editingEventId=null;
+
+const $=id=>document.getElementById(id);
+const money=p=>`£${((p||0)/100).toLocaleString('en-GB',{minimumFractionDigits:2})}`;
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+
+async function init(){
+ const {data:{session}}=await sb.auth.getSession();
+ if(session) showApp(); else $('login').classList.remove('hidden');
+}
+function showApp(){$('login').classList.add('hidden');$('app').classList.remove('hidden');loadAll();}
+async function loadAll(){await Promise.all([loadEvents(),loadOrders(),loadBookings()]);renderDashboard();renderEvents();fillEventSelects();}
+async function loadEvents(){const r=await sb.from('events').select('*').order('event_date',{ascending:true});if(!r.error)events=r.data||[];}
+async function loadOrders(){const r=await sb.from('orders').select('*').order('created_at',{ascending:false});if(!r.error)orders=r.data||[];}
+async function loadBookings(){const r=await sb.from('bookings').select('*').order('created_at',{ascending:false});if(r.data) $('bookingsTable').innerHTML=r.data.map(b=>`<tr><td>${esc(b.full_name)}</td><td>${esc(b.event_type)}</td><td>${esc(b.event_date)}</td><td>${esc(b.venue)}</td><td>${esc(b.phone||b.email)}</td><td>${esc(b.sent_via)}</td></tr>`).join('')||'<tr><td colspan="6">No bookings yet.</td></tr>';}
+
+function renderDashboard(){
+ const paid=orders.filter(o=>o.status==='paid'), revenue=paid.reduce((s,o)=>s+(o.total_pence||0),0);
+ $('statRevenue').textContent=money(revenue);$('statOrders').textContent=paid.length;$('statEvents').textContent=events.filter(e=>e.status==='published').length;
+ $('statTickets').textContent='—';$('statCheckins').textContent='—';
+ $('dashEvents').innerHTML=events.filter(e=>e.status==='published').slice(0,5).map(e=>`<div style="padding:9px 0;border-bottom:1px solid #292929"><b>${esc(e.name)}</b><div class="muted">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div></div>`).join('')||'<div class="empty">No published events yet.</div>';
+ $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(o.customer_name||((o.first_name||'')+' '+(o.last_name||'')))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${money(o.total_pence)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status)}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>`).join('')||'<tr><td colspan="5">No orders yet.</td></tr>';
+}
+function renderEvents(){
+ $('eventList').innerHTML=events.map(e=>`<div class="card event-card"><img class="event-img" src="${esc(e.image_url||'')}" onerror="this.style.display='none'"><div class="event-body"><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div><div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':'gold'}">${esc(e.status)}</span> <span class="badge">${e.sales_open?'Sales open':'Sales closed'}</span></div><div class="event-actions"><button class="btn small manage-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button></div></div></div>`).join('')||'<div class="empty" style="grid-column:1/-1">No events yet. Click “Create event” to add the first one.</div>';
+ document.querySelectorAll('.manage-tickets').forEach(b=>b.onclick=()=>{selectedEvent=events.find(e=>e.id===b.dataset.id)||null;showPage('tickets');$('ticketEventSelect').value=selectedEvent?.id||'';loadTickets();});
+ document.querySelectorAll('.edit-event').forEach(b=>b.onclick=()=>openEventEditor(events.find(e=>e.id===b.dataset.id)));
+}
+async function loadTickets(){
+ if(!selectedEvent){$('ticketPanel').innerHTML='<div class="empty">Select an event first.</div>';return;}
+ const r=await sb.from('ticket_types').select('*').eq('event_id',selectedEvent.id).order('created_at');
+ const rows=r.data||[];
+ $('ticketPanel').innerHTML=`<div class="section-head" style="margin-top:0"><div><b>${esc(selectedEvent.name)}</b><div class="muted">Ticket types for this event</div></div><button id="addTicket" class="btn">+ Add ticket type</button></div>${rows.length?rows.map(t=>`<div class="ticket-row"><div><b>${esc(t.name)}</b><div class="muted">${esc(t.description||'')}</div></div><div><span class="muted">Price</span><br>${money(t.price_pence)}</div><div><span class="muted">Capacity</span><br>${t.capacity}</div><button class="btn small secondary">${esc(t.status)}</button></div>`).join(''):'<div class="empty">No ticket types yet.</div>'}`;
+ $('addTicket').onclick=()=>openTicketModal();
+}
+function openTicketModal(){
+ if(!selectedEvent){
+   $('ticketError').textContent='Select an event first.';
+   showPage('tickets');
+   return;
+ }
+ $('ticketError').textContent='';
+ $('ticketModal').classList.add('open');
+}
+function fillEventSelects(){
+ const opts='<option value="">Select event</option>'+events.map(e=>`<option value="${e.id}">${esc(e.name)} — ${esc(e.event_date||'')}</option>`).join('');
+ $('checkinEvent').innerHTML=opts;
+ $('ticketEventSelect').innerHTML=opts;
+ if(selectedEvent) $('ticketEventSelect').value=selectedEvent.id;
+}
+function showPage(id){
+ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+ $(id).classList.add('active');
+ document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
+ $('pageTitle').textContent=id==='bookings'?'DJ Bookings':id[0].toUpperCase()+id.slice(1);
+ document.body.classList.remove('mobile-open');
+}
+document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+document.querySelectorAll('[data-page-link]').forEach(b=>b.onclick=()=>showPage(b.dataset.pageLink));
+$('mobileMenu').onclick=e=>{e.stopPropagation();document.body.classList.toggle('mobile-open');};
+document.addEventListener('click',e=>{
+ if(!document.body.classList.contains('mobile-open')) return;
+ const sidebar=document.querySelector('.sidebar');
+ if(!sidebar.contains(e.target) && e.target!==$('mobileMenu')) document.body.classList.remove('mobile-open');
+});
+$('newEvent').onclick=()=>openEventEditor(null);
+$('closeEvent').onclick=()=>closeEventModal();
+$('eventCancel').onclick=()=>closeEventModal();
+$('closeTicket').onclick=()=>$('ticketModal').classList.remove('open');
+$('ticketEventSelect').onchange=()=>{
+ selectedEvent=events.find(e=>e.id===$('ticketEventSelect').value)||null;
+ loadTickets();
+};
+
+$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginError').textContent='';const {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)$('loginError').textContent=error.message;else showApp();};
+$('logout').onclick=async()=>{await sb.auth.signOut();location.reload();};
+
+function closeEventModal(){
+ $('eventModal').classList.remove('open');
+ $('eventForm').reset();
+ $('eventError').textContent='';
+ $('flyerName').textContent='';
+ $('flyerStatus').textContent='Choose the event flyer. It will be uploaded to Supabase Storage.';
+ editingEventId=null;
+}
+function openEventEditor(event){
+ editingEventId=event?.id||null;
+ $('eventModalTitle').textContent=event?'Manage event':'Create event';
+ $('eventSubmit').textContent=event?'Save changes':'Create event';
+ $('eventError').textContent='';
+ $('eventForm').reset();
+ $('flyerName').textContent='';
+ $('flyerStatus').textContent=event?.image_url?'Existing flyer will be kept unless you choose a new one.':'Choose the event flyer. It will be uploaded to Supabase Storage.';
+ if(event){
+   $('evName').value=event.name||'';
+   $('evSlug').value=event.slug||'';
+   $('evDate').value=event.event_date||'';
+   $('evStart').value=(event.start_time||'').slice(0,5);
+   $('evEnd').value=(event.end_time||'').slice(0,5);
+   $('evVenue').value=event.venue||'';
+   $('evAddress').value=event.address||'';
+   $('evDescription').value=event.description||'';
+   $('evStatus').value=event.status||'draft';
+   $('evSales').value=String(!!event.sales_open);
+ }
+ $('eventModal').classList.add('open');
+}
+async function uploadFlyer(file,slug){
+ if(!file) return null;
+ const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
+ const safeSlug=(slug||'event').replace(/[^a-z0-9-]/gi,'-').toLowerCase();
+ const path=`${safeSlug}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+ const up=await sb.storage.from('event-flyers').upload(path,file,{upsert:false,contentType:file.type||'image/jpeg'});
+ if(up.error) throw up.error;
+ return sb.storage.from('event-flyers').getPublicUrl(path).data.publicUrl;
+}
+$('evImage').onchange=()=>{
+ const f=$('evImage').files?.[0];
+ $('flyerName').textContent=f?`Selected: ${f.name}`:'';
+};
+$('eventForm').onsubmit=async e=>{
+ e.preventDefault();$('eventError').textContent='';
+ const slug=$('evSlug').value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'');
+ if(!slug){$('eventError').textContent='Please enter a valid slug.';return}
+ const file=$('evImage').files?.[0]||null;
+ const base={name:$('evName').value.trim(),slug,event_date:$('evDate').value,start_time:$('evStart').value||null,end_time:$('evEnd').value||null,venue:$('evVenue').value.trim()||null,address:$('evAddress').value.trim()||null,description:$('evDescription').value.trim()||null,status:$('evStatus').value,sales_open:$('evSales').value==='true'};
+ const submit=$('eventSubmit'); submit.disabled=true; submit.textContent=editingEventId?'Saving…':'Creating…';
+ try{
+   if(file){
+     $('flyerStatus').textContent='Uploading flyer…';
+     base.image_url=await uploadFlyer(file,slug);
+   }
+   let r;
+   if(editingEventId){
+     r=await sb.from('events').update(base).eq('id',editingEventId).select().single();
+   }else{
+     r=await sb.from('events').insert(base).select().single();
+   }
+   if(r.error) throw r.error;
+   closeEventModal();
+   await loadEvents();renderDashboard();renderEvents();fillEventSelects();
+   showPage('events');
+ }catch(err){
+   $('eventError').textContent=err?.message||String(err);
+ }finally{
+   submit.disabled=false;
+   submit.textContent=editingEventId?'Save changes':'Create event';
+ }
+};
+
+$('ticketForm').onsubmit=async e=>{
+ e.preventDefault();$('ticketError').textContent='';
+ if(!selectedEvent){$('ticketError').textContent='Select an event first.';return}
+ const name=$('ttName').value.trim(),slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+ const row={event_id:selectedEvent.id,name,slug,price_pence:Math.round(Number($('ttPrice').value)*100),capacity:Number($('ttCapacity').value),description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,status:'on_sale'};
+ const r=await sb.from('ticket_types').insert(row);
+ if(r.error){$('ticketError').textContent=r.error.message;return}
+ $('ticketModal').classList.remove('open');$('ticketForm').reset();await loadTickets();renderDashboard();
+};
+
+
+function setupPlaceSuggestions(inputId,boxId){
+ const input=$(inputId), box=$(boxId);
+ let timer=null,controller=null;
+ input.addEventListener('input',()=>{
+   clearTimeout(timer);
+   const q=input.value.trim();
+   if(q.length<3){box.classList.remove('open');box.innerHTML='';return;}
+   timer=setTimeout(async()=>{
+     try{
+       controller?.abort(); controller=new AbortController();
+       const url='https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=gb&accept-language=en&q='+encodeURIComponent(q);
+       const res=await fetch(url,{signal:controller.signal,headers:{'Accept':'application/json'}});
+       const data=await res.json();
+       box.innerHTML=(data||[]).map((x,i)=>`<button type="button" class="suggestion" data-i="${i}">${esc(x.display_name)}</button>`).join('');
+       if(data?.length) box.classList.add('open'); else box.classList.remove('open');
+       box.querySelectorAll('.suggestion').forEach((b,i)=>b.onclick=()=>{
+         const x=data[i];
+         input.value=x.display_name;
+         if(inputId==='evVenue'){
+           const a=x.address||{};
+           const addr=[a.house_number,a.road,a.suburb||a.neighbourhood,a.city||a.town||a.village,a.postcode,a.country].filter(Boolean).join(', ');
+           if(addr) $('evAddress').value=addr;
+         }else if(inputId==='evAddress' && !$('evVenue').value.trim()){
+           const a=x.address||{};
+           $('evVenue').value=a.amenity||a.building||a.shop||a.tourism||a.leisure||'';
+         }
+         box.classList.remove('open');
+       });
+     }catch(err){
+       if(err.name!=='AbortError') box.classList.remove('open');
+     }
+   },350);
+ });
+ document.addEventListener('click',e=>{
+   if(!box.contains(e.target) && e.target!==input) box.classList.remove('open');
+ });
+}
+setupPlaceSuggestions('evVenue','venueSuggestions');
+setupPlaceSuggestions('evAddress','addressSuggestions');
+
+$('createAccess').onclick=async()=>{
+ const eventId=$('checkinEvent').value;if(!eventId){$('accessResult').innerHTML='<div class="error">Select an event.</div>';return}
+ const code='STAFF-'+crypto.randomUUID().slice(0,8).toUpperCase(), hours=Number($('checkinHours').value);
+ const expires=new Date(Date.now()+hours*3600000).toISOString();
+ const r=await sb.from('checkin_sessions').insert({event_id:eventId,access_code:code,expires_at:expires}).select().single();
+ if(r.error){$('accessResult').innerHTML='<div class="error">'+esc(r.error.message)+'</div>';return}
+ const link=location.origin+'/checkin.html?code='+encodeURIComponent(code);
+ $('accessResult').innerHTML=`<div class="card" style="padding:12px"><b>Staff access created</b><div class="muted" style="margin-top:5px">Expires ${new Date(expires).toLocaleString()}</div><input style="margin-top:10px" value="${esc(link)}" readonly onclick="this.select()"></div>`;
+};
+
+init();
+</script>
+</body>
+</html>
