@@ -129,6 +129,20 @@ textarea{min-height:88px;resize:vertical}
   .ticket-card .ticket-actions{margin-top:0;flex-wrap:nowrap}
   .ticket-card .ticket-actions .btn{min-height:42px;padding:0 18px}
 }
+</style>
+<style>
+/* Gallery manager */
+.g-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.g-item{position:relative;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:#0b0d0e}
+.g-item img,.g-item video{width:100%;aspect-ratio:1;object-fit:cover;display:block;background:#000}
+.g-item .g-meta{padding:8px 10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.g-item .g-cap{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.g-badge{position:absolute;top:8px;left:8px;background:#151719e8;border:1px solid #b98b32;color:#f0d08a;padding:3px 8px;border-radius:99px;font-size:9px;font-weight:800;letter-spacing:.05em}
+.g-prev{display:grid;grid-template-columns:repeat(auto-fill,minmax(84px,1fr));gap:8px;margin-top:12px}
+.g-prev img,.g-prev video{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:#000}
+.g-bar{height:6px;background:#1b1f21;border-radius:9px;overflow:hidden;margin-top:10px;display:none}
+.g-bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#f0ca72,#d5a947);transition:width .2s}
+@media(max-width:700px){.g-grid{grid-template-columns:repeat(2,1fr)}.g-item .g-cap{font-size:13px}#saveGalleryBtn{width:100%;margin-top:20px!important}}
 </style></head>
 <body>
 <div id="login" class="login">
@@ -155,6 +169,7 @@ textarea{min-height:88px;resize:vertical}
       <button data-page="tickets">Tickets</button>
       <button data-page="orders">Orders</button>
       <button data-page="bookings">DJ Bookings</button>
+      <button data-page="gallery">Add to gallery</button>
       <div class="group">Operations</div>
       <button data-page="checkin">Check-in</button>
       <button data-page="paypal">PayPal</button>
@@ -207,6 +222,11 @@ textarea{min-height:88px;resize:vertical}
       <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Event</th><th>Date</th><th>Venue</th><th>Contact</th><th>Sent via</th></tr></thead><tbody id="bookingsTable"></tbody></table></div></div>
     </section>
 
+    <section id="gallery" class="page">
+      <div class="section-head"><div><h2>Gallery</h2><div class="muted">Photos and videos shown on the website Gallery page</div></div><button id="newGallery" class="btn">+ Add to gallery</button></div>
+      <div id="galleryList" class="g-grid"></div>
+    </section>
+
     <section id="checkin" class="page">
       <div class="section-head"><h2>Staff check-in</h2></div>
       <div class="grid two">
@@ -255,6 +275,25 @@ textarea{min-height:88px;resize:vertical}
       </div>
       <button id="saveEventBtn" class="btn" style="margin-top:16px">Create event</button>
       <div id="eventError" class="error"></div>
+    </form>
+  </div>
+</div>
+
+<div id="galleryModal" class="modal">
+  <div class="modal-card">
+    <div class="modal-head"><h2>Add to gallery</h2><button id="closeGallery" type="button" class="btn secondary small">Close</button></div>
+    <form id="galleryForm">
+      <label>Photos or videos</label>
+      <div class="upload">
+        <input id="gFiles" type="file" accept="image/*,video/*" multiple>
+        <div id="gStatus" class="muted" style="margin-top:7px">Choose one or more photos or videos. Photos are resized automatically. Videos up to 50 MB each.</div>
+      </div>
+      <div id="gPreview" class="g-prev"></div>
+      <label>Caption (optional)</label>
+      <input id="gCaption" maxlength="120" placeholder="e.g. Wedding night, Manchester">
+      <div class="g-bar" id="gBar"><i id="gBarFill"></i></div>
+      <button id="saveGalleryBtn" class="btn" style="margin-top:16px">Upload to gallery</button>
+      <div id="galleryError" class="error"></div>
     </form>
   </div>
 </div>
@@ -325,7 +364,7 @@ async function showApp(){
  await loadAll();
 }
 async function loadAll(){
- await Promise.all([loadEvents(),loadOrders(),loadBookings()]);
+ await Promise.all([loadEvents(),loadOrders(),loadBookings(),loadGallery()]);
  renderDashboard();renderEvents();renderTicketEvents();fillEventSelects();
 }
 async function loadEvents(){
@@ -539,7 +578,7 @@ function showPage(id){
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
  $(id).classList.add('active');
  document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- $('pageTitle').textContent=id==='bookings'?'DJ Bookings':id==='checkin'?'Check-in':id[0].toUpperCase()+id.slice(1);
+ $('pageTitle').textContent=id==='bookings'?'DJ Bookings':id==='checkin'?'Check-in':id==='gallery'?'Add to gallery':id[0].toUpperCase()+id.slice(1);
  closeMobileMenu();
 }
 document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
@@ -663,6 +702,96 @@ $('ticketForm').onsubmit=async e=>{
  if(r.error){$('ticketError').textContent=r.error.message;return}
  $('ticketModal').classList.remove('open');editingTicketId=null;editingTicketOriginal=null;
  await loadEvents();await renderEvents();await renderTicketEvents();
+};
+
+/* ---------- Gallery ---------- */
+const GALLERY_BUCKET='gallery', MAX_VIDEO_MB=50;
+let galleryItems=[];
+async function loadGallery(){
+ const r=await sb.from('gallery_items').select('*').order('created_at',{ascending:false});
+ if(r.error){console.error(r.error);$('galleryList').innerHTML='<div class="empty" style="grid-column:1/-1">Could not load the gallery: '+esc(r.error.message)+'</div>';return}
+ galleryItems=r.data||[];renderGallery();
+}
+function renderGallery(){
+ $('galleryList').innerHTML=galleryItems.length?galleryItems.map(g=>`<div class="g-item">
+   <span class="g-badge">${g.media_type==='video'?'VIDEO':'PHOTO'}</span>
+   ${g.media_type==='video'?`<video src="${esc(g.url)}#t=0.1" preload="metadata" muted playsinline></video>`:`<img src="${esc(g.url)}" alt="${esc(g.caption||'Gallery photo')}" loading="lazy">`}
+   <div class="g-meta"><span class="g-cap">${esc(g.caption||'No caption')}</span><button class="btn small danger delete-gallery" data-id="${esc(g.id)}">Delete</button></div>
+ </div>`).join(''):'<div class="empty" style="grid-column:1/-1">Nothing in the gallery yet. Click “+ Add to gallery” to upload the first photo or video.</div>';
+ document.querySelectorAll('.delete-gallery').forEach(b=>b.onclick=()=>deleteGalleryItem(b.dataset.id));
+}
+async function deleteGalleryItem(id){
+ const g=galleryItems.find(x=>x.id===id);if(!g)return;
+ if(!confirm('Delete this '+(g.media_type==='video'?'video':'photo')+' from the gallery? This cannot be undone.'))return;
+ try{
+  if(g.storage_path){const rm=await sb.storage.from(GALLERY_BUCKET).remove([g.storage_path]);if(rm.error)throw rm.error}
+  const r=await sb.from('gallery_items').delete().eq('id',id);if(r.error)throw r.error;
+  await loadGallery();
+ }catch(err){alert('Could not delete: '+(err.message||err))}
+}
+function openGalleryModal(){
+ $('galleryForm').reset();$('gPreview').innerHTML='';$('galleryError').textContent='';$('gBar').style.display='none';$('gBarFill').style.width='0';
+ $('gStatus').textContent='Choose one or more photos or videos. Photos are resized automatically. Videos up to '+MAX_VIDEO_MB+' MB each.';
+ $('saveGalleryBtn').disabled=false;$('saveGalleryBtn').textContent='Upload to gallery';
+ $('galleryModal').classList.add('open');
+}
+$('newGallery').onclick=openGalleryModal;
+$('closeGallery').onclick=()=>$('galleryModal').classList.remove('open');
+$('gFiles').onchange=()=>{
+ const files=[...$('gFiles').files];
+ $('gPreview').innerHTML='';
+ files.slice(0,24).forEach(f=>{
+  const u=URL.createObjectURL(f);
+  const el=document.createElement(f.type.startsWith('video/')?'video':'img');
+  el.src=f.type.startsWith('video/')?u+'#t=0.1':u;if(el.tagName==='VIDEO'){el.muted=true;el.preload='metadata';el.playsInline=true}
+  $('gPreview').appendChild(el);
+ });
+ $('gStatus').textContent=files.length?files.length+' file'+(files.length===1?'':'s')+' selected.':'No files selected.';
+};
+async function compressImage(file){
+ if(!file.type.startsWith('image/')||file.type==='image/gif')return file;
+ try{
+  const bmp=await createImageBitmap(file,{imageOrientation:'from-image'});
+  const max=2000,sc=Math.min(1,max/Math.max(bmp.width,bmp.height));
+  const c=document.createElement('canvas');c.width=Math.round(bmp.width*sc);c.height=Math.round(bmp.height*sc);
+  c.getContext('2d').drawImage(bmp,0,0,c.width,c.height);
+  const blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.85));
+  if(blob&&blob.size<file.size)return new File([blob],file.name.replace(/\.[^.]+$/,'')+'.jpg',{type:'image/jpeg'});
+ }catch(e){console.warn('compress skipped',e)}
+ return file;
+}
+$('galleryForm').onsubmit=async e=>{
+ e.preventDefault();$('galleryError').textContent='';
+ const files=[...$('gFiles').files];
+ if(!files.length){$('galleryError').textContent='Choose at least one photo or video.';return}
+ const caption=$('gCaption').value.trim()||null, errors=[];let done=0;
+ $('saveGalleryBtn').disabled=true;$('gBar').style.display='block';
+ for(let i=0;i<files.length;i++){
+  let f=files[i];const isVideo=f.type.startsWith('video/'),isImage=f.type.startsWith('image/');
+  $('gStatus').textContent='Uploading '+(i+1)+' of '+files.length+'…';
+  $('gBarFill').style.width=Math.round(i/files.length*100)+'%';
+  try{
+   if(!isVideo&&!isImage)throw new Error(f.name+' is not a photo or video.');
+   if(isVideo&&f.size>MAX_VIDEO_MB*1048576)throw new Error(f.name+' is larger than '+MAX_VIDEO_MB+' MB.');
+   if(isImage)f=await compressImage(f);
+   const safe=f.name.toLowerCase().replace(/[^a-z0-9.]+/g,'-');
+   const path=`${crypto.randomUUID()}-${safe}`;
+   const up=await sb.storage.from(GALLERY_BUCKET).upload(path,f,{upsert:false,contentType:f.type||(isVideo?'video/mp4':'image/jpeg')});
+   if(up.error)throw up.error;
+   const url=sb.storage.from(GALLERY_BUCKET).getPublicUrl(path).data.publicUrl;
+   const ins=await sb.from('gallery_items').insert({media_type:isVideo?'video':'image',url,storage_path:path,caption});
+   if(ins.error){await sb.storage.from(GALLERY_BUCKET).remove([path]);throw ins.error}
+   done++;
+  }catch(err){errors.push((err.message||String(err)))}
+ }
+ $('gBarFill').style.width='100%';
+ await loadGallery();
+ if(errors.length){
+  $('galleryError').textContent=done+' uploaded. '+errors.length+' failed: '+errors.join(' | ');
+  $('gStatus').textContent='Finished with errors.';$('saveGalleryBtn').disabled=false;$('saveGalleryBtn').textContent='Try again';
+ }else{
+  $('galleryModal').classList.remove('open');showPage('gallery');
+ }
 };
 
 $('createAccess').onclick=async()=>{
