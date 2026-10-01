@@ -275,6 +275,11 @@ details.dropdown-select summary::-webkit-details-marker {
 .details-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.details-grid .full{grid-column:1/-1}
 @media(max-width:680px){.event-shell{margin-top:8px}.event-hero{border-radius:18px}.event-hero img{height:330px;min-height:0}.event-hero-copy{left:18px;right:18px;bottom:18px}.ticket-heading{margin-top:30px}.ticket-card{grid-template-columns:1fr;gap:13px}.ticket-art{height:130px}.ticket-price{text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px}.qty{justify-content:flex-start}.details-grid{grid-template-columns:1fr}.details-grid .full{grid-column:auto}.booking-inner{align-items:center}.booking-bar .btn{padding:0 14px;font-size:.85rem}.ticket-included span{font-size:.68rem}}
 </style>
+<style>
+.event-countdown{margin-top:12px;padding:10px 14px;border:1px solid #2c2a26;border-radius:12px;background:rgba(240,196,138,.05);text-align:left}
+.event-countdown-label{display:block;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:#a9a39a;margin-bottom:4px}
+.event-countdown-value{display:block;font-size:1rem;font-weight:700;color:#f0c48a;letter-spacing:.04em}
+</style>
 </head>
 <body>
 <header><div class="w nav">
@@ -327,7 +332,7 @@ function selectedCount(){return tickets.reduce((sum,t)=>sum+(selection[t.id]||0)
 function render(){const box=$('eventDetail');if(!currentEvent){box.innerHTML='<h2>Event not found</h2>';return}
  const e=currentEvent;
  box.innerHTML=`<div class="event-shell">
- <div class="event-hero">${e.image_url?`<img src="${esc2(e.image_url)}" alt="${esc2(e.name)}">`:''}<div class="event-hero-copy"><div class="bar"></div><h1>${esc2(e.name)}</h1><div class="event-meta"><span>${fmtDate(e.event_date)}</span>${e.start_time?`<span>• ${esc2(fmtTime(e.start_time))}</span>`:''}${e.venue?`<span>• ${esc2(e.venue)}</span>`:''}</div></div></div>
+ <div class="event-hero">${e.image_url?`<img src="${esc2(e.image_url)}" alt="${esc2(e.name)}">`:''}<div class="event-hero-copy"><div class="bar"></div><h1>${esc2(e.name)}</h1><div class="event-meta"><span>${fmtDate(e.event_date)}</span>${e.start_time?`<span>• ${esc2(fmtTime(e.start_time))}</span>`:''}${e.venue?`<span>• ${esc2(e.venue)}</span>`:''}</div><div class="event-countdown"><span class="event-countdown-label">Event starts in</span><strong class="event-countdown-value" id="eventCountdown">Loading…</strong></div></div></div>
  ${e.address?`<p class="mut" style="margin:14px 4px 0">${esc2(e.address)}</p>`:''}${e.description?`<p class="mut" style="margin:14px 4px 0">${esc2(e.description)}</p>`:''}
  <div class="ticket-heading"><div><div class="bar"></div><h2>Explore Tickets</h2><p class="mut">Choose your ticket and quantity.</p></div></div>
  <div class="ticket-list">${tickets.length?tickets.map((t,i)=>{const st=salesState2(t),q=selection[t.id]||0,inc=included(t);return `<article class="ticket-card ${q?'selected':''}" data-ticket="${esc2(t.id)}"><div class="ticket-art ${ticketKind(t)}"><small>DJ GARVIN</small><strong>${esc2(t.name)}</strong><span>${t.is_group_ticket?'Group ticket':'Entry ticket'}</span></div><div class="ticket-copy"><h3>${esc2(t.name)}</h3><p>${esc2(t.description||'Premium event access.')}</p>${inc.length?`<div class="ticket-included">${inc.map(x=>`<span>✓ ${esc2(x)}</span>`).join('')}</div>`:''}<span class="ticket-state ${st==='out'?'out':st==='up'?'up':''}">${st==='out'?'Out of sale':st==='sold'?'Sold out':st==='up'?`Sales start ${fmtDate(t.sales_start)}`:'Available'}</span></div><div class="ticket-price"><div><strong>${money2(pricePence(t))}</strong><small>${t.is_group_ticket?'per table':'per person'}</small></div>${st==='on'?`<div class="qty"><button type="button" class="minus" data-id="${esc2(t.id)}" aria-label="Decrease ${esc2(t.name)}">−</button><output>${q}</output><button type="button" class="plus" data-id="${esc2(t.id)}" aria-label="Increase ${esc2(t.name)}">+</button></div>`:''}</div></article>`}).join(''):'<p class="mut">Tickets are not available yet.</p>'}</div>
@@ -345,7 +350,24 @@ function bind(){
 }
 function updateSummary(){const count=selectedCount(),bar=$('bookingBar');if(!bar)return;if(count){bar.classList.add('show');$('summaryTotal').textContent=money2(selectedTotal());$('summaryBtn').textContent='Review booking'}else bar.classList.remove('show')}
 async function pay(){const name=$('buyerName').value.trim(),email=$('buyerEmail').value.trim(),phone=$('buyerPhone').value.trim();$('payError').textContent='Connecting to payment…';const chosen=tickets.filter(t=>selection[t.id]).map(t=>({ticket_type_id:t.id,quantity:selection[t.id]}));try{const r=await fetch('/api/paypal/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_id:currentEvent.id,tickets:chosen,customer_name:name,customer_email:email,customer_phone:phone})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Payment could not be started.');if(j.approval_url){location.href=j.approval_url;return}$('payError').textContent='Payment setup is not available yet.'}catch(err){$('payError').textContent=err.message}}
-async function loadEvent(){const box=$('eventDetail');if(!id){box.innerHTML='<h2>Event not found</h2>';return}const {data:e,error}=await sb.from('events').select('*,ticket_types(*)').eq('id',id).maybeSingle();if(error||!e){box.innerHTML='<h2>Event not found</h2>';return}currentEvent=e;tickets=(e.ticket_types||[]).sort((a,b)=>(a.created_at||'').localeCompare(b.created_at||''));render()}
+function updateEventCountdown(){
+ const el=$('eventCountdown'); if(!el||!currentEvent)return;
+ let raw=String(currentEvent.event_date||'').trim();
+ let tm=String(currentEvent.start_time||'00:00:00').trim();
+ if(/^\d{2}:\d{2}$/.test(tm))tm+=':00';
+ let target=/T\d{2}:\d{2}/.test(raw)?new Date(raw):new Date(raw+'T'+tm);
+ if(isNaN(target.getTime())){el.textContent='Date unavailable';return}
+ let diff=target.getTime()-Date.now();
+ if(diff<=0){el.textContent='Event has started';return}
+ const days=Math.floor(diff/86400000); diff%=86400000;
+ const hours=Math.floor(diff/3600000); diff%=3600000;
+ const mins=Math.floor(diff/60000); diff%=60000;
+ const secs=Math.floor(diff/1000);
+ el.textContent=days+'d '+String(hours).padStart(2,'0')+'h '+String(mins).padStart(2,'0')+'m '+String(secs).padStart(2,'0')+'s';
+}
+setInterval(updateEventCountdown,1000);
+
+async function loadEvent(){const box=$('eventDetail');if(!id){box.innerHTML='<h2>Event not found</h2>';return}const {data:e,error}=await sb.from('events').select('*,ticket_types(*)').eq('id',id).maybeSingle();if(error||!e){box.innerHTML='<h2>Event not found</h2>';return}currentEvent=e;tickets=(e.ticket_types||[]).sort((a,b)=>(a.created_at||'').localeCompare(b.created_at||''));render();updateEventCountdown()}
 loadEvent();
 </script></body>
 </html>
