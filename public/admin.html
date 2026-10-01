@@ -75,6 +75,10 @@ textarea{min-height:88px;resize:vertical}
   .ticket-event-head>div:last-child{width:100%;justify-content:flex-start!important}
   .ticket-card{min-width:0}
 }
+/* Fix date/time inputs so they match the other fields (iOS Safari) */
+#evDate,#evStart,#evEnd{-webkit-appearance:none;appearance:none;display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:50px;text-align:left}
+#evDate::-webkit-date-and-time-value,#evStart::-webkit-date-and-time-value,#evEnd::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
+#evDate::-webkit-datetime-edit,#evStart::-webkit-datetime-edit,#evEnd::-webkit-datetime-edit{padding:0}
 </style></head>
 <body>
 <div id="login" class="login">
