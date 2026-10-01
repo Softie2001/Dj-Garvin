@@ -5,7 +5,7 @@
 <head>
 <meta charset="utf-8"/>
 <meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
-<title>DJ Garvin | Contact</title>
+<title>DJ Garvin | Music</title>
 <meta content="DJ Garvin is a professional UK DJ for weddings, birthdays, corporate events, clubs and private parties, playing Afrobeats, Amapiano, Afrofusion, Hip Hop and R&amp;B." name="description"/>
 <meta content="DJ Garvin | Professional DJ" property="og:title"/>
 <meta content="Afrobeats, Amapiano, Afrofusion, Hip Hop and R&amp;B for weddings, birthdays, corporate events and clubs." property="og:description"/>
@@ -252,7 +252,11 @@ details.dropdown-select summary::-webkit-details-marker {
 </div>
 </div></header>
 <div id="mbd"></div>
-<main id="top"><section><div class="w"><div class="center"><div class="bar"></div><h2>Contact &amp; Socials</h2><p class="mut" style="margin:14px auto 0">Get in touch with DJ Garvin.</p></div><div class="grid e" style="margin-top:35px"><a class="c" href="tel:+447832020070"><h3>Phone</h3><p>+44 7832 020070</p></a><a class="c" href="mailto:Garvinentertainmentevent@gmail.com"><h3>Email</h3><p>Garvinentertainmentevent@gmail.com</p></a><a class="c" href="https://www.instagram.com/dj_garvin/" rel="noopener" target="_blank"><h3>Instagram</h3><p>@dj_garvin</p></a></div><div style="display:grid;place-items:center;margin:38px 0"><div class="c" style="text-align:center;max-width:280px"><h3>Scan Instagram</h3><img alt="DJ Garvin Instagram QR code" height="220" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&amp;data=https%3A%2F%2Fwww.instagram.com%2Fdj_garvin%2F" style="margin:18px auto;display:block" width="220"/><p class="mut">Scan to open @dj_garvin</p></div></div></div></section></main>
+<main id="top"><section id="music"><div class="w">
+<div class="center"><div class="bar"></div><h2>This is what I play</h2></div>
+<div class="rows" id="rows"></div>
+<p class="mut center" style="margin:22px auto 0">Other music available on request.</p>
+</div></section></main>
 <footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br/>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>© 2026 DJ Garvin. All rights reserved.</div></div></footer>
 
 
@@ -276,5 +280,5 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 const money=t=>{const p=Number.isFinite(Number(t.price_pence))?Number(t.price_pence):Math.round((Number(t.price_gbp)||0)*100);return '£'+(p/100).toLocaleString('en-GB',{minimumFractionDigits:2})};
 function salesState(t){const now=new Date(),start=t.sales_start?new Date(t.sales_start+'T00:00:00'):null,end=t.sales_end?new Date(t.sales_end+'T23:59:59'):null;if(t.status==='sold_out')return'sold_out';if(t.status==='out_of_sale'||t.status==='inactive'||t.status==='closed')return'out';if(start&&now<start)return'upcoming';if(end&&now>end)return'out';return'on'}
 </script>
-</body>
+<script>const G=[['Afrobeats','Feel-good rhythms that fill the dance floor.'],['Amapiano','Smooth log drums and South African house grooves.'],['Afrofusion','Afro sounds blended with modern pop and R&B.'],['Hip Hop','Classics and current favourites.'],['R&B','Slow jams and smooth party moments.'],['Dancehall','Caribbean energy for the crowd.'],['Pop','Sing-along hits for every age.'],['House','Steady grooves for a late night.'],['EDM','Big drops and high energy.']];if($('rows'))$('rows').innerHTML=G.map(g=>'<div><h3>'+esc(g[0])+'</h3><p>'+g[1]+'</p><i></i></div>').join('');</script></body>
 </html>
