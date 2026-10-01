@@ -23,7 +23,13 @@ textarea{min-height:90px;resize:vertical}
 @media(max-width:900px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#1b1b1b;border:1px solid var(--line);color:#fff;border-radius:8px;padding:8px 10px}.mobile-open .sidebar{display:block;width:245px;box-shadow:20px 0 50px #000}.stats{grid-template-columns:repeat(2,1fr)}.stats .card:last-child{grid-column:1/-1}.two{grid-template-columns:1fr}.event-list{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.topbar h1{font-size:18px}.topbar{align-items:flex-start}.topbar-actions .btn{padding:8px 10px}.stats{grid-template-columns:1fr 1fr;gap:8px}.card{padding:12px}.stat-value{font-size:19px}.event-list{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.ticket-row{grid-template-columns:1fr 1fr}.ticket-row .remove-ticket{grid-column:1/-1}.table{min-width:560px}}
 </style>
-</head>
+<style>
+:root{--bg:#050505;--panel:#0f100f;--panel2:#151611;--line:#28251f;--text:#f7f0df;--muted:#969187;--gold:#d5aa54;--gold2:#f0ce7d;--green:#72bd91}
+body{background:radial-gradient(circle at 70% 0%,rgba(213,170,84,.08),transparent 25%),#050505;font-family:Inter,Arial,sans-serif}.sidebar{background:#070807;border-right:1px solid #25221c}.brand{font-size:20px}.brand:first-letter{color:var(--gold)}.nav button{font-size:13px}.nav button.active{background:linear-gradient(90deg,rgba(213,170,84,.22),rgba(213,170,84,.05));color:#fff;border-left:2px solid var(--gold)}.main{padding:18px;max-width:1550px}.topbar{border-bottom:1px solid rgba(213,170,84,.1);padding-bottom:14px}.topbar h1{font-size:20px}.card{background:linear-gradient(145deg,#11120f,#0c0d0c);border-color:#27251f;box-shadow:0 10px 35px rgba(0,0,0,.16)}.stats{gap:10px}.stat-label{letter-spacing:.08em}.stat-value{font-size:24px}.btn{background:linear-gradient(135deg,var(--gold2),var(--gold));border-radius:10px}.btn.secondary{background:#171817}.event-card{transition:transform .2s,border-color .2s}.event-card:hover{transform:translateY(-2px);border-color:var(--gold)}.section-head{margin:18px 0 10px}.section-head h2{font-size:16px}.mobile-menu{border-color:#403828;background:#12120f}.modal-card{background:#10110f;border-color:#3a3326}.upload{border-color:#5a4b2f}.empty{border-color:#403827}
+.welcome-card{display:grid;grid-template-columns:1.1fr .9fr;min-height:170px;overflow:hidden;position:relative;margin-bottom:12px}.welcome-copy{padding:22px;position:relative;z-index:2}.welcome-kicker{color:var(--gold2);font-size:11px;letter-spacing:.16em;text-transform:uppercase}.welcome-copy h2{font-size:26px;margin:5px 0}.welcome-copy p{color:var(--muted);font-size:13px;margin:0}.welcome-art{background:radial-gradient(circle at 30% 40%,rgba(213,170,84,.28),transparent 35%),linear-gradient(135deg,#171813,#090a09);position:relative}.welcome-art:after{content:'DJ GARVIN';position:absolute;right:20px;bottom:12px;font:800 32px Syne,Arial;color:rgba(213,170,84,.2);letter-spacing:.08em}
+@media(max-width:900px){.main{padding:12px}.welcome-card{grid-template-columns:1fr;min-height:145px}.welcome-art{height:55px}.welcome-art:after{font-size:24px}.stats{gap:8px}.card{padding:13px}}
+@media(max-width:600px){.topbar h1{font-size:17px}.stat-value{font-size:19px}.stat-label{font-size:10px}.welcome-copy{padding:17px}.welcome-copy h2{font-size:22px}.welcome-art{display:none}}
+</style></head>
 <body>
 <div id="login" class="login">
   <div class="login-card">
@@ -67,6 +73,7 @@ textarea{min-height:90px;resize:vertical}
     </header>
 
     <section id="dashboard" class="page active">
+      <div class="card welcome-card"><div class="welcome-copy"><div class="welcome-kicker">DJ GARVIN · ADMIN</div><h2>Welcome back</h2><p>Event management made simple.</p></div><div class="welcome-art"></div></div>
       <div class="grid stats">
         <div class="card"><div class="stat-label">TOTAL REVENUE</div><div id="statRevenue" class="stat-value">£0</div></div>
         <div class="card"><div class="stat-label">TICKETS SOLD</div><div id="statTickets" class="stat-value">0</div></div>
@@ -181,7 +188,7 @@ function renderDashboard(){
  $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(o.customer_name||((o.first_name||'')+' '+(o.last_name||'')))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${money(o.total_pence)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status)}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>`).join('')||'<tr><td colspan="5">No orders yet.</td></tr>';
 }
 function renderEvents(){
- $('eventList').innerHTML=events.map(e=>`<div class="card event-card"><img class="event-img" src="${esc(e.image_url||'')}" onerror="this.style.display='none'"><div class="event-body"><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div><div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':'gold'}">${esc(e.status)}</span> <span class="badge">${e.sales_open?'Sales open':'Sales closed'}</span></div><div class="event-actions"><button class="btn small manage-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button></div></div></div>`).join('')||'<div class="empty" style="grid-column:1/-1">No events yet. Click “Create event” to add the first one.</div>';
+ $('eventList').innerHTML=events.map(e=>`<div class="card event-card"><img class="event-img" src="${esc(e.image_url||'')}" onerror="this.style.display='none'"><div class="event-body"><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div><div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':'gold'}">${esc(e.status)}</span> <span class="badge">${e.status==='published'?'Sales open':'Sales closed'}</span></div><div class="event-actions"><button class="btn small manage-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button></div></div></div>`).join('')||'<div class="empty" style="grid-column:1/-1">No events yet. Click “Create event” to add the first one.</div>';
  document.querySelectorAll('.manage-tickets').forEach(b=>b.onclick=()=>{selectedEvent=events.find(e=>e.id===b.dataset.id);showPage('tickets');loadTickets();});
 }
 async function loadTickets(){
@@ -206,7 +213,7 @@ $('logout').onclick=async()=>{await sb.auth.signOut();location.reload();};
 $('eventForm').onsubmit=async e=>{
  e.preventDefault();$('eventError').textContent='';
  const slug=$('evSlug').value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-');
- const row={name:$('evName').value.trim(),slug,event_date:$('evDate').value,start_time:$('evStart').value||null,end_time:$('evEnd').value||null,venue:$('evVenue').value.trim()||null,address:$('evAddress').value.trim()||null,description:$('evDescription').value.trim()||null,status:$('evStatus').value,sales_open:$('evSales').value==='true'};
+ const row={name:$('evName').value.trim(),slug,event_date:$('evDate').value,start_time:$('evStart').value||null,end_time:$('evEnd').value||null,venue:$('evVenue').value.trim()||null,address:$('evAddress').value.trim()||null,description:$('evDescription').value.trim()||null,status:$('evStatus').value};
  const r=await sb.from('events').insert(row).select().single();
  if(r.error){$('eventError').textContent=r.error.message;return}
  $('eventModal').classList.remove('open');$('eventForm').reset();await loadEvents();renderDashboard();renderEvents();fillEventSelects();showPage('events');
