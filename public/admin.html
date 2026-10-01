@@ -79,6 +79,45 @@ textarea{min-height:88px;resize:vertical}
 #evDate,#evStart,#evEnd{-webkit-appearance:none;appearance:none;display:block;width:100%;min-width:0;max-width:100%;box-sizing:border-box;min-height:50px;text-align:left}
 #evDate::-webkit-date-and-time-value,#evStart::-webkit-date-and-time-value,#evEnd::-webkit-date-and-time-value{text-align:left;min-height:1.2em}
 #evDate::-webkit-datetime-edit,#evStart::-webkit-datetime-edit,#evEnd::-webkit-datetime-edit{padding:0}
+/* Mobile: bigger text/icons + modals that clear the browser bars */
+@media(max-width:700px){
+  html,body{font-size:16px}
+  label{font-size:14px;margin:16px 0 8px}
+  input,textarea,select{font-size:16px;min-height:52px}
+  .muted{font-size:14px}
+  .btn{font-size:16px;min-height:50px;padding:12px 18px}
+  .btn.small{font-size:14px;min-height:42px;padding:9px 14px}
+  .topbar h1{font-size:20px}
+  .mobile-menu{font-size:22px;padding:9px 13px}
+  .nav button{font-size:16px;padding:14px 12px}
+  .nav .group{font-size:11px}
+  .brand{font-size:22px}.brand small{font-size:11px}
+  .stat-label{font-size:12px}.stat-value{font-size:22px}
+  .section-head h2{font-size:17px}
+  .table th,.table td{font-size:14px}
+  .badge{font-size:12px;padding:5px 9px}
+  .event-title{font-size:17px}.event-meta{font-size:13px}
+  .done-ribbon{font-size:11px}
+  .event-picker .name{font-size:15px}.event-picker .sub{font-size:12px}
+  .event-picker img{width:56px;height:50px}
+  .ticket-name{font-size:16px}.ticket-price,.ticket-event-card .ticket-price{font-size:16px}
+  .ticket-kind,.ticket-seat-note{font-size:12px}
+  .ticket-icon{width:48px;height:36px;font-size:11px}
+  .ticket-event-info img,.ticket-event-placeholder{width:64px;height:56px}
+  .suggestion{font-size:14px}.suggestion span{font-size:12px}
+  .upload{font-size:14px}
+  .error{font-size:14px}
+
+  /* Modals: sit above the browser's bottom bar, header always visible */
+  .modal{place-items:start center;padding:12px 12px calc(110px + env(safe-area-inset-bottom,0px))}
+  .modal-card{max-height:calc(100vh - 122px - env(safe-area-inset-bottom,0px));max-height:calc(100dvh - 122px - env(safe-area-inset-bottom,0px));padding-bottom:28px}
+  .modal-head{position:sticky;top:0;z-index:5;background:#0d1011;margin:-17px -17px 4px;padding:14px 17px;border-bottom:1px solid #34383a}
+  .modal-head h2{font-size:19px}
+  .modal-head .btn{min-height:44px;font-size:15px;padding:10px 18px}
+  #saveEventBtn,#saveTicketBtn{width:100%;margin-top:20px!important}
+}
+.ticket-status-select{width:auto;min-height:36px;padding:6px 10px;font-size:12px;font-weight:700;border-radius:10px;background:#15191b;color:var(--text);border:1px solid var(--line);cursor:pointer}
+@media(max-width:700px){.ticket-status-select{min-height:42px;font-size:14px;padding:8px 12px}}
 </style></head>
 <body>
 <div id="login" class="login">
@@ -385,10 +424,11 @@ async function renderTicketEvents(){
           </div></div>
           <div style="text-align:right;min-width:150px">
             <div class="ticket-price">${money(ticketPricePence(t))}</div>
-            <div class="ticket-kind">${esc(st)}</div>
             <div class="ticket-actions">
+              <select class="ticket-status-select" data-id="${esc(t.id)}" data-current="${esc(st)}" aria-label="Ticket status">
+                ${[['on_sale','On sale'],['out_of_sale','Out of sale'],['sold_out','Sold out']].map(o=>`<option value="${o[0]}"${o[0]===st?' selected':''}>${o[1]}</option>`).join('')}${['on_sale','out_of_sale','sold_out'].includes(st)?'':`<option value="${esc(st)}" selected>${esc(st)}</option>`}
+              </select>
               <button class="btn small secondary edit-ticket" data-id="${esc(t.id)}" data-event="${esc(e.id)}">Edit</button>
-              ${st!=='sold_out'?`<button class="btn small ${toggleClass} ticket-status-btn toggle-ticket" data-id="${esc(t.id)}" data-status="${esc(st)}">${toggle}</button>`:''}
             </div>
           </div>
          </div>`;
@@ -400,7 +440,7 @@ async function renderTicketEvents(){
  document.querySelectorAll('.add-ticket-for-event').forEach(b=>b.onclick=()=>{selectedEvent=events.find(e=>e.id===b.dataset.id)||null;openTicketModal();});
  document.querySelectorAll('.delete-event-ticket-page').forEach(b=>b.onclick=()=>deleteEvent(b.dataset.id));
  document.querySelectorAll('.edit-ticket').forEach(b=>b.onclick=()=>openEditTicket(b.dataset.id,b.dataset.event));
- document.querySelectorAll('.toggle-ticket').forEach(b=>b.onclick=()=>toggleTicketStatus(b.dataset.id,b.dataset.status));
+ document.querySelectorAll('.ticket-status-select').forEach(sel=>sel.onchange=()=>setTicketStatus(sel));
 }
 async function openEditTicket(ticketId,eventId){
  const r=await sb.from('ticket_types').select('*').eq('id',ticketId).maybeSingle();
@@ -429,6 +469,12 @@ async function openEditTicket(ticketId,eventId){
  $('ttIncluded').value=t.whats_included||'';
  $('ticketError').textContent='';
  $('ticketModal').classList.add('open');
+}
+async function setTicketStatus(sel){
+ sel.disabled=true;
+ const r=await sb.from('ticket_types').update({status:sel.value}).eq('id',sel.dataset.id);
+ if(r.error){alert('Could not update ticket: '+r.error.message);sel.value=sel.dataset.current;sel.disabled=false;return;}
+ await renderTicketEvents();
 }
 async function toggleTicketStatus(ticketId,current){
  const next=current==='on_sale'?'out_of_sale':'on_sale';
@@ -502,7 +548,7 @@ function openCreateEvent(){
 function openEditEvent(id){
  const e=events.find(x=>x.id===id);if(!e)return;
  editingEventId=id;$('eventModalTitle').textContent='Manage event';$('saveEventBtn').textContent='Save changes';
- $('evName').value=e.name||'';$('evSlug').value=e.slug||'';$('evDate').value=e.event_date||'';$('evStart').value=e.start_time||'';$('evEnd').value=e.end_time||'';
+ $('evName').value=e.name||'';$('evSlug').value=e.slug||'';$('evDate').value=dateOnly(e.event_date);$('evStart').value=timeOnly(e.start_time);$('evEnd').value=timeOnly(e.end_time);
  $('evVenue').value=e.venue||'';$('evAddress').value=e.address||'';$('evDescription').value=e.description||'';$('evStatus').value=e.status||'draft';$('evSales').value=String(!!e.sales_open);
  $('uploadStatus').textContent=e.image_url?'Current flyer is already uploaded. Choose another file to replace it.':'No flyer uploaded yet.';
  $('eventError').textContent='';$('eventModal').classList.add('open');
@@ -540,7 +586,15 @@ function dateOnly(value){
   if(!value) return '';
   const s=String(value);
   const m=s.match(/^(\d{4}-\d{2}-\d{2})/);
-  return m?m[1]:'';
+  if(m) return m[1];
+  const d=new Date(s);
+  if(isNaN(d)) return '';
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function timeOnly(value){
+  if(!value) return '';
+  const m=String(value).match(/(\d{1,2}):(\d{2})/);
+  return m?m[1].padStart(2,'0')+':'+m[2]:'';
 }
 function syncTicketFields(){
  const preset=$('ttPreset').value;
