@@ -1,0 +1,8 @@
+{
+  "crons": [
+    {
+      "path": "/api/cleanup-event-flyers",
+      "schedule": "0 3 * * *"
+    }
+  ]
+}
