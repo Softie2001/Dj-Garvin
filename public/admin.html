@@ -404,6 +404,7 @@ async function openEditTicket(ticketId,eventId){
  selectedEvent=events.find(e=>e.id===eventId)||null;
  const t=r.data;
  editingTicketId=ticketId;
+ editingTicketOriginal={...t};
  $('ticketModalTitle').textContent='Edit ticket type';
  $('saveTicketBtn').textContent='Save changes';
  $('ttPreset').value=['VIP','Gold','General Admission','Early Bird','Table'].includes(t.name)?(String(t.name).startsWith('Table for ')?'Table':t.name):'Other';
@@ -417,8 +418,8 @@ async function openEditTicket(ticketId,eventId){
  }
  $('ttPrice').value=(Number(t.price_gbp)||Number(t.price_pence||0)/100).toFixed(2);
  $('ttCapacity').value=t.capacity||'';
- $('ttSalesStart').value=t.sales_start||'';
- $('ttSalesEnd').value=t.sales_end||'';
+ $('ttSalesStart').value=dateOnly(t.sales_start);
+ $('ttSalesEnd').value=dateOnly(t.sales_end);
  $('ttStatus').value=t.status||'on_sale';
  $('ttDescription').value=t.description||'';
  $('ttIncluded').value=t.whats_included||'';
@@ -530,6 +531,13 @@ $('eventForm').onsubmit=async e=>{
 };
 
 let editingTicketId=null;
+let editingTicketOriginal=null;
+function dateOnly(value){
+  if(!value) return '';
+  const s=String(value);
+  const m=s.match(/^(\d{4}-\d{2}-\d{2})/);
+  return m?m[1]:'';
+}
 function syncTicketFields(){
  const preset=$('ttPreset').value;
  $('customTicketWrap').style.display=preset==='Other'?'block':'none';
@@ -541,6 +549,7 @@ $('ttTableSeats').onchange=()=>{$('customSeatsWrap').style.display=$('ttTableSea
 
 function openTicketModal(){
  editingTicketId=null;
+ editingTicketOriginal=null;
  $('ticketForm').reset();
  $('ticketModalTitle').textContent='Add ticket type';
  $('saveTicketBtn').textContent='Add ticket type';
@@ -566,18 +575,24 @@ $('ticketForm').onsubmit=async e=>{
  const priceGbp=Number($('ttPrice').value), capacity=Math.max(1,Number($('ttCapacity').value)||0);
  if(!Number.isFinite(priceGbp)||priceGbp<0){$('ticketError').textContent='Enter a valid ticket price.';return}
  if(!capacity){$('ticketError').textContent='Enter ticket capacity.';return}
+ const original=editingTicketOriginal||{};
+ const salesStartInput=$('ttSalesStart').value.trim();
+ const salesEndInput=$('ttSalesEnd').value.trim();
+ // When editing, an existing sales date is preserved if the browser returns the field as blank.
+ // This prevents an edit from accidentally clearing dates that were already saved.
  const row={
    event_id:selectedEvent.id,name,slug:name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),
-   price_gbp:Number(priceGbp.toFixed(2)),price_pence:Math.round(priceGbp*100),currency:'GBP',
+   price_gbp:Number(priceGbp.toFixed(2)),price_pence:Math.round(priceGbp*100),currency:original.currency||'GBP',
    capacity,description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,
    status:$('ttStatus').value,
-   sales_start:$('ttSalesStart').value||null,sales_end:$('ttSalesEnd').value||null
+   sales_start:salesStartInput || (editingTicketId ? (original.sales_start||null) : null),
+   sales_end:salesEndInput || (editingTicketId ? (original.sales_end||null) : null)
  };
  const r=editingTicketId
    ? await sb.from('ticket_types').update(row).eq('id',editingTicketId).select().single()
    : await sb.from('ticket_types').insert({...row,quantity_sold:0,is_group_ticket:name.toLowerCase().startsWith('table for ')}).select().single();
  if(r.error){$('ticketError').textContent=r.error.message;return}
- $('ticketModal').classList.remove('open');editingTicketId=null;
+ $('ticketModal').classList.remove('open');editingTicketId=null;editingTicketOriginal=null;
  await loadEvents();await renderEvents();await renderTicketEvents();
 };
 
