@@ -118,6 +118,17 @@ textarea{min-height:88px;resize:vertical}
 }
 .ticket-status-select{width:auto;min-height:36px;padding:6px 10px;font-size:12px;font-weight:700;border-radius:10px;background:#15191b;color:var(--text);border:1px solid var(--line);cursor:pointer}
 @media(max-width:700px){.ticket-status-select{min-height:42px;font-size:14px;padding:8px 12px}}
+/* Mobile: tidy Tickets page cards */
+@media(max-width:700px){
+  .ticket-event-head{flex-direction:column!important;align-items:stretch!important;gap:14px}
+  .ticket-event-head>div:last-child{display:grid!important;grid-template-columns:1fr 1fr;gap:10px!important;width:100%}
+  .ticket-event-head>div:last-child .btn{width:100%;min-height:46px}
+  .ticket-event-card .event-title{white-space:normal;overflow:visible;text-overflow:clip}
+  .ticket-card{flex-direction:column;align-items:stretch;gap:12px}
+  .ticket-card>div:last-child{display:flex!important;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;width:100%;min-width:0!important;text-align:left!important;border-top:1px solid var(--line);padding-top:12px}
+  .ticket-card .ticket-actions{margin-top:0;flex-wrap:nowrap}
+  .ticket-card .ticket-actions .btn{min-height:42px;padding:0 18px}
+}
 </style></head>
 <body>
 <div id="login" class="login">
@@ -402,7 +413,7 @@ async function renderTicketEvents(){
      <div class="ticket-event-head">
        <div class="ticket-event-info">
          ${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}">`:'<div class="ticket-event-placeholder">♪</div>'}
-         <div><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(e.start_time):''}${e.venue?' • '+esc(e.venue):''}</div></div>
+         <div><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(timeOnly(e.start_time)||e.start_time):''}${e.venue?' • '+esc(e.venue):''}</div></div>
        </div>
        <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end">
          <button class="btn small add-ticket-for-event" data-id="${e.id}">+ Add ticket</button>
