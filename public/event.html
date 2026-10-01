@@ -240,11 +240,23 @@ details.dropdown-select summary::-webkit-details-marker {
 
 @media(min-width:760px){.vtrack .c.reel{flex:0 0 calc(50% - 11px)}}
 </style>
-</head>
+<style>
+/* Keep ticket choice controls compact on mobile; radio buttons must never stretch into giant boxes. */
+#ticketOptions label.ticket-choice{display:flex;gap:12px;align-items:center;cursor:pointer;padding:15px 16px!important;border:1px solid var(--line);border-radius:16px;background:var(--card)}
+#ticketOptions label.ticket-choice input[type=radio]{width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;flex:0 0 20px!important;margin:0!important;padding:0!important;appearance:auto!important;-webkit-appearance:auto!important}
+#ticketOptions .ticket-choice .ticket-copy{flex:1;min-width:0}
+#ticketOptions .ticket-choice .ticket-name{font-weight:700}
+#ticketOptions .ticket-choice .ticket-note{display:block;color:var(--mut);font-size:.82rem;margin-top:2px}
+#ticketOptions .ticket-choice .ticket-price{font-weight:800;color:var(--acc);white-space:nowrap}
+#ticketOptions .ticket-choice.is-disabled{opacity:.55;cursor:not-allowed}
+@media(max-width:600px){
+ #ticketOptions label.ticket-choice{min-height:72px}
+}
+</style></head>
 <body>
 <header><div class="w nav">
 <a aria-label="DJ Garvin" class="logo" href="#top"><span aria-hidden="true" class="lt" data-t="DJ GARVIN">DJ GARVIN</span></a>
-<div class="links" id="ln"><a href="about.html">About</a><a href="music.html">Music</a><a href="events.html">Events</a><a href="videos.html">Videos</a><a href="contact.html">Contact</a><a class="btn f" href="book.html" id="mbk" style="color:#111;display:none">Book DJ</a></div>
+<div class="links" id="ln"><a href="index.html">Home</a><a href="about.html">About</a><a href="music.html">Music</a><a href="events.html">Events</a><a href="videos.html">Videos</a><a href="contact.html">Contact</a><a class="btn f" href="book.html" id="mbk" style="color:#111;display:none">Book DJ</a></div>
 <div class="rt">
 <a class="btn f" href="book.html">Book DJ</a>
 <span aria-hidden="true" class="eq"><i></i><i></i><i></i><i></i></span>
@@ -276,5 +288,76 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&
 const money=t=>{const p=Number.isFinite(Number(t.price_pence))?Number(t.price_pence):Math.round((Number(t.price_gbp)||0)*100);return '£'+(p/100).toLocaleString('en-GB',{minimumFractionDigits:2})};
 function salesState(t){const now=new Date(),start=t.sales_start?new Date(t.sales_start+'T00:00:00'):null,end=t.sales_end?new Date(t.sales_end+'T23:59:59'):null;if(t.status==='sold_out')return'sold_out';if(t.status==='out_of_sale'||t.status==='inactive'||t.status==='closed')return'out';if(start&&now<start)return'upcoming';if(end&&now>end)return'out';return'on'}
 </script>
-<script>const params=new URLSearchParams(location.search),id=params.get('id');async function loadEvent(){const box=$('eventDetail');if(!id){box.innerHTML='<h2>Event not found</h2>';return}const {data:e,error}=await sb.from('events').select('*,ticket_types(*)').eq('id',id).maybeSingle();if(error||!e){box.innerHTML='<h2>Event not found</h2>';return}const tickets=e.ticket_types||[];box.innerHTML=`${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}" style="width:100%;max-height:430px;object-fit:cover;border-radius:14px">`:''}<div style="padding-top:22px"><div class="bar"></div><h1 style="font-size:clamp(28px,5vw,46px);margin-top:10px">${esc(e.name)}</h1><p class="mut">${esc(e.event_date||'')}${e.start_time?' • '+esc(e.start_time):''}${e.venue?' • '+esc(e.venue):''}</p>${e.address?`<p class="mut">${esc(e.address)}</p>`:''}${e.description?`<p class="mut" style="margin-top:18px">${esc(e.description)}</p>`:''}<h2 style="margin-top:30px">Tickets</h2><div id="ticketOptions" style="display:grid;gap:10px;margin-top:12px">${tickets.length?tickets.map((t,i)=>`<label class="c" style="display:flex;gap:12px;align-items:center;cursor:pointer"><input type="radio" name="ticketChoice" value="${esc(t.id)}" ${i===0?'checked':''}><span style="flex:1"><b>${esc(t.name)}</b><small style="display:block;color:var(--mut)">${esc(t.description||'')}</small></span><b>${money(t)}</b></label>`).join(''):'<p class="mut">Tickets are not available yet.</p>'}</div>${tickets.length?`<button id="buyOpen" class="btn f" style="margin-top:18px">Buy Ticket Now</button>`:''}<div id="buyPanel" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)"><h3>Buy Ticket</h3><div class="form-grid" style="margin-top:12px"><div><label>Full name</label><input id="buyerName"></div><div><label>Email</label><input id="buyerEmail" type="email"></div></div><div class="form-grid" style="margin-top:12px"><div><label>Phone</label><input id="buyerPhone" type="tel"></div><div><label>Quantity</label><input id="buyerQty" type="number" min="1" value="1"></div></div><div id="buyError" class="error" style="margin-top:10px"></div><button id="payButton" class="btn f" style="margin-top:14px">Continue to Payment</button></div></div>`;if($('buyOpen'))$('buyOpen').onclick=()=>{$('buyPanel').style.display='block';$('buyOpen').style.display='none'};$('payButton')?.addEventListener('click',async()=>{const t=tickets.find(x=>x.id===$('ticketOptions').querySelector('input:checked')?.value),name=$('buyerName').value.trim(),email=$('buyerEmail').value.trim(),qty=Math.max(1,Number($('buyerQty').value)||1);if(!t||!name||!email){$('buyError').textContent='Please complete your name, email and ticket selection.';return}$('buyError').textContent='Connecting to payment…';try{const r=await fetch('/api/paypal/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_id:e.id,ticket_type_id:t.id,quantity:qty,customer_name:name,customer_email:email,customer_phone:$('buyerPhone').value.trim()})}),j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Payment could not be started.');if(j.approval_url){location.href=j.approval_url;return}$('buyError').textContent='Payment setup is not available yet.'}catch(err){$('buyError').textContent=err.message}})}loadEvent();</script></body>
+<script>
+const params=new URLSearchParams(location.search),id=params.get('id');
+function publicDate(v){if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v).slice(0,10);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'})}
+function salesState(t){
+ const now=new Date(),start=t.sales_start?new Date(t.sales_start+'T00:00:00'):null,end=t.sales_end?new Date(t.sales_end+'T23:59:59'):null;
+ if(t.status==='sold_out')return'sold_out';
+ if(t.status==='out_of_sale'||t.status==='inactive'||t.status==='closed')return'out';
+ if(start&&now<start)return'upcoming';
+ if(end&&now>end)return'out';
+ return'on';
+}
+function ticketMoney(t){const p=Number.isFinite(Number(t.price_pence))?Number(t.price_pence):Math.round((Number(t.price_gbp)||0)*100);return '£'+(p/100).toLocaleString('en-GB',{minimumFractionDigits:2})}
+function ticketStatusText(t){
+ const s=salesState(t);
+ return s==='sold_out'?'Sold out':s==='out'?'Out of sale':s==='upcoming'?'Sales open '+publicDate(t.sales_start):'On sale';
+}
+async function loadEvent(){
+ const box=$('eventDetail');
+ if(!id){box.innerHTML='<h2>Event not found</h2>';return}
+ const {data:e,error}=await sb.from('events').select('*,ticket_types(*)').eq('id',id).maybeSingle();
+ if(error||!e){box.innerHTML='<h2>Event not found</h2>';return}
+ const tickets=e.ticket_types||[];
+ const eventStatus=e.status==='cancelled'?'EVENT CANCELLED':(e.event_date&&new Date(e.event_date).getTime()<Date.now()?'EVENT COMPLETED':'');
+ box.innerHTML=`${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}" style="width:100%;max-height:430px;object-fit:cover;border-radius:14px">`:''}
+ <div style="padding-top:22px">
+   <div class="bar"></div>
+   <h1 style="font-size:clamp(28px,5vw,46px);margin-top:10px">${esc(e.name)}</h1>
+   <p class="mut">${esc(publicDate(e.event_date))}${e.start_time?' • '+esc(e.start_time):''}${e.venue?' • '+esc(e.venue):''}</p>
+   ${e.address?`<p class="mut">${esc(e.address)}</p>`:''}
+   ${eventStatus?`<div class="status" style="display:inline-block;margin:8px 0;padding:6px 10px;border-radius:999px;background:#292929;font-size:.78rem;font-weight:700">${eventStatus}</div>`:''}
+   ${e.description?`<p class="mut" style="margin-top:18px">${esc(e.description)}</p>`:''}
+   <h2 style="margin-top:30px">Tickets</h2>
+   <div id="ticketOptions" style="display:grid;gap:10px;margin-top:12px">
+     ${tickets.length?tickets.map((t,i)=>{
+       const state=salesState(t), disabled=state!=='on';
+       return `<label class="ticket-choice ${disabled?'is-disabled':''}">
+         <input type="radio" name="ticketChoice" value="${esc(t.id)}" ${i===0&&!disabled?'checked':''} ${disabled?'disabled':''}>
+         <span class="ticket-copy"><span class="ticket-name">${esc(t.name)}</span><span class="ticket-note">${esc(t.description||'')}${t.sales_start||t.sales_end?' • '+ticketStatusText(t):' • '+ticketStatusText(t)}</span></span>
+         <span class="ticket-price">${ticketMoney(t)}</span>
+       </label>`
+     }).join(''):'<p class="mut">Tickets are not available yet.</p>'}
+   </div>
+   ${tickets.some(t=>salesState(t)==='on')?`<button id="buyOpen" class="btn f" style="margin-top:18px">Buy Ticket Now</button>`:''}
+   <div id="buyPanel" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)">
+     <h3>Buy Ticket</h3>
+     <div class="form-grid" style="margin-top:12px"><div><label>Full name</label><input id="buyerName"></div><div><label>Email</label><input id="buyerEmail" type="email"></div></div>
+     <div class="form-grid" style="margin-top:12px"><div><label>Phone</label><input id="buyerPhone" type="tel"></div><div><label>Quantity</label><input id="buyerQty" type="number" min="1" value="1"></div></div>
+     <div id="buyError" class="error" style="margin-top:10px"></div>
+     <button id="payButton" class="btn f" style="margin-top:14px">Continue to Payment</button>
+   </div>
+ </div>`;
+ $('buyOpen')?.addEventListener('click',()=>{
+   const checked=$('ticketOptions').querySelector('input:checked');
+   if(!checked){$('buyError').textContent='Please choose a ticket that is on sale.';return}
+   $('buyPanel').style.display='block';$('buyOpen').style.display='none';
+ });
+ $('payButton')?.addEventListener('click',async()=>{
+   const checked=$('ticketOptions').querySelector('input:checked');
+   const t=tickets.find(x=>x.id===checked?.value),name=$('buyerName').value.trim(),email=$('buyerEmail').value.trim(),qty=Math.max(1,Number($('buyerQty').value)||1);
+   if(!t||salesState(t)!=='on'||!name||!email){$('buyError').textContent='Please complete your name, email and choose a ticket that is on sale.';return}
+   $('buyError').textContent='Connecting to payment…';
+   try{
+     const r=await fetch('/api/paypal/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_id:e.id,ticket_type_id:t.id,quantity:qty,customer_name:name,customer_email:email,customer_phone:$('buyerPhone').value.trim()})});
+     const j=await r.json().catch(()=>({}));
+     if(!r.ok)throw new Error(j.error||'Payment could not be started.');
+     if(j.approval_url){location.href=j.approval_url;return}
+     $('buyError').textContent='Payment setup is not available yet.';
+   }catch(err){$('buyError').textContent=err.message}
+ });
+}
+loadEvent();
+</script></body>
 </html>

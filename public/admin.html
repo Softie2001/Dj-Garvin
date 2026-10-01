@@ -41,7 +41,7 @@ textarea{min-height:88px;resize:vertical}
 .stat-label{color:#999fa2;font-size:9px;letter-spacing:.04em}.stat-value{font-size:20px;font-weight:800;margin-top:6px}
 .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 10px}.section-head h2{font-size:14px;margin:0}
 .two{grid-template-columns:1.15fr .85fr}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:11.5px}.table th{color:#777d80;font-weight:500}
-.badge{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:9px;background:#202426}.badge.green{color:#a4dfba;background:#153224}.badge.gold{color:#f0d08a;background:#342817}.badge.red{color:#f3a3a3;background:#351b1b}.badge.cancelled{color:#ffb0b0;background:#401d1d}
+.badge{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:9px;background:#202426}.badge.green{color:#a4dfba;background:#153224}.badge.gold{color:#f0d08a;background:#342817}.badge.red{color:#f3a3a3;background:#351b1b}
 .page{display:none}.page.active{display:block}
 .event-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .event-card{overflow:hidden;padding:0;position:relative}.event-img{width:100%;height:155px;object-fit:cover;background:#111;display:block}.event-img.empty-img{opacity:.25}
@@ -62,7 +62,20 @@ textarea{min-height:88px;resize:vertical}
 @media(max-width:900px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#15191b;border:1px solid var(--line);color:#f4f1e9;border-radius:10px;padding:7px 9px}.mobile-open .sidebar{display:flex;width:255px;box-shadow:20px 0 50px #000}.stats{grid-template-columns:repeat(2,1fr)}.stats .card:last-child{grid-column:1/-1}.two{grid-template-columns:1fr}.event-list{grid-template-columns:1fr 1fr}}
 @media(max-width:600px){.topbar h1{font-size:17px}.topbar{align-items:flex-start}.stats{gap:7px}.card{padding:11px}.stat-value{font-size:18px}.event-list{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.ticket-row{grid-template-columns:1fr 1fr}.ticket-row .remove-ticket{grid-column:1/-1}.table{min-width:560px}}
 </style>
-</head>
+<style>
+/* Ticket editor/display refinements */
+.ticket-card .ticket-actions{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap;margin-top:10px}
+.ticket-card .ticket-actions .btn{min-height:38px;padding:0 14px}
+.ticket-status-btn{white-space:nowrap}
+.ticket-seat-note{color:var(--mut);font-size:.78rem;margin-top:3px}
+@media(max-width:700px){
+  .modal-card{width:min(100% - 24px,560px);max-height:calc(100vh - 24px);overflow:auto}
+  .modal-card input,.modal-card select,.modal-card textarea{width:100%;min-height:50px}
+  .ticket-event-head{align-items:flex-start!important}
+  .ticket-event-head>div:last-child{width:100%;justify-content:flex-start!important}
+  .ticket-card{min-width:0}
+}
+</style></head>
 <body>
 <div id="login" class="login">
   <div class="login-card">
@@ -194,7 +207,7 @@ textarea{min-height:88px;resize:vertical}
 
 <div id="ticketModal" class="modal">
   <div class="modal-card">
-    <div class="modal-head"><h2>Add ticket type</h2><button id="closeTicket" class="btn secondary small">Close</button></div>
+    <div class="modal-head"><h2 id="ticketModalTitle">Add ticket type</h2><button id="closeTicket" class="btn secondary small">Close</button></div>
     <form id="ticketForm">
       <label>Ticket type</label>
       <select id="ttPreset">
@@ -205,27 +218,30 @@ textarea{min-height:88px;resize:vertical}
         <option value="Table">Table</option>
         <option value="Other">Other</option>
       </select>
+      <div id="tableSeatsWrap" style="display:none">
+        <label>Table for</label>
+        <select id="ttTableSeats">
+          <option value="2">2 people</option><option value="3">3 people</option><option value="4">4 people</option>
+          <option value="5">5 people</option><option value="6">6 people</option><option value="7">7 people</option>
+          <option value="8">8 people</option><option value="9">9 people</option><option value="10">10 people</option>
+          <option value="11">11 people</option><option value="12">12 people</option><option value="custom">Custom</option>
+        </select>
+        <div id="customSeatsWrap" style="display:none"><label>Number of people</label><input id="ttCustomSeats" type="number" min="1" max="100" step="1" placeholder="e.g. 15"></div>
+      </div>
       <div id="customTicketWrap" style="display:none"><label>Custom ticket name</label><input id="ttCustomName" placeholder="e.g. Platinum"></div>
       <label>Price (£)</label><input id="ttPrice" type="number" min="0" step="0.01" required>
       <label>Capacity</label><input id="ttCapacity" type="number" min="1" required>
-      <div class="form-grid" style="margin-top:4px">
-        <div><label>Ticket sales start</label><input id="ttSalesStart" type="date"></div>
-        <div><label>Ticket sales end</label><input id="ttSalesEnd" type="date"></div>
-      </div>
+      <label>Ticket sales start</label><input id="ttSalesStart" type="date">
+      <label>Ticket sales end</label><input id="ttSalesEnd" type="date">
       <label>Ticket status</label>
-      <select id="ttStatus">
-        <option value="on_sale">On sale</option>
-        <option value="out_of_sale">Out of sale</option>
-        <option value="sold_out">Sold out</option>
-      </select>
+      <select id="ttStatus"><option value="on_sale">On sale</option><option value="out_of_sale">Out of sale</option><option value="sold_out">Sold out</option></select>
       <label>Description</label><textarea id="ttDescription"></textarea>
       <label>What's included</label><textarea id="ttIncluded"></textarea>
-      <button class="btn" style="margin-top:16px">Add ticket type</button>
+      <button id="saveTicketBtn" class="btn" style="margin-top:16px">Add ticket type</button>
       <div id="ticketError" class="error"></div>
     </form>
   </div>
 </div>
-
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
@@ -309,7 +325,7 @@ async function renderEvents(){
       ${e.image_url?`<img class="event-img" src="${esc(e.image_url)}" alt="${esc(e.name)}">`:'<div class="event-img" style="display:grid;place-items:center;color:#666">No flyer</div>'}
       <div class="event-body">
         <div class="event-title">${esc(e.name)}</div>
-        <div class="event-meta">${esc(e.event_date||'')} • ${esc(e.venue||'Venue TBA')}</div>
+        <div class="event-meta">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(e.start_time):''} • ${esc(e.venue||'Venue TBA')}</div>
         <div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':e.status==='closed'?'red':'gold'}">${esc(e.status)}</span> <span class="badge">${e.sales_open?'Sales open':'Sales closed'}</span></div>
         <div style="margin-top:10px">${tickets.length?tickets.slice(0,3).map(t=>`<span class="badge ${ticketClass(t.name)==='gold-ticket'?'gold':''}" style="margin:0 4px 4px 0">${esc(t.name)}</span>`).join(''):'<span class="muted">No ticket types yet</span>'}</div>
         <div class="event-actions"><button class="btn small manage-event-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button><button class="btn small danger delete-event" data-id="${e.id}">Delete</button></div>
@@ -322,6 +338,16 @@ async function renderEvents(){
  document.querySelectorAll('.delete-event').forEach(b=>b.onclick=()=>deleteEvent(b.dataset.id));
 }
 
+function formatEventDate(v){
+ if(!v)return '';
+ const d=new Date(v);
+ if(Number.isNaN(d.getTime()))return String(v).slice(0,10);
+ return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});
+}
+function formatTicketSales(t){
+ const a=t.sales_start?formatEventDate(t.sales_start):'', b=t.sales_end?formatEventDate(t.sales_end):'';
+ return a&&b?`Sales: ${a} → ${b}`:a?`Sales start: ${a}`:b?`Sales end: ${b}`:'';
+}
 async function renderTicketEvents(){
  const wrap=$('ticketPanel');
  if(!events.length){wrap.innerHTML='<div class="empty">No events yet. Create an event first.</div>';return;}
@@ -329,36 +355,81 @@ async function renderTicketEvents(){
    const tickets=await getEventTickets(e.id), done=isDone(e);
    return `<div class="card ticket-event-card">
      ${done?'<div class="done-ribbon">EVENT COMPLETED</div>':''}
+     ${e.status==='cancelled'?'<div class="done-ribbon" style="background:#7b2525">EVENT CANCELLED</div>':''}
      <div class="ticket-event-head">
        <div class="ticket-event-info">
          ${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}">`:'<div class="ticket-event-placeholder">♪</div>'}
-         <div><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(e.event_date||'')} • ${esc(e.venue||'Venue TBA')}</div></div>
+         <div><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(e.start_time):''}${e.venue?' • '+esc(e.venue):''}</div></div>
        </div>
-       <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small add-ticket-for-event" data-id="${e.id}">+ Add ticket</button><button class="btn small danger delete-event-ticket-page" data-id="${e.id}">Delete event</button></div>
+       <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end">
+         <button class="btn small add-ticket-for-event" data-id="${e.id}">+ Add ticket</button>
+         <button class="btn small danger delete-event-ticket-page" data-id="${e.id}">Delete event</button>
+       </div>
      </div>
      <div class="ticket-event-body">
-       ${tickets.length ? tickets.map(t=>`<div class="ticket-card ${ticketClass(t.name)}">
-          <div class="ticket-left">${ticketVisual(t.name)}<div><div class="ticket-name">${esc(t.name)}</div><div class="ticket-kind">${esc(t.description||'No description')}</div><div class="ticket-kind">${t.quantity_sold||0}/${t.capacity||0} sold</div><div class="ticket-kind">${t.sales_start?`Sales: ${esc(String(t.sales_start).slice(0,10))}`:""}${t.sales_end?` → ${esc(String(t.sales_end).slice(0,10))}`:""}</div></div></div>
-          <div style="text-align:right">
-              <div class="ticket-price">${money(ticketPricePence(t))}</div>
-              <div class="ticket-kind">${esc(t.status||'on_sale')}</div>
-              <div style="margin-top:6px"><button class="btn small ${t.status==='out_of_sale'?'':'secondary'} ticket-toggle-sale" data-id="${t.id}" data-status="${t.status||'on_sale'}">${t.status==='out_of_sale'?'Put on sale':'Out of sale'}</button></div>
+       ${tickets.length ? tickets.map(t=>{
+         const st=t.status||'on_sale', isTable=String(t.name||'').toLowerCase().startsWith('table for ');
+         const toggle=st==='on_sale'?'Out of sale':st==='out_of_sale'?'Put on sale':'Sold out';
+         const toggleClass=st==='on_sale'?'secondary':'';
+         return `<div class="ticket-card ${ticketClass(t.name)}">
+          <div class="ticket-left">${ticketVisual(t.name)}<div>
+            <div class="ticket-name">${esc(t.name)}</div>
+            ${isTable?`<div class="ticket-seat-note">Table seating</div>`:''}
+            <div class="ticket-kind">${esc(t.description||'No description')}</div>
+            <div class="ticket-kind">${t.quantity_sold||0}/${t.capacity||0} sold</div>
+            ${formatTicketSales(t)?`<div class="ticket-kind">${esc(formatTicketSales(t))}</div>`:''}
+          </div></div>
+          <div style="text-align:right;min-width:150px">
+            <div class="ticket-price">${money(ticketPricePence(t))}</div>
+            <div class="ticket-kind">${esc(st)}</div>
+            <div class="ticket-actions">
+              <button class="btn small secondary edit-ticket" data-id="${esc(t.id)}" data-event="${esc(e.id)}">Edit</button>
+              ${st!=='sold_out'?`<button class="btn small ${toggleClass} ticket-status-btn toggle-ticket" data-id="${esc(t.id)}" data-status="${esc(st)}">${toggle}</button>`:''}
             </div>
-       </div>`).join('') : '<div class="empty">No tickets for this event yet. Use “+ Add ticket” above.</div>'}
+          </div>
+         </div>`;
+       }).join('') : '<div class="empty">No tickets for this event yet. Use “+ Add ticket” above.</div>'}
      </div>
    </div>`;
  })).then(x=>x.join(''));
  wrap.innerHTML=cards;
  document.querySelectorAll('.add-ticket-for-event').forEach(b=>b.onclick=()=>{selectedEvent=events.find(e=>e.id===b.dataset.id)||null;openTicketModal();});
  document.querySelectorAll('.delete-event-ticket-page').forEach(b=>b.onclick=()=>deleteEvent(b.dataset.id));
-  document.querySelectorAll('.ticket-toggle-sale').forEach(b=>b.onclick=()=>toggleTicketSale(b.dataset.id,b.dataset.status));
+ document.querySelectorAll('.edit-ticket').forEach(b=>b.onclick=()=>openEditTicket(b.dataset.id,b.dataset.event));
+ document.querySelectorAll('.toggle-ticket').forEach(b=>b.onclick=()=>toggleTicketStatus(b.dataset.id,b.dataset.status));
 }
-
-async function toggleTicketSale(id,status){
-  const next=status==='out_of_sale'?'on_sale':'out_of_sale';
-  const r=await sb.from('ticket_types').update({status:next}).eq('id',id);
-  if(r.error){alert('Could not update ticket: '+r.error.message);return;}
-  await renderTicketEvents();
+async function openEditTicket(ticketId,eventId){
+ const r=await sb.from('ticket_types').select('*').eq('id',ticketId).maybeSingle();
+ if(r.error||!r.data){alert(r.error?.message||'Ticket not found.');return;}
+ selectedEvent=events.find(e=>e.id===eventId)||null;
+ const t=r.data;
+ editingTicketId=ticketId;
+ $('ticketModalTitle').textContent='Edit ticket type';
+ $('saveTicketBtn').textContent='Save changes';
+ $('ttPreset').value=['VIP','Gold','General Admission','Early Bird','Table'].includes(t.name)?(String(t.name).startsWith('Table for ')?'Table':t.name):'Other';
+ $('customTicketWrap').style.display=$('ttPreset').value==='Other'?'block':'none';
+ $('ttCustomName').value=$('ttPreset').value==='Other'?(t.name||''):'';
+ $('tableSeatsWrap').style.display=$('ttPreset').value==='Table'?'block':'none';
+ $('customSeatsWrap').style.display='none';
+ if($('ttPreset').value==='Table'){
+   const n=Number((t.name||'').match(/(\d+)$/)?.[1]);
+   if(n>=2&&n<=12){$('ttTableSeats').value=String(n)}else{$('ttTableSeats').value='custom';$('customSeatsWrap').style.display='block';$('ttCustomSeats').value=n||''}
+ }
+ $('ttPrice').value=(Number(t.price_gbp)||Number(t.price_pence||0)/100).toFixed(2);
+ $('ttCapacity').value=t.capacity||'';
+ $('ttSalesStart').value=t.sales_start||'';
+ $('ttSalesEnd').value=t.sales_end||'';
+ $('ttStatus').value=t.status||'on_sale';
+ $('ttDescription').value=t.description||'';
+ $('ttIncluded').value=t.whats_included||'';
+ $('ticketError').textContent='';
+ $('ticketModal').classList.add('open');
+}
+async function toggleTicketStatus(ticketId,current){
+ const next=current==='on_sale'?'out_of_sale':'on_sale';
+ const r=await sb.from('ticket_types').update({status:next}).eq('id',ticketId);
+ if(r.error){alert('Could not update ticket: '+r.error.message);return;}
+ await renderTicketEvents();
 }
 function selectEventAndShowTickets(id){
  selectedEvent=events.find(e=>e.id===id)||null;
@@ -453,26 +524,61 @@ $('eventForm').onsubmit=async e=>{
    if(image_url!==undefined)row.image_url=image_url;
    const r=editingEventId?await sb.from('events').update(row).eq('id',editingEventId).select().single():await sb.from('events').insert(row).select().single();
    if(r.error)throw r.error;
-   $('eventModal').classList.remove('open');editingEventId=null;
+   $('eventModal').classList.remove('open');$('eventForm').reset();editingEventId=null;
    await loadEvents();renderDashboard();await renderEvents();await renderTicketEvents();fillEventSelects();showPage('events');
  }catch(err){$('eventError').textContent=err.message||String(err);}
 };
 
-$('ttPreset').onchange=()=>{$('customTicketWrap').style.display=$('ttPreset').value==='Other'?'block':'none'};
-function openTicketModal(){$('ticketForm').reset();$('customTicketWrap').style.display='none';$('ticketError').textContent='';$('ticketModal').classList.add('open');}
+let editingTicketId=null;
+function syncTicketFields(){
+ const preset=$('ttPreset').value;
+ $('customTicketWrap').style.display=preset==='Other'?'block':'none';
+ $('tableSeatsWrap').style.display=preset==='Table'?'block':'none';
+ if(preset!=='Table')$('customSeatsWrap').style.display='none';
+}
+$('ttPreset').onchange=syncTicketFields;
+$('ttTableSeats').onchange=()=>{$('customSeatsWrap').style.display=$('ttTableSeats').value==='custom'?'block':'none'};
+
+function openTicketModal(){
+ editingTicketId=null;
+ $('ticketForm').reset();
+ $('ticketModalTitle').textContent='Add ticket type';
+ $('saveTicketBtn').textContent='Add ticket type';
+ $('customTicketWrap').style.display='none';
+ $('tableSeatsWrap').style.display='none';
+ $('customSeatsWrap').style.display='none';
+ $('ttStatus').value='on_sale';
+ $('ticketError').textContent='';
+ $('ticketModal').classList.add('open');
+}
 
 $('ticketForm').onsubmit=async e=>{
  e.preventDefault();$('ticketError').textContent='';
  if(!selectedEvent){$('ticketError').textContent='Select an event first.';return}
- const name=$('ttPreset').value==='Other'?$('ttCustomName').value.trim():$('ttPreset').value;
+ let name=$('ttPreset').value==='Other'?$('ttCustomName').value.trim():$('ttPreset').value;
+ if($('ttPreset').value==='Table'){
+   let seats=$('ttTableSeats').value;
+   if(seats==='custom')seats=String(Math.max(1,Number($('ttCustomSeats').value)||0));
+   if(!seats||Number(seats)<1){$('ticketError').textContent='Choose the number of people for the table.';return}
+   name=`Table for ${seats}`;
+ }
  if(!name){$('ticketError').textContent='Choose a ticket type.';return}
- const slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
- const priceGbp=Number($('ttPrice').value);
+ const priceGbp=Number($('ttPrice').value), capacity=Math.max(1,Number($('ttCapacity').value)||0);
  if(!Number.isFinite(priceGbp)||priceGbp<0){$('ticketError').textContent='Enter a valid ticket price.';return}
- const row={event_id:selectedEvent.id,name,slug,price_gbp:Number(priceGbp.toFixed(2)),price_pence:Math.round(priceGbp*100),currency:'GBP',capacity:Number($('ttCapacity').value),quantity_sold:0,is_group_ticket:false,description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,status:$('ttStatus').value||'on_sale',sales_start:$('ttSalesStart').value||null,sales_end:$('ttSalesEnd').value||null};
- const r=await sb.from('ticket_types').insert(row);
+ if(!capacity){$('ticketError').textContent='Enter ticket capacity.';return}
+ const row={
+   event_id:selectedEvent.id,name,slug:name.toLowerCase().replace(/[^a-z0-9]+/g,'-'),
+   price_gbp:Number(priceGbp.toFixed(2)),price_pence:Math.round(priceGbp*100),currency:'GBP',
+   capacity,description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,
+   status:$('ttStatus').value,
+   sales_start:$('ttSalesStart').value||null,sales_end:$('ttSalesEnd').value||null
+ };
+ const r=editingTicketId
+   ? await sb.from('ticket_types').update(row).eq('id',editingTicketId).select().single()
+   : await sb.from('ticket_types').insert({...row,quantity_sold:0,is_group_ticket:name.toLowerCase().startsWith('table for ')}).select().single();
  if(r.error){$('ticketError').textContent=r.error.message;return}
- $('ticketModal').classList.remove('open');await loadEvents();await renderEvents();await renderTicketEvents();
+ $('ticketModal').classList.remove('open');editingTicketId=null;
+ await loadEvents();await renderEvents();await renderTicketEvents();
 };
 
 $('createAccess').onclick=async()=>{
