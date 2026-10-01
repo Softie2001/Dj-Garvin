@@ -5,32 +5,62 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>DJ Garvin — Admin Dashboard</title>
 <style>
-:root{--bg:#0b0b0b;--panel:#151515;--panel2:#1b1b1b;--line:#292929;--text:#f5f0e6;--muted:#a7a29a;--gold:#c9a86a;--danger:#c95f5f;--green:#6fb08a}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;font-size:14.5px}
-button,input,textarea,select{font:inherit}button{cursor:pointer}
-.login{min-height:100vh;display:grid;place-items:center;padding:20px}.login-card{width:min(390px,100%);background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:28px}
-.brand{font-size:20px;letter-spacing:.08em;font-weight:700}.muted{color:var(--muted);font-size:13.5px}
-label{display:block;margin:16px 0 7px;color:#d8d2c7;font-size:12px}
-input,textarea,select{width:100%;background:#101010;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:11px 12px;outline:none}
-textarea{min-height:90px;resize:vertical}
-.btn{border:0;border-radius:9px;padding:10px 14px;background:var(--gold);color:#111;font-weight:700}.btn.secondary{background:#242424;color:var(--text);border:1px solid var(--line)}.btn.danger{background:#542323;color:#fff}.btn.small{padding:8px 10px;font-size:12px}
-.error{color:#e58b8b;font-size:12px;margin-top:10px}.hidden{display:none!important}
-.app{min-height:100vh;display:flex}.sidebar{width:220px;border-right:1px solid var(--line);background:#0f0f0f;padding:18px 12px;position:fixed;inset:0 auto 0 0;z-index:20}.brand small{display:block;color:var(--gold);font-size:10px;letter-spacing:.14em;margin-top:4px}.nav{margin-top:25px;display:grid;gap:4px}.nav button{border:0;background:transparent;color:#aaa;text-align:left;padding:10px 11px;border-radius:8px;font-size:13.5px}.nav button:hover,.nav button.active{background:#1d1d1d;color:#fff}.nav .group{margin-top:12px;color:#777;font-size:10px;text-transform:uppercase;letter-spacing:.12em;padding:7px 11px}.main{margin-left:220px;width:calc(100% - 220px);padding:22px;max-width:1500px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:20px}.topbar h1{font-size:22px;margin:0}.topbar-actions{display:flex;gap:8px}.mobile-menu{display:none}
-.grid{display:grid;gap:12px}.stats{grid-template-columns:repeat(5,minmax(0,1fr))}.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px}.stat-label{color:var(--muted);font-size:11.5px}.stat-value{font-size:22px;font-weight:700;margin-top:7px}.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:22px 0 10px}.section-head h2{font-size:15px;margin:0}.two{grid-template-columns:1.2fr .8fr}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:11px 10px;border-bottom:1px solid var(--line);text-align:left;font-size:12.5px}.table th{color:#888;font-weight:500}.badge{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:10px;background:#242424}.badge.green{color:#9bd5b2;background:#183025}.badge.gold{color:#e6c98f;background:#302719}.badge.red{color:#efaaaa;background:#321919}
-.page{display:none}.page.active{display:block}.event-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.event-card{overflow:hidden;padding:0}.event-img{width:100%;height:145px;object-fit:cover;background:#111;display:block}.event-body{padding:13px}.event-title{font-size:15px;font-weight:700}.event-meta{color:var(--muted);font-size:11.5px;margin-top:5px}.event-actions{display:flex;gap:7px;margin-top:12px}
-.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.full{grid-column:1/-1}.upload{border:1px dashed #454545;border-radius:10px;padding:16px;text-align:center;color:#999}.ticket-row{display:grid;grid-template-columns:1.2fr .6fr .6fr auto;gap:8px;align-items:end;border-top:1px solid var(--line);padding:13px 0}.ticket-list{margin-top:15px}.empty{padding:28px;text-align:center;color:#888;border:1px dashed var(--line);border-radius:10px}
-.modal{position:fixed;inset:0;background:#000a;display:none;place-items:center;padding:18px;z-index:50}.modal.open{display:grid}.modal-card{width:min(720px,100%);max-height:92vh;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h2{font-size:17px;margin:0}
-@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#1b1b1b;border:1px solid var(--line);color:#fff;border-radius:8px;padding:8px 10px}.mobile-open .sidebar{display:block;width:245px;box-shadow:20px 0 50px #000}.stats{grid-template-columns:repeat(2,1fr)}.stats .card:last-child{grid-column:1/-1}.two{grid-template-columns:1fr}.event-list{grid-template-columns:1fr 1fr}}
-@media(max-width:600px){.topbar h1{font-size:18px}.topbar{align-items:flex-start}.topbar-actions .btn{padding:8px 10px}.stats{grid-template-columns:1fr 1fr;gap:8px}.card{padding:12px}.stat-value{font-size:19px}.event-list{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.ticket-row{grid-template-columns:1fr 1fr}.ticket-row .remove-ticket{grid-column:1/-1}.table{min-width:560px}}
-
-.suggest-wrap{position:relative}
-.suggestions{position:absolute;left:0;right:0;top:calc(100% + 4px);z-index:80;background:#151515;border:1px solid #333;border-radius:10px;overflow:hidden;display:none;box-shadow:0 18px 35px rgba(0,0,0,.45)}
-.suggestions.open{display:block}
-.suggestion{display:block;width:100%;padding:10px 12px;border:0;background:transparent;color:#f5f0e6;text-align:left;font-size:12px;line-height:1.35}
-.suggestion:hover,.suggestion:focus{background:#242424;color:#f0c48a}
-.upload-name{margin-top:8px;color:#c9a86a;font-size:12px;word-break:break-word}
-.modal-actions{display:flex;gap:8px;justify-content:flex-end;margin-top:16px}
-@media(max-width:600px){.modal-actions{flex-direction:column}.modal-actions .btn{width:100%}}
+:root{
+  --bg:#050607;--panel:#0d1012;--panel2:#141719;--line:#262a2d;
+  --text:#f5f2eb;--muted:#92979b;--gold:#e2b85b;--gold2:#b98b32;
+  --green:#65c58c;--red:#e37b7b;--shadow:0 18px 45px rgba(0,0,0,.35)
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Arial,sans-serif;font-size:14px}
+body{min-height:100vh}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+.login{min-height:100vh;display:grid;place-items:center;padding:20px;background:radial-gradient(circle at 50% 0,#17191a 0,#050607 45%)}
+.login-card{width:min(390px,100%);background:var(--panel);border:1px solid var(--line);border-radius:20px;padding:26px;box-shadow:var(--shadow)}
+.brand{font-size:20px;letter-spacing:.1em;font-weight:800}.brand small{display:block;color:var(--gold);font-size:9px;letter-spacing:.18em;margin-top:5px}
+.muted{color:var(--muted);font-size:12px}
+label{display:block;margin:14px 0 7px;color:#d8d5ce;font-size:11px}
+input,textarea,select{width:100%;background:#090b0c;color:var(--text);border:1px solid var(--line);border-radius:12px;padding:11px 12px;outline:none;min-height:44px}
+input:focus,textarea:focus,select:focus{border-color:#9f7c39;box-shadow:0 0 0 2px rgba(226,184,91,.08)}
+textarea{min-height:88px;resize:vertical}
+.btn{border:0;border-radius:12px;padding:10px 14px;background:linear-gradient(135deg,#f0ca72,#d5a947);color:#111;font-weight:800;box-shadow:0 7px 18px rgba(210,165,70,.12)}
+.btn.secondary{background:#15191b;color:var(--text);border:1px solid var(--line);box-shadow:none}
+.btn.danger{background:#4a2020;color:#fff}.btn.small{padding:7px 10px;font-size:11px;border-radius:10px}
+.error{color:#ee9696;font-size:12px;margin-top:9px}.hidden{display:none!important}
+.app{min-height:100vh;display:flex}
+.sidebar{width:245px;border-right:1px solid var(--line);background:#07090a;padding:22px 14px;position:fixed;inset:0 auto 0 0;z-index:50;display:flex;flex-direction:column}
+.nav{margin-top:25px;display:grid;gap:5px}
+.nav button{border:0;background:transparent;color:#b6b9bb;text-align:left;padding:12px 12px;border-radius:12px;font-size:13px}
+.nav button:hover,.nav button.active{background:linear-gradient(90deg,#6f5526,#3d3019);color:#fff}
+.nav .group{margin-top:13px;color:#777b7d;font-size:9px;text-transform:uppercase;letter-spacing:.18em;padding:7px 12px}
+.main{margin-left:245px;width:calc(100% - 245px);padding:20px;max-width:1500px}
+.topbar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+.topbar h1{font-size:20px;margin:0}.topbar-actions{display:flex;gap:8px}.mobile-menu{display:none}
+.grid{display:grid;gap:10px}.stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+.card{background:linear-gradient(180deg,#111517,#0c0f10);border:1px solid var(--line);border-radius:16px;padding:14px;box-shadow:0 8px 25px rgba(0,0,0,.16)}
+.stat-label{color:#999fa2;font-size:9px;letter-spacing:.04em}.stat-value{font-size:20px;font-weight:800;margin-top:6px}
+.section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 10px}.section-head h2{font-size:14px;margin:0}
+.two{grid-template-columns:1.15fr .85fr}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:11.5px}.table th{color:#777d80;font-weight:500}
+.badge{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:9px;background:#202426}.badge.green{color:#a4dfba;background:#153224}.badge.gold{color:#f0d08a;background:#342817}.badge.red{color:#f3a3a3;background:#351b1b}
+.page{display:none}.page.active{display:block}
+.event-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.event-card{overflow:hidden;padding:0;position:relative}.event-img{width:100%;height:155px;object-fit:cover;background:#111;display:block}.event-img.empty-img{opacity:.25}
+.event-body{padding:13px}.event-title{font-size:14px;font-weight:800}.event-meta{color:var(--muted);font-size:10.5px;margin-top:5px}.event-actions{display:flex;gap:7px;margin-top:11px;flex-wrap:wrap}
+.done-ribbon{position:absolute;top:10px;right:10px;background:#151719e8;border:1px solid #b98b32;color:#f0d08a;padding:6px 8px;border-radius:999px;font-size:9px;font-weight:800}
+.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}.full{grid-column:1/-1}
+.upload{border:1px dashed #4c5051;border-radius:12px;padding:14px;text-align:center;color:#999;background:#090b0c}
+.ticket-row{display:grid;grid-template-columns:1.2fr .65fr .65fr auto;gap:8px;align-items:center;border-top:1px solid var(--line);padding:12px 0}.ticket-list{margin-top:12px}.empty{padding:24px;text-align:center;color:#777d80;border:1px dashed #303437;border-radius:12px}
+.ticket-card{border:1px solid var(--line);border-radius:13px;padding:12px;background:#101315;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.ticket-card.vip{border-color:#8e8d8a}.ticket-card.gold-ticket{border-color:#a57a29;background:linear-gradient(135deg,#17130a,#101315)}
+.ticket-name{font-weight:800}.ticket-price{font-weight:800;color:#f0d08a}.ticket-kind{font-size:9px;color:var(--muted);margin-top:3px}
+.event-picker{display:flex;align-items:center;gap:9px;padding:8px;border:1px solid var(--line);border-radius:14px;background:#0b0d0e}
+.event-picker img{width:48px;height:42px;border-radius:9px;object-fit:cover;background:#151719}.event-picker .name{font-weight:800;font-size:12px}.event-picker .sub{font-size:9px;color:var(--muted);margin-top:3px}
+.ticket-event-list{display:grid;gap:12px}.ticket-event-card{position:relative;overflow:hidden}.ticket-event-head{display:flex;justify-content:space-between;align-items:center;gap:12px}.ticket-event-info{display:flex;align-items:center;gap:10px;min-width:0}.ticket-event-info img,.ticket-event-placeholder{width:58px;height:50px;border-radius:10px;object-fit:cover;background:#17191a;flex:none}.ticket-event-placeholder{display:grid;place-items:center;color:#b98b32;font-weight:800}.ticket-event-body{display:grid;gap:8px;margin-top:12px}.ticket-left{display:flex;align-items:center;gap:10px}.ticket-icon{width:38px;height:28px;border-radius:7px;display:grid;place-items:center;font-size:8px;font-weight:900;letter-spacing:.05em;flex:none}.gold-icon{background:linear-gradient(135deg,#f2cf76,#9e7424);color:#161108}.vip-icon{background:#24272a;border:1px solid #c4c0b7;color:#f5f2eb}.early-icon{background:#1d382b;border:1px solid #65c58c;color:#b7e9c8}.table-icon{background:#302716;border:1px solid #c59b4b;color:#f0d08a}.general-icon{background:#1b2022;border:1px solid #4b5255;color:#ddd}.ticket-event-card .ticket-card{margin:0}.ticket-event-card .ticket-price{font-size:14px}.ticket-event-card .event-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.suggest-wrap{position:relative}.suggestions{position:absolute;left:0;right:0;top:100%;z-index:100;background:#111416;border:1px solid #3a3e40;border-radius:12px;overflow:hidden;box-shadow:var(--shadow);display:none}.suggestions.open{display:block}.suggestion{padding:10px 12px;border-bottom:1px solid #292d2f;font-size:11px;cursor:pointer}.suggestion:last-child{border-bottom:0}.suggestion:hover{background:#1b1f21}.suggestion strong{display:block;color:#fff}.suggestion span{color:#8e9497;font-size:10px}
+.modal{position:fixed;inset:0;background:#000c;display:none;place-items:center;padding:14px;z-index:80}.modal.open{display:grid}.modal-card{width:min(720px,100%);max-height:94vh;overflow:auto;background:#0d1011;border:1px solid #34383a;border-radius:18px;padding:17px;box-shadow:var(--shadow)}.modal-head{display:flex;justify-content:space-between;align-items:center}.modal-head h2{font-size:16px;margin:0}
+.backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:40;display:none}.mobile-open .backdrop{display:block}
+@media(max-width:1050px){.stats{grid-template-columns:repeat(3,1fr)}.event-list{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:900px){.sidebar{display:none}.main{margin-left:0;width:100%;padding:14px}.mobile-menu{display:block;background:#15191b;border:1px solid var(--line);color:#f4f1e9;border-radius:10px;padding:7px 9px}.mobile-open .sidebar{display:flex;width:255px;box-shadow:20px 0 50px #000}.stats{grid-template-columns:repeat(2,1fr)}.stats .card:last-child{grid-column:1/-1}.two{grid-template-columns:1fr}.event-list{grid-template-columns:1fr 1fr}}
+@media(max-width:600px){.topbar h1{font-size:17px}.topbar{align-items:flex-start}.stats{gap:7px}.card{padding:11px}.stat-value{font-size:18px}.event-list{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}.ticket-row{grid-template-columns:1fr 1fr}.ticket-row .remove-ticket{grid-column:1/-1}.table{min-width:560px}}
 </style>
 </head>
 <body>
@@ -66,7 +96,7 @@ textarea{min-height:90px;resize:vertical}
     <button id="logout" class="btn secondary" style="width:100%;margin-top:20px">Logout</button>
   </aside>
 
-  <main class="main">
+  <div class="backdrop" id="menuBackdrop"></div><main class="main">
     <header class="topbar">
       <div style="display:flex;align-items:center;gap:9px">
         <button id="mobileMenu" class="mobile-menu">☰</button>
@@ -96,8 +126,8 @@ textarea{min-height:90px;resize:vertical}
     </section>
 
     <section id="tickets" class="page">
-      <div class="section-head"><h2>Ticket types</h2><select id="ticketEventSelect" style="max-width:280px"><option value="">Select event</option></select></div>
-      <div id="ticketPanel" class="card"><div class="empty">Select an event to manage its ticket types.</div></div>
+      <div class="section-head"><div><h2>Tickets</h2><div class="muted">All events and their ticket types</div></div></div>
+      <div id="ticketPanel" class="ticket-event-list"></div>
     </section>
 
     <section id="orders" class="page">
@@ -125,7 +155,7 @@ textarea{min-height:90px;resize:vertical}
 
 <div id="eventModal" class="modal">
   <div class="modal-card">
-    <div class="modal-head"><h2 id="eventModalTitle">Create event</h2><button id="closeEvent" class="btn secondary small" type="button">Close</button></div>
+    <div class="modal-head"><h2 id="eventModalTitle">Create event</h2><button id="closeEvent" class="btn secondary small">Close</button></div>
     <form id="eventForm">
       <div class="form-grid">
         <div><label>Event name</label><input id="evName" required></div>
@@ -133,17 +163,30 @@ textarea{min-height:90px;resize:vertical}
         <div><label>Event date</label><input id="evDate" type="date" required></div>
         <div><label>Start time</label><input id="evStart" type="time"></div>
         <div><label>End time</label><input id="evEnd" type="time"></div>
-        <div class="suggest-wrap"><label>Venue</label><input id="evVenue" autocomplete="off" placeholder="Start typing venue"><div id="venueSuggestions" class="suggestions"></div></div>
-        <div class="full suggest-wrap"><label>Address</label><input id="evAddress" autocomplete="off" placeholder="Start typing address"><div id="addressSuggestions" class="suggestions"></div></div>
+
+        <div class="suggest-wrap">
+          <label>Venue</label><input id="evVenue" autocomplete="off" placeholder="Search venue">
+          <div id="venueSuggestions" class="suggestions"></div>
+        </div>
+        <div class="suggest-wrap">
+          <label>Address</label><input id="evAddress" autocomplete="off" placeholder="Search address">
+          <div id="addressSuggestions" class="suggestions"></div>
+        </div>
+
         <div class="full"><label>Description</label><textarea id="evDescription"></textarea></div>
-        <div class="full"><label>Event flyer</label><div class="upload"><input id="evImage" type="file" accept="image/*"><div id="flyerStatus" class="muted" style="margin-top:7px">Choose the event flyer. It will be uploaded to Supabase Storage.</div><div id="flyerName" class="upload-name"></div></div></div>
-        <div><label>Event status</label><select id="evStatus"><option value="draft">Draft</option><option value="published">Published</option></select></div>
+        <div class="full">
+          <label>Event flyer</label>
+          <div class="upload">
+            <input id="evImage" type="file" accept="image/*">
+            <div id="uploadStatus" class="muted" style="margin-top:7px">Choose a flyer image. It will be uploaded to Supabase Storage when you save.</div>
+          </div>
+        </div>
+        <div><label>Event status</label><select id="evStatus">
+          <option value="draft">Draft</option><option value="published">Published</option><option value="closed">Closed</option><option value="cancelled">Cancelled</option>
+        </select></div>
         <div><label>Ticket sales</label><select id="evSales"><option value="false">Closed</option><option value="true">Open</option></select></div>
       </div>
-      <div class="modal-actions">
-        <button id="eventSubmit" class="btn" type="submit">Create event</button>
-        <button id="eventCancel" class="btn secondary" type="button">Cancel</button>
-      </div>
+      <button id="saveEventBtn" class="btn" style="margin-top:16px">Create event</button>
       <div id="eventError" class="error"></div>
     </form>
   </div>
@@ -153,7 +196,16 @@ textarea{min-height:90px;resize:vertical}
   <div class="modal-card">
     <div class="modal-head"><h2>Add ticket type</h2><button id="closeTicket" class="btn secondary small">Close</button></div>
     <form id="ticketForm">
-      <label>Ticket name</label><input id="ttName" required placeholder="VIP">
+      <label>Ticket type</label>
+      <select id="ttPreset">
+        <option value="VIP">VIP</option>
+        <option value="Gold">Gold</option>
+        <option value="General Admission">General Admission</option>
+        <option value="Early Bird">Early Bird</option>
+        <option value="Table">Table</option>
+        <option value="Other">Other</option>
+      </select>
+      <div id="customTicketWrap" style="display:none"><label>Custom ticket name</label><input id="ttCustomName" placeholder="e.g. Platinum"></div>
       <label>Price (£)</label><input id="ttPrice" type="number" min="0" step="0.01" required>
       <label>Capacity</label><input id="ttCapacity" type="number" min="1" required>
       <label>Description</label><textarea id="ttDescription"></textarea>
@@ -164,6 +216,7 @@ textarea{min-height:90px;resize:vertical}
   </div>
 </div>
 
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://ocmediklvhioadhyzzwd.supabase.co';
@@ -172,203 +225,234 @@ const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 let events=[],orders=[],selectedEvent=null,editingEventId=null;
 
 const $=id=>document.getElementById(id);
-const money=p=>`£${((p||0)/100).toLocaleString('en-GB',{minimumFractionDigits:2})}`;
+const money=p=>`£${((Number(p)||0)/100).toLocaleString('en-GB',{minimumFractionDigits:2})}`;
+function ticketPricePence(t){
+ const p=Number(t?.price_pence);
+ if(Number.isFinite(p)) return p;
+ const gbp=Number(t?.price_gbp);
+ return Number.isFinite(gbp)?Math.round(gbp*100):0;
+}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
+function isDone(e){return e.event_date && new Date(e.event_date+'T23:59:59') < new Date();}
+function todayISO(){return new Date().toISOString().slice(0,10);}
 
 async function init(){
  const {data:{session}}=await sb.auth.getSession();
  if(session) showApp(); else $('login').classList.remove('hidden');
 }
-function showApp(){$('login').classList.add('hidden');$('app').classList.remove('hidden');loadAll();}
-async function loadAll(){await Promise.all([loadEvents(),loadOrders(),loadBookings()]);renderDashboard();renderEvents();fillEventSelects();}
-async function loadEvents(){const r=await sb.from('events').select('*').order('event_date',{ascending:true});if(!r.error)events=r.data||[];}
-async function loadOrders(){const r=await sb.from('orders').select('*').order('created_at',{ascending:false});if(!r.error)orders=r.data||[];}
-async function loadBookings(){const r=await sb.from('bookings').select('*').order('created_at',{ascending:false});if(r.data) $('bookingsTable').innerHTML=r.data.map(b=>`<tr><td>${esc(b.full_name)}</td><td>${esc(b.event_type)}</td><td>${esc(b.event_date)}</td><td>${esc(b.venue)}</td><td>${esc(b.phone||b.email)}</td><td>${esc(b.sent_via)}</td></tr>`).join('')||'<tr><td colspan="6">No bookings yet.</td></tr>';}
+async function showApp(){
+ $('login').classList.add('hidden');$('app').classList.remove('hidden');
+ await loadAll();
+}
+async function loadAll(){
+ await Promise.all([loadEvents(),loadOrders(),loadBookings()]);
+ renderDashboard();renderEvents();renderTicketEvents();fillEventSelects();
+}
+async function loadEvents(){
+ const r=await sb.from('events').select('*').order('event_date',{ascending:true});
+ if(!r.error) events=r.data||[]; else console.error(r.error);
+}
+async function loadOrders(){
+ const r=await sb.from('orders').select('*').order('created_at',{ascending:false});
+ if(!r.error) orders=r.data||[];
+}
+async function loadBookings(){
+ const r=await sb.from('bookings').select('*').order('created_at',{ascending:false});
+ if(r.data) $('bookingsTable').innerHTML=r.data.map(b=>`<tr><td>${esc(b.full_name)}</td><td>${esc(b.event_type)}</td><td>${esc(b.event_date)}</td><td>${esc(b.venue)}</td><td>${esc(b.phone||b.email)}</td><td>${esc(b.sent_via)}</td></tr>`).join('')||'<tr><td colspan="6">No bookings yet.</td></tr>';
+}
 
 function renderDashboard(){
- const paid=orders.filter(o=>o.status==='paid'), revenue=paid.reduce((s,o)=>s+(o.total_pence||0),0);
- $('statRevenue').textContent=money(revenue);$('statOrders').textContent=paid.length;$('statEvents').textContent=events.filter(e=>e.status==='published').length;
+ const paid=orders.filter(o=>o.status==='paid'), revenue=paid.reduce((s,o)=>s+(Number(o.total_pence)||0),0);
+ $('statRevenue').textContent=money(revenue);$('statOrders').textContent=paid.length;
+ $('statEvents').textContent=events.filter(e=>e.status==='published'&&!isDone(e)).length;
  $('statTickets').textContent='—';$('statCheckins').textContent='—';
- $('dashEvents').innerHTML=events.filter(e=>e.status==='published').slice(0,5).map(e=>`<div style="padding:9px 0;border-bottom:1px solid #292929"><b>${esc(e.name)}</b><div class="muted">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div></div>`).join('')||'<div class="empty">No published events yet.</div>';
- $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(o.customer_name||((o.first_name||'')+' '+(o.last_name||'')))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${money(o.total_pence)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status)}</span></td><td>${new Date(o.created_at).toLocaleDateString()}</td></tr>`).join('')||'<tr><td colspan="5">No orders yet.</td></tr>';
+ $('dashEvents').innerHTML=events.filter(e=>e.status==='published'&&!isDone(e)).slice(0,5).map(e=>`<div style="padding:9px 0;border-bottom:1px solid #292929"><b>${esc(e.name)}</b><div class="muted">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div></div>`).join('')||'<div class="empty">No upcoming events yet.</div>';
+ $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(o.customer_name||((o.first_name||'')+' '+(o.last_name||'')))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${money(o.total_pence)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status)}</span></td><td>${new Date(o.created_at).toLocaleDateString('en-GB')}</td></tr>`).join('')||'<tr><td colspan="5">No orders yet.</td></tr>';
 }
-function renderEvents(){
- $('eventList').innerHTML=events.map(e=>`<div class="card event-card"><img class="event-img" src="${esc(e.image_url||'')}" onerror="this.style.display='none'"><div class="event-body"><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div><div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':'gold'}">${esc(e.status)}</span> <span class="badge">${e.sales_open?'Sales open':'Sales closed'}</span></div><div class="event-actions"><button class="btn small manage-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button></div></div></div>`).join('')||'<div class="empty" style="grid-column:1/-1">No events yet. Click “Create event” to add the first one.</div>';
- document.querySelectorAll('.manage-tickets').forEach(b=>b.onclick=()=>{selectedEvent=events.find(e=>e.id===b.dataset.id)||null;showPage('tickets');$('ticketEventSelect').value=selectedEvent?.id||'';loadTickets();});
- document.querySelectorAll('.edit-event').forEach(b=>b.onclick=()=>openEventEditor(events.find(e=>e.id===b.dataset.id)));
+
+async function getEventTickets(eventId){
+ const r=await sb.from('ticket_types').select('*').eq('event_id',eventId).order('created_at');
+ if(r.error){console.error(r.error);return []}
+ return r.data||[];
 }
+
+function ticketClass(name){
+ const n=String(name||'').toLowerCase();
+ return n==='gold'?'gold-ticket':n==='vip'?'vip':n.includes('early')?'early-ticket':n.includes('table')?'table-ticket':'';
+}
+
+function ticketVisual(name){
+ const n=String(name||'').toLowerCase();
+ if(n==='gold') return '<span class="ticket-icon gold-icon">£</span>';
+ if(n==='vip') return '<span class="ticket-icon vip-icon">VIP</span>';
+ if(n.includes('early')) return '<span class="ticket-icon early-icon">EARLY</span>';
+ if(n.includes('table')) return '<span class="ticket-icon table-icon">TABLE</span>';
+ return '<span class="ticket-icon general-icon">T</span>';
+}
+
+async function renderEvents(){
+ if(!events.length){$('eventList').innerHTML='<div class="empty" style="grid-column:1/-1">No events yet. Click “Create event” to add the first one.</div>';return;}
+ const cards=await Promise.all(events.map(async e=>{
+   const tickets=await getEventTickets(e.id), done=isDone(e);
+   return `<div class="card event-card">
+      ${done?'<div class="done-ribbon">EVENT COMPLETED</div>':''}
+      ${e.image_url?`<img class="event-img" src="${esc(e.image_url)}" alt="${esc(e.name)}">`:'<div class="event-img" style="display:grid;place-items:center;color:#666">No flyer</div>'}
+      <div class="event-body">
+        <div class="event-title">${esc(e.name)}</div>
+        <div class="event-meta">${esc(e.event_date||'')} • ${esc(e.venue||'Venue TBA')}</div>
+        <div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':e.status==='closed'?'red':'gold'}">${esc(e.status)}</span> <span class="badge">${e.sales_open?'Sales open':'Sales closed'}</span></div>
+        <div style="margin-top:10px">${tickets.length?tickets.slice(0,3).map(t=>`<span class="badge ${ticketClass(t.name)==='gold-ticket'?'gold':''}" style="margin:0 4px 4px 0">${esc(t.name)}</span>`).join(''):'<span class="muted">No ticket types yet</span>'}</div>
+        <div class="event-actions"><button class="btn small manage-event-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button><button class="btn small danger delete-event" data-id="${e.id}">Delete</button></div>
+      </div>
+   </div>`;
+ })).then(x=>x.join(''));
+ $('eventList').innerHTML=cards;
+ document.querySelectorAll('.manage-event-tickets').forEach(b=>b.onclick=()=>selectEventAndShowTickets(b.dataset.id));
+ document.querySelectorAll('.edit-event').forEach(b=>b.onclick=()=>openEditEvent(b.dataset.id));
+ document.querySelectorAll('.delete-event').forEach(b=>b.onclick=()=>deleteEvent(b.dataset.id));
+}
+
+async function renderTicketEvents(){
+ const wrap=$('ticketPanel');
+ if(!events.length){wrap.innerHTML='<div class="empty">No events yet. Create an event first.</div>';return;}
+ const cards=await Promise.all(events.map(async e=>{
+   const tickets=await getEventTickets(e.id), done=isDone(e);
+   return `<div class="card ticket-event-card">
+     ${done?'<div class="done-ribbon">EVENT COMPLETED</div>':''}
+     <div class="ticket-event-head">
+       <div class="ticket-event-info">
+         ${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}">`:'<div class="ticket-event-placeholder">♪</div>'}
+         <div><div class="event-title">${esc(e.name)}</div><div class="event-meta">${esc(e.event_date||'')} • ${esc(e.venue||'Venue TBA')}</div></div>
+       </div>
+       <div style="display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end"><button class="btn small add-ticket-for-event" data-id="${e.id}">+ Add ticket</button><button class="btn small danger delete-event-ticket-page" data-id="${e.id}">Delete event</button></div>
+     </div>
+     <div class="ticket-event-body">
+       ${tickets.length ? tickets.map(t=>`<div class="ticket-card ${ticketClass(t.name)}">
+          <div class="ticket-left">${ticketVisual(t.name)}<div><div class="ticket-name">${esc(t.name)}</div><div class="ticket-kind">${esc(t.description||'No description')}</div><div class="ticket-kind">${t.quantity_sold||0}/${t.capacity||0} sold</div></div></div>
+          <div style="text-align:right"><div class="ticket-price">${money(ticketPricePence(t))}</div><div class="ticket-kind">${esc(t.status||'on_sale')}</div></div>
+       </div>`).join('') : '<div class="empty">No tickets for this event yet. Use “+ Add ticket” above.</div>'}
+     </div>
+   </div>`;
+ })).then(x=>x.join(''));
+ wrap.innerHTML=cards;
+ document.querySelectorAll('.add-ticket-for-event').forEach(b=>b.onclick=()=>{selectedEvent=events.find(e=>e.id===b.dataset.id)||null;openTicketModal();});
+ document.querySelectorAll('.delete-event-ticket-page').forEach(b=>b.onclick=()=>deleteEvent(b.dataset.id));
+}
+
+function selectEventAndShowTickets(id){
+ selectedEvent=events.find(e=>e.id===id)||null;
+ showPage('tickets');
+ renderTicketEvents();
+}
+
+async function deleteEvent(id){
+ const e=events.find(x=>x.id===id); if(!e)return;
+ const ok=confirm(`Delete “${e.name}”?\n\nThis will remove the event and its ticket types. This cannot be undone.`);
+ if(!ok)return;
+ try{
+   // Remove the flyer from Storage first when the URL belongs to our event-flyers bucket.
+   if(e.image_url){
+     const marker='/storage/v1/object/public/event-flyers/';
+     const idx=e.image_url.indexOf(marker);
+     if(idx>=0){
+       const path=decodeURIComponent(e.image_url.slice(idx+marker.length));
+       if(path) await sb.storage.from('event-flyers').remove([path]);
+     }
+   }
+   const tr=await sb.from('ticket_types').delete().eq('event_id',id);
+   if(tr.error)throw tr.error;
+   const r=await sb.from('events').delete().eq('id',id);
+   if(r.error)throw r.error;
+   if(selectedEvent?.id===id)selectedEvent=null;
+   await loadEvents();
+   renderDashboard();
+   await renderEvents();
+   await renderTicketEvents();
+   fillEventSelects();
+   alert('Event deleted successfully.');
+ }catch(err){alert('Could not delete event: '+(err.message||err));}
+}
+
 async function loadTickets(){
- if(!selectedEvent){$('ticketPanel').innerHTML='<div class="empty">Select an event first.</div>';return;}
- const r=await sb.from('ticket_types').select('*').eq('event_id',selectedEvent.id).order('created_at');
- const rows=r.data||[];
- $('ticketPanel').innerHTML=`<div class="section-head" style="margin-top:0"><div><b>${esc(selectedEvent.name)}</b><div class="muted">Ticket types for this event</div></div><button id="addTicket" class="btn">+ Add ticket type</button></div>${rows.length?rows.map(t=>`<div class="ticket-row"><div><b>${esc(t.name)}</b><div class="muted">${esc(t.description||'')}</div></div><div><span class="muted">Price</span><br>${money(t.price_pence)}</div><div><span class="muted">Capacity</span><br>${t.capacity}</div><button class="btn small secondary">${esc(t.status)}</button></div>`).join(''):'<div class="empty">No ticket types yet.</div>'}`;
- $('addTicket').onclick=()=>openTicketModal();
+ await renderTicketEvents();
 }
-function openTicketModal(){
- if(!selectedEvent){
-   $('ticketError').textContent='Select an event first.';
-   showPage('tickets');
-   return;
- }
- $('ticketError').textContent='';
- $('ticketModal').classList.add('open');
-}
+
 function fillEventSelects(){
- const opts='<option value="">Select event</option>'+events.map(e=>`<option value="${e.id}">${esc(e.name)} — ${esc(e.event_date||'')}</option>`).join('');
+ const opts='<option value="">Select event</option>'+events.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
  $('checkinEvent').innerHTML=opts;
- $('ticketEventSelect').innerHTML=opts;
- if(selectedEvent) $('ticketEventSelect').value=selectedEvent.id;
 }
 function showPage(id){
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
  $(id).classList.add('active');
  document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- $('pageTitle').textContent=id==='bookings'?'DJ Bookings':id[0].toUpperCase()+id.slice(1);
- document.body.classList.remove('mobile-open');
+ $('pageTitle').textContent=id==='bookings'?'DJ Bookings':id==='checkin'?'Check-in':id[0].toUpperCase()+id.slice(1);
+ closeMobileMenu();
 }
 document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
-document.querySelectorAll('[data-page-link]').forEach(b=>b.onclick=()=>showPage(b.dataset.pageLink));
-$('mobileMenu').onclick=e=>{e.stopPropagation();document.body.classList.toggle('mobile-open');};
-document.addEventListener('click',e=>{
- if(!document.body.classList.contains('mobile-open')) return;
- const sidebar=document.querySelector('.sidebar');
- if(!sidebar.contains(e.target) && e.target!==$('mobileMenu')) document.body.classList.remove('mobile-open');
-});
-$('newEvent').onclick=()=>openEventEditor(null);
-$('closeEvent').onclick=()=>closeEventModal();
-$('eventCancel').onclick=()=>closeEventModal();
-$('closeTicket').onclick=()=>$('ticketModal').classList.remove('open');
-$('ticketEventSelect').onchange=()=>{
- selectedEvent=events.find(e=>e.id===$('ticketEventSelect').value)||null;
- loadTickets();
-};
+document.querySelectorAll('[data-page-link]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+$('mobileMenu').onclick=()=>document.body.classList.toggle('mobile-open');
+$('menuBackdrop').onclick=closeMobileMenu;
+function closeMobileMenu(){document.body.classList.remove('mobile-open')}
 
-$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginError').textContent='';const {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)$('loginError').textContent=error.message;else showApp();};
+$('newEvent').onclick=()=>openCreateEvent();
+$('closeEvent').onclick=()=>$('eventModal').classList.remove('open');
+$('closeTicket').onclick=()=>$('ticketModal').classList.remove('open');
 $('logout').onclick=async()=>{await sb.auth.signOut();location.reload();};
 
-function closeEventModal(){
- $('eventModal').classList.remove('open');
- $('eventForm').reset();
- $('eventError').textContent='';
- $('flyerName').textContent='';
- $('flyerStatus').textContent='Choose the event flyer. It will be uploaded to Supabase Storage.';
- editingEventId=null;
+function openCreateEvent(){
+ editingEventId=null;$('eventForm').reset();$('eventModalTitle').textContent='Create event';$('saveEventBtn').textContent='Create event';$('uploadStatus').textContent='Choose a flyer image. It will be uploaded to Supabase Storage when you save.';$('eventModal').classList.add('open');
 }
-function openEventEditor(event){
- editingEventId=event?.id||null;
- $('eventModalTitle').textContent=event?'Manage event':'Create event';
- $('eventSubmit').textContent=event?'Save changes':'Create event';
- $('eventError').textContent='';
- $('eventForm').reset();
- $('flyerName').textContent='';
- $('flyerStatus').textContent=event?.image_url?'Existing flyer will be kept unless you choose a new one.':'Choose the event flyer. It will be uploaded to Supabase Storage.';
- if(event){
-   $('evName').value=event.name||'';
-   $('evSlug').value=event.slug||'';
-   $('evDate').value=event.event_date||'';
-   $('evStart').value=(event.start_time||'').slice(0,5);
-   $('evEnd').value=(event.end_time||'').slice(0,5);
-   $('evVenue').value=event.venue||'';
-   $('evAddress').value=event.address||'';
-   $('evDescription').value=event.description||'';
-   $('evStatus').value=event.status||'draft';
-   $('evSales').value=String(!!event.sales_open);
- }
- $('eventModal').classList.add('open');
+function openEditEvent(id){
+ const e=events.find(x=>x.id===id);if(!e)return;
+ editingEventId=id;$('eventModalTitle').textContent='Manage event';$('saveEventBtn').textContent='Save changes';
+ $('evName').value=e.name||'';$('evSlug').value=e.slug||'';$('evDate').value=e.event_date||'';$('evStart').value=e.start_time||'';$('evEnd').value=e.end_time||'';
+ $('evVenue').value=e.venue||'';$('evAddress').value=e.address||'';$('evDescription').value=e.description||'';$('evStatus').value=e.status||'draft';$('evSales').value=String(!!e.sales_open);
+ $('uploadStatus').textContent=e.image_url?'Current flyer is already uploaded. Choose another file to replace it.':'No flyer uploaded yet.';
+ $('eventError').textContent='';$('eventModal').classList.add('open');
 }
-async function uploadFlyer(file,slug){
- if(!file) return null;
- const ext=(file.name.split('.').pop()||'jpg').toLowerCase().replace(/[^a-z0-9]/g,'')||'jpg';
- const safeSlug=(slug||'event').replace(/[^a-z0-9-]/gi,'-').toLowerCase();
- const path=`${safeSlug}/${Date.now()}-${crypto.randomUUID()}.${ext}`;
- const up=await sb.storage.from('event-flyers').upload(path,file,{upsert:false,contentType:file.type||'image/jpeg'});
- if(up.error) throw up.error;
+
+async function uploadFlyer(file){
+ if(!file)return null;
+ const safe=file.name.toLowerCase().replace(/[^a-z0-9.]+/g,'-');
+ const path=`${crypto.randomUUID()}-${safe}`;
+ const r=await sb.storage.from('event-flyers').upload(path,file,{upsert:false,contentType:file.type||'image/jpeg'});
+ if(r.error)throw r.error;
  return sb.storage.from('event-flyers').getPublicUrl(path).data.publicUrl;
 }
-$('evImage').onchange=()=>{
- const f=$('evImage').files?.[0];
- $('flyerName').textContent=f?`Selected: ${f.name}`:'';
-};
+
 $('eventForm').onsubmit=async e=>{
  e.preventDefault();$('eventError').textContent='';
- const slug=$('evSlug').value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-').replace(/^-+|-+$/g,'');
- if(!slug){$('eventError').textContent='Please enter a valid slug.';return}
- const file=$('evImage').files?.[0]||null;
- const newStatus=$('evStatus').value; const wasClosed=editingEventId && events.find(e=>e.id===editingEventId)?.status==='closed'; const oldClosedAt=editingEventId ? (events.find(e=>e.id===editingEventId)?.closed_at||null) : null; const closed_at=newStatus==='closed' ? (wasClosed ? oldClosedAt : new Date().toISOString()) : null; const base={name:$('evName').value.trim(),slug,event_date:$('evDate').value,start_time:$('evStart').value||null,end_time:$('evEnd').value||null,venue:$('evVenue').value.trim()||null,address:$('evAddress').value.trim()||null,description:$('evDescription').value.trim()||null,status:newStatus,sales_open:$('evSales').value==='true',closed_at};
- const submit=$('eventSubmit'); submit.disabled=true; submit.textContent=editingEventId?'Saving…':'Creating…';
  try{
-   if(file){
-     $('flyerStatus').textContent='Uploading flyer…';
-     base.image_url=await uploadFlyer(file,slug);
-   }
-   let r;
-   if(editingEventId){
-     r=await sb.from('events').update(base).eq('id',editingEventId).select().single();
-   }else{
-     r=await sb.from('events').insert(base).select().single();
-   }
-   if(r.error) throw r.error;
-   closeEventModal();
-   await loadEvents();renderDashboard();renderEvents();fillEventSelects();
-   showPage('events');
- }catch(err){
-   $('eventError').textContent=err?.message||String(err);
- }finally{
-   submit.disabled=false;
-   submit.textContent=editingEventId?'Save changes':'Create event';
- }
+   const slug=$('evSlug').value.trim().toLowerCase().replace(/[^a-z0-9-]+/g,'-');
+   let image_url=editingEventId?(events.find(x=>x.id===editingEventId)?.image_url||null):null;
+   const file=$('evImage').files[0];
+   if(file){$('uploadStatus').textContent='Uploading flyer…';image_url=await uploadFlyer(file);$('uploadStatus').textContent='Flyer uploaded successfully.';}
+   const row={name:$('evName').value.trim(),slug,event_date:$('evDate').value,start_time:$('evStart').value||null,end_time:$('evEnd').value||null,venue:$('evVenue').value.trim()||null,address:$('evAddress').value.trim()||null,description:$('evDescription').value.trim()||null,status:$('evStatus').value,sales_open:$('evSales').value==='true'};
+   if(row.status==='closed')row.closed_at=new Date().toISOString();else if(editingEventId)row.closed_at=null;
+   if(image_url!==undefined)row.image_url=image_url;
+   const r=editingEventId?await sb.from('events').update(row).eq('id',editingEventId).select().single():await sb.from('events').insert(row).select().single();
+   if(r.error)throw r.error;
+   $('eventModal').classList.remove('open');$('eventForm').reset();editingEventId=null;
+   await loadEvents();renderDashboard();await renderEvents();await renderTicketEvents();fillEventSelects();showPage('events');
+ }catch(err){$('eventError').textContent=err.message||String(err);}
 };
+
+$('ttPreset').onchange=()=>{$('customTicketWrap').style.display=$('ttPreset').value==='Other'?'block':'none'};
+function openTicketModal(){$('ticketForm').reset();$('customTicketWrap').style.display='none';$('ticketError').textContent='';$('ticketModal').classList.add('open');}
 
 $('ticketForm').onsubmit=async e=>{
  e.preventDefault();$('ticketError').textContent='';
  if(!selectedEvent){$('ticketError').textContent='Select an event first.';return}
- const name=$('ttName').value.trim(),slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
- const row={event_id:selectedEvent.id,name,slug,price_pence:Math.round(Number($('ttPrice').value)*100),capacity:Number($('ttCapacity').value),description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,status:'on_sale'};
+ const name=$('ttPreset').value==='Other'?$('ttCustomName').value.trim():$('ttPreset').value;
+ if(!name){$('ticketError').textContent='Choose a ticket type.';return}
+ const slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+ const priceGbp=Number($('ttPrice').value);
+ if(!Number.isFinite(priceGbp)||priceGbp<0){$('ticketError').textContent='Enter a valid ticket price.';return}
+ const row={event_id:selectedEvent.id,name,slug,price_gbp:Number(priceGbp.toFixed(2)),price_pence:Math.round(priceGbp*100),currency:'GBP',capacity:Number($('ttCapacity').value),quantity_sold:0,is_group_ticket:false,description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,status:'on_sale'};
  const r=await sb.from('ticket_types').insert(row);
  if(r.error){$('ticketError').textContent=r.error.message;return}
- $('ticketModal').classList.remove('open');$('ticketForm').reset();await loadTickets();renderDashboard();
+ $('ticketModal').classList.remove('open');await loadEvents();await renderEvents();await renderTicketEvents();
 };
-
-
-function setupPlaceSuggestions(inputId,boxId){
- const input=$(inputId), box=$(boxId);
- let timer=null,controller=null;
- input.addEventListener('input',()=>{
-   clearTimeout(timer);
-   const q=input.value.trim();
-   if(q.length<3){box.classList.remove('open');box.innerHTML='';return;}
-   timer=setTimeout(async()=>{
-     try{
-       controller?.abort(); controller=new AbortController();
-       const url='https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=5&countrycodes=gb&accept-language=en&q='+encodeURIComponent(q);
-       const res=await fetch(url,{signal:controller.signal,headers:{'Accept':'application/json'}});
-       const data=await res.json();
-       box.innerHTML=(data||[]).map((x,i)=>`<button type="button" class="suggestion" data-i="${i}">${esc(x.display_name)}</button>`).join('');
-       if(data?.length) box.classList.add('open'); else box.classList.remove('open');
-       box.querySelectorAll('.suggestion').forEach((b,i)=>b.onclick=()=>{
-         const x=data[i];
-         input.value=x.display_name;
-         if(inputId==='evVenue'){
-           const a=x.address||{};
-           const addr=[a.house_number,a.road,a.suburb||a.neighbourhood,a.city||a.town||a.village,a.postcode,a.country].filter(Boolean).join(', ');
-           if(addr) $('evAddress').value=addr;
-         }else if(inputId==='evAddress' && !$('evVenue').value.trim()){
-           const a=x.address||{};
-           $('evVenue').value=a.amenity||a.building||a.shop||a.tourism||a.leisure||'';
-         }
-         box.classList.remove('open');
-       });
-     }catch(err){
-       if(err.name!=='AbortError') box.classList.remove('open');
-     }
-   },350);
- });
- document.addEventListener('click',e=>{
-   if(!box.contains(e.target) && e.target!==input) box.classList.remove('open');
- });
-}
-setupPlaceSuggestions('evVenue','venueSuggestions');
-setupPlaceSuggestions('evAddress','addressSuggestions');
 
 $('createAccess').onclick=async()=>{
  const eventId=$('checkinEvent').value;if(!eventId){$('accessResult').innerHTML='<div class="error">Select an event.</div>';return}
@@ -380,6 +464,76 @@ $('createAccess').onclick=async()=>{
  $('accessResult').innerHTML=`<div class="card" style="padding:12px"><b>Staff access created</b><div class="muted" style="margin-top:5px">Expires ${new Date(expires).toLocaleString()}</div><input style="margin-top:10px" value="${esc(link)}" readonly onclick="this.select()"></div>`;
 };
 
+function normalizePlaceFeature(f){
+ const p=f.properties||f.address||{};
+ const c=f.geometry?.coordinates||[f.lon,f.lat];
+ const name=p.name||p.display_name?.split(',')[0]||p.amenity||p.shop||p.tourism||p.city||p.town||p.village||p.suburb||p.county||'Location';
+ const parts=[p.housenumber,p.street,p.road,p.city||p.town||p.village||p.municipality||p.suburb,p.state||p.region,p.postcode,p.country].filter(Boolean);
+ return {name:String(name),display:parts.join(', ')||p.display_name||String(name),lat:Number(c?.[1]),lon:Number(c?.[0])};
+}
+function dedupePlaces(items){
+ const seen=new Set();return items.filter(x=>{const k=(x.name+'|'+x.display).toLowerCase();if(seen.has(k))return false;seen.add(k);return true;});
+}
+async function searchPlaces(q,mode,signal){
+ const lower=q.toLowerCase().trim();
+ const quickUK=(lower==='uk'||lower==='united kingdom'||lower==='great britain')?[
+  ['London','London, England, United Kingdom'],['Manchester','Manchester, England, United Kingdom'],['Birmingham','Birmingham, England, United Kingdom'],['Liverpool','Liverpool, England, United Kingdom'],['Leeds','Leeds, England, United Kingdom'],['Glasgow','Glasgow, Scotland, United Kingdom'],['Edinburgh','Edinburgh, Scotland, United Kingdom'],['Bristol','Bristol, England, United Kingdom'],['Cardiff','Cardiff, Wales, United Kingdom'],['Belfast','Belfast, Northern Ireland, United Kingdom']
+ ].map(([name,display])=>({name,display})):[];
+ const photonUrl='https://photon.komoot.io/api/?limit=12&lang=en&q='+encodeURIComponent(q);
+ const nomUrl='https://nominatim.openstreetmap.org/search?format=jsonv2&addressdetails=1&limit=12&accept-language=en&q='+encodeURIComponent(q)+(lower.includes('uk')||lower.includes('united kingdom')?'&countrycodes=gb':'');
+ const results=[];
+ if(quickUK.length) results.push(...quickUK);
+ const [photon,nom]=await Promise.allSettled([
+  fetch(photonUrl,{signal}).then(r=>r.ok?r.json():{features:[]}),
+  fetch(nomUrl,{signal}).then(r=>r.ok?r.json():[])
+ ]);
+ if(photon.status==='fulfilled') results.push(...(photon.value.features||[]).map(normalizePlaceFeature));
+ if(nom.status==='fulfilled') results.push(...(nom.value||[]).map(normalizePlaceFeature));
+ let data=dedupePlaces(results);
+ if(mode==='venue'){
+   // Prefer actual named places/POIs for venue search.
+   data=data.filter(x=>x.name && x.name!=='Location');
+ }
+ return data.slice(0,10);
+}
+function wirePlaceSearch(inputId,listId,mode){
+ let timer,controller;
+ const input=$(inputId),list=$(listId);
+ input.addEventListener('input',()=>{
+  clearTimeout(timer);if(controller)controller.abort();
+  const q=input.value.trim();
+  if(q.length<2){list.classList.remove('open');list.innerHTML='';return;}
+  timer=setTimeout(async()=>{
+   controller=new AbortController();
+   try{
+    const data=await searchPlaces(q,mode,controller.signal);
+    list.innerHTML=data.map((x,i)=>`<div class="suggestion" data-i="${i}"><strong>${esc(x.name)}</strong><span>${esc(x.display)}</span></div>`).join('')||'<div class="suggestion"><span>No locations found. Try a fuller search.</span></div>';
+    list.classList.add('open');
+    list.querySelectorAll('.suggestion[data-i]').forEach(el=>el.onclick=()=>{
+      const x=data[Number(el.dataset.i)];
+      if(mode==='venue'){
+       $(inputId).value=x.name;
+       $('evAddress').value=x.display;
+      }else{
+       $(inputId).value=x.display;
+       if(!$('evVenue').value.trim() && x.name && x.name!==x.display) $('evVenue').value=x.name;
+      }
+      list.classList.remove('open');
+    });
+   }catch(err){
+    if(err.name!=='AbortError'){
+      console.error(err);list.innerHTML='<div class="suggestion"><span>Could not load suggestions. Check your connection and try again.</span></div>';list.classList.add('open');
+    }
+   }
+  },250);
+ });
+}
+wirePlaceSearch('evVenue','venueSuggestions','venue');
+wirePlaceSearch('evAddress','addressSuggestions','address');
+document.addEventListener('click',e=>{
+ if(!e.target.closest('.suggest-wrap'))document.querySelectorAll('.suggestions').forEach(x=>x.classList.remove('open'));
+});
+$('loginForm').onsubmit=async e=>{e.preventDefault();$('loginError').textContent='';const {error}=await sb.auth.signInWithPassword({email:$('email').value,password:$('password').value});if(error)$('loginError').textContent=error.message;else showApp();};
 init();
 </script>
 </body>
