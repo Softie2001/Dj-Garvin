@@ -324,26 +324,9 @@ function salesState(t){const now=new Date(),start=t.sales_start?new Date(t.sales
 </script>
 <style>
 .event-carousel{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:28px 2px 12px;scrollbar-width:none}.event-carousel::-webkit-scrollbar{display:none}
-.public-event{flex:0 0 min(72vw,360px);scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}.public-event img{width:100%;height:220px;object-fit:cover;display:block}.public-event .eb{padding:18px}.public-event h3{font-size:1.15rem;margin-bottom:8px}.public-event .meta{color:var(--mut);font-size:.86rem;line-height:1.6}.public-event .status{display:inline-block;margin-top:10px;padding:6px 9px;border-radius:999px;font-size:.72rem;font-weight:700;background:#292929}.public-event .ticket-mini{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.public-event .price{font-weight:800;color:var(--acc)}.public-event .book-event{margin-top:15px;display:inline-flex}@media(max-width:600px){.public-event{flex-basis:78vw}.public-event img{height:195px}}
+.public-event{flex:0 0 min(78vw,430px);scroll-snap-align:start;background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}.public-event img{width:100%;height:220px;object-fit:cover;display:block}.public-event .eb{padding:18px}.public-event h3{font-size:1.15rem;margin-bottom:8px}.public-event .meta{color:var(--mut);font-size:.86rem;line-height:1.6}.public-event .status{display:inline-block;margin-top:10px;padding:6px 9px;border-radius:999px;font-size:.72rem;font-weight:700;background:#292929}.public-event .ticket-mini{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}.public-event .price{font-weight:800;color:var(--acc)}.public-event .book-event{margin-top:15px;display:inline-flex}@media(max-width:600px){.public-event{flex-basis:82vw}.public-event img{height:195px}}
 </style><script>
-function publicDate(v){if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v).slice(0,10);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'})}
-async function loadHomeEvents(){
- const box=$('eventCarousel');if(!box)return;
- const {data,error}=await sb.from('events').select('*,ticket_types(*)').in('status',['published','closed','cancelled']).order('event_date',{ascending:true});
- if(error||!data?.length){box.innerHTML='<div class="empty" style="min-width:100%;text-align:center">No events have been posted yet.</div>';return}
- box.innerHTML=data.map(e=>{
-   const done=e.event_date&&new Date(e.event_date).getTime()<Date.now(),tickets=e.ticket_types||[],first=tickets[0];
-   const stat=e.status==='cancelled'?'EVENT CANCELLED':done?'EVENT COMPLETED':first&&salesState(first)==='sold_out'?'SOLD OUT':first&&salesState(first)==='out'?'TICKETS OUT OF SALE':'';
-   const cta=first?'Buy Ticket':'View Event';
-   return `<article class="public-event">${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}">`:''}<div class="eb">
-     <h3>${esc(e.name)}</h3>
-     <div class="meta">${esc(publicDate(e.event_date))}${e.start_time?' • '+esc(e.start_time):''}${e.venue?' • '+esc(e.venue):''}</div>
-     ${stat?`<div class="status">${stat}</div>`:''}
-     ${first?`<div class="ticket-mini"><div style="display:flex;justify-content:space-between;gap:10px"><span>${esc(first.name)}</span><span class="price">${money(first)}</span></div></div>`:''}
-     <a class="btn book-event" href="event.html?id=${encodeURIComponent(e.id)}">${cta}</a>
-   </div></article>`
- }).join('')
-}
+async function loadHomeEvents(){const box=$('eventCarousel');if(!box)return;const {data,error}=await sb.from('events').select('*,ticket_types(*)').eq('status','published').order('event_date',{ascending:true});if(error||!data?.length){box.innerHTML='<div class="empty" style="min-width:100%;text-align:center">No events have been posted yet.</div>';return}box.innerHTML=data.map(e=>{const done=e.event_date&&new Date(e.event_date+'T23:59:59')<new Date(),tickets=e.ticket_types||[],first=tickets[0],stat=e.status==='cancelled'?'EVENT CANCELLED':done?'EVENT COMPLETED':first&&salesState(first)==='sold_out'?'SOLD OUT':'';return `<article class="public-event">${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}">`:''}<div class="eb"><h3>${esc(e.name)}</h3><div class="meta">${esc(e.event_date||'')}${e.start_time?' • '+esc(e.start_time):''}${e.venue?' • '+esc(e.venue):''}</div>${stat?`<div class="status">${stat}</div>`:''}${first?`<div class="ticket-mini"><div style="display:flex;justify-content:space-between;gap:10px"><span>${esc(first.name)}</span><span class="price">${money(first)}</span></div></div>`:''}<a class="btn book-event" href="event.html?id=${encodeURIComponent(e.id)}">Book Now</a></div></article>`}).join('')}
 loadHomeEvents();
 </script></body>
 </html>

@@ -239,20 +239,43 @@ details.dropdown-select summary::-webkit-details-marker {
 #mbd.o{display:block}
 
 @media(min-width:760px){.vtrack .c.reel{flex:0 0 calc(50% - 11px)}}
+
+/* Ticket shopping flow */
+.event-shell{max-width:920px;margin:20px auto 110px}
+.event-hero{position:relative;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#111;min-height:280px}
+.event-hero img{display:block;width:100%;height:min(58vw,470px);min-height:260px;object-fit:cover;object-position:center 35%;filter:brightness(.78) saturate(.9)}
+.event-hero::after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.86));pointer-events:none}
+.event-hero-copy{position:absolute;z-index:2;left:24px;right:24px;bottom:24px}
+.event-meta{display:flex;flex-wrap:wrap;gap:8px;color:#ddd;font-size:.9rem;margin-top:10px}
+.ticket-heading{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:42px 0 16px}
+.ticket-list{display:grid;gap:16px}
+.ticket-card{position:relative;display:grid;grid-template-columns:112px 1fr auto;gap:18px;align-items:center;background:#121212;border:1px solid #2c2a26;border-radius:20px;padding:16px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .2s,background .2s}
+.ticket-card:hover{transform:translateY(-1px);border-color:#75603a}
+.ticket-card.selected{border-color:var(--acc);background:linear-gradient(110deg,rgba(240,196,138,.08),#121212 55%)}
+.ticket-art{height:118px;border-radius:15px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:16px;background:linear-gradient(145deg,#c79842,#f4d48e 48%,#7b5b24);color:#111}
+.ticket-art.silver{background:linear-gradient(145deg,#777,#e7e7e7 48%,#777);color:#111}
+.ticket-art.dark{background:linear-gradient(145deg,#1b1b1b,#39352d 50%,#0e0e0e);color:#f3efe8}
+.ticket-art::before,.ticket-art::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#121212;top:50%;transform:translateY(-50%);z-index:1}
+.ticket-art::before{left:-11px}.ticket-art::after{right:-11px}
+.ticket-art small{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.72}
+.ticket-art strong{font:800 1.15rem Syne,sans-serif;text-transform:uppercase;line-height:1.05;margin-top:7px}
+.ticket-art span{font-size:.72rem;margin-top:7px;opacity:.8}
+.ticket-copy h3{font-size:1.25rem;margin:0 0 6px}
+.ticket-copy p{font-size:.88rem;color:var(--mut);margin:0 0 8px}
+.ticket-included{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.ticket-included span{font-size:.72rem;color:#d9d4ca;border:1px solid #2d2b27;border-radius:999px;padding:4px 8px}
+.ticket-price{align-self:start;text-align:right;min-width:105px}.ticket-price strong{font-size:1.15rem;color:var(--acc);display:block}.ticket-price small{color:var(--mut);font-size:.75rem}
+.qty{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:12px}.qty button{width:34px;height:34px;border-radius:50%;border:1px solid #44413a;background:#0e0e0e;color:var(--fg);font-size:1.1rem;cursor:pointer}.qty output{min-width:24px;text-align:center;font-weight:700}
+.ticket-state{display:inline-block;margin-top:7px;font-size:.72rem;color:var(--mut)}
+.ticket-state.out{color:#e69b9b}.ticket-state.up{color:var(--acc)}
+.booking-bar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px max(14px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));background:rgba(12,12,12,.96);border-top:1px solid #302d27;backdrop-filter:blur(14px);display:none}
+.booking-bar.show{display:block}.booking-inner{max-width:920px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.booking-summary small{display:block;color:var(--mut);font-size:.72rem}.booking-summary strong{display:block;font-size:1rem}.booking-bar .btn{min-height:44px;padding:0 18px;white-space:nowrap}
+.stepper{display:flex;gap:8px;margin:30px 0 18px}.step{flex:1;border:1px solid var(--line);border-radius:999px;padding:8px 12px;text-align:center;color:var(--mut);font-size:.8rem}.step.active{border-color:var(--acc);color:var(--fg);background:rgba(240,196,138,.07)}
+.checkout-panel{display:none;border-top:1px solid var(--line);margin-top:30px;padding-top:28px}.checkout-panel.show{display:block}.checkout-review{display:grid;gap:10px;margin:15px 0 20px}.review-row{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line)}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.details-grid .full{grid-column:1/-1}
+@media(max-width:680px){.event-shell{margin-top:8px}.event-hero{border-radius:18px}.event-hero img{height:330px;min-height:0}.event-hero-copy{left:18px;right:18px;bottom:18px}.ticket-heading{margin-top:30px}.ticket-card{grid-template-columns:1fr;gap:13px}.ticket-art{height:130px}.ticket-price{text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px}.qty{justify-content:flex-start}.details-grid{grid-template-columns:1fr}.details-grid .full{grid-column:auto}.booking-inner{align-items:center}.booking-bar .btn{padding:0 14px;font-size:.85rem}.ticket-included span{font-size:.68rem}}
 </style>
-<style>
-/* Keep ticket choice controls compact on mobile; radio buttons must never stretch into giant boxes. */
-#ticketOptions label.ticket-choice{display:flex;gap:12px;align-items:center;cursor:pointer;padding:15px 16px!important;border:1px solid var(--line);border-radius:16px;background:var(--card)}
-#ticketOptions label.ticket-choice input[type=radio]{width:20px!important;min-width:20px!important;height:20px!important;min-height:20px!important;flex:0 0 20px!important;margin:0!important;padding:0!important;appearance:auto!important;-webkit-appearance:auto!important}
-#ticketOptions .ticket-choice .ticket-copy{flex:1;min-width:0}
-#ticketOptions .ticket-choice .ticket-name{font-weight:700}
-#ticketOptions .ticket-choice .ticket-note{display:block;color:var(--mut);font-size:.82rem;margin-top:2px}
-#ticketOptions .ticket-choice .ticket-price{font-weight:800;color:var(--acc);white-space:nowrap}
-#ticketOptions .ticket-choice.is-disabled{opacity:.55;cursor:not-allowed}
-@media(max-width:600px){
- #ticketOptions label.ticket-choice{min-height:72px}
-}
-</style></head>
+</head>
 <body>
 <header><div class="w nav">
 <a aria-label="DJ Garvin" class="logo" href="#top"><span aria-hidden="true" class="lt" data-t="DJ GARVIN">DJ GARVIN</span></a>
@@ -290,74 +313,39 @@ function salesState(t){const now=new Date(),start=t.sales_start?new Date(t.sales
 </script>
 <script>
 const params=new URLSearchParams(location.search),id=params.get('id');
-function publicDate(v){if(!v)return '';const d=new Date(v);if(Number.isNaN(d.getTime()))return String(v).slice(0,10);return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'})}
-function salesState(t){
- const now=new Date(),start=t.sales_start?new Date(t.sales_start+'T00:00:00'):null,end=t.sales_end?new Date(t.sales_end+'T23:59:59'):null;
- if(t.status==='sold_out')return'sold_out';
- if(t.status==='out_of_sale'||t.status==='inactive'||t.status==='closed')return'out';
- if(start&&now<start)return'upcoming';
- if(end&&now>end)return'out';
- return'on';
+let currentEvent=null,tickets=[],selection={},step=1;
+function esc2(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function ticketKind(t){const n=(t.name||'').toLowerCase();if(n.includes('gold'))return'gold';if(n.includes('silver'))return'silver';return'dark'}
+function included(t){let a=[];if(Array.isArray(t.whats_included))a=t.whats_included;else if(typeof t.whats_included==='string')a=t.whats_included.split(/\n|,/).map(x=>x.trim()).filter(Boolean);if(!a.length&&t.description)a=[t.description];return a.slice(0,4)}
+function fmtDate(v){if(!v)return'';const d=new Date(String(v).includes('T')?v:v+'T00:00:00');if(isNaN(d))return String(v).split('T')[0];return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+function fmtTime(v){if(!v)return'';return String(v).replace(/:00(?=$|\s)/,'')}
+function salesState2(t){const now=new Date(),start=t.sales_start?new Date(t.sales_start+'T00:00:00'):null,end=t.sales_end?new Date(t.sales_end+'T23:59:59'):null;if(t.status==='sold_out')return'sold';if(['out_of_sale','inactive','closed'].includes(t.status))return'out';if(start&&now<start)return'up';if(end&&now>end)return'out';const cap=Number(t.capacity)||0,sold=Number(t.quantity_sold)||0;if(cap&&sold>=cap)return'sold';return'on'}
+function pricePence(t){if(Number.isFinite(Number(t.price_pence)))return Number(t.price_pence);return Math.round((Number(t.price_gbp)||0)*100)}
+function money2(p){return'£'+(Number(p)/100).toLocaleString('en-GB',{minimumFractionDigits:2})}
+function selectedTotal(){return tickets.reduce((sum,t)=>sum+(selection[t.id]||0)*pricePence(t),0)}
+function selectedCount(){return tickets.reduce((sum,t)=>sum+(selection[t.id]||0),0)}
+function render(){const box=$('eventDetail');if(!currentEvent){box.innerHTML='<h2>Event not found</h2>';return}
+ const e=currentEvent;
+ box.innerHTML=`<div class="event-shell">
+ <div class="event-hero">${e.image_url?`<img src="${esc2(e.image_url)}" alt="${esc2(e.name)}">`:''}<div class="event-hero-copy"><div class="bar"></div><h1>${esc2(e.name)}</h1><div class="event-meta"><span>${fmtDate(e.event_date)}</span>${e.start_time?`<span>• ${esc2(fmtTime(e.start_time))}</span>`:''}${e.venue?`<span>• ${esc2(e.venue)}</span>`:''}</div></div></div>
+ ${e.address?`<p class="mut" style="margin:14px 4px 0">${esc2(e.address)}</p>`:''}${e.description?`<p class="mut" style="margin:14px 4px 0">${esc2(e.description)}</p>`:''}
+ <div class="ticket-heading"><div><div class="bar"></div><h2>Explore Tickets</h2><p class="mut">Choose your ticket and quantity.</p></div></div>
+ <div class="ticket-list">${tickets.length?tickets.map((t,i)=>{const st=salesState2(t),q=selection[t.id]||0,inc=included(t);return `<article class="ticket-card ${q?'selected':''}" data-ticket="${esc2(t.id)}"><div class="ticket-art ${ticketKind(t)}"><small>DJ GARVIN</small><strong>${esc2(t.name)}</strong><span>${t.is_group_ticket?'Group ticket':'Entry ticket'}</span></div><div class="ticket-copy"><h3>${esc2(t.name)}</h3><p>${esc2(t.description||'Premium event access.')}</p>${inc.length?`<div class="ticket-included">${inc.map(x=>`<span>✓ ${esc2(x)}</span>`).join('')}</div>`:''}<span class="ticket-state ${st==='out'?'out':st==='up'?'up':''}">${st==='out'?'Out of sale':st==='sold'?'Sold out':st==='up'?`Sales start ${fmtDate(t.sales_start)}`:'Available'}</span></div><div class="ticket-price"><div><strong>${money2(pricePence(t))}</strong><small>${t.is_group_ticket?'per table':'per person'}</small></div>${st==='on'?`<div class="qty"><button type="button" class="minus" data-id="${esc2(t.id)}" aria-label="Decrease ${esc2(t.name)}">−</button><output>${q}</output><button type="button" class="plus" data-id="${esc2(t.id)}" aria-label="Increase ${esc2(t.name)}">+</button></div>`:''}</div></article>`}).join(''):'<p class="mut">Tickets are not available yet.</p>'}</div>
+ <div class="checkout-panel" id="checkoutPanel"><div class="stepper"><div class="step active" id="step1">1. Your details</div><div class="step" id="step2">2. Review</div></div><div id="detailsStep"><h2>Your details</h2><p class="mut">Enter the details for the person making this booking.</p><div class="details-grid"><div class="full"><label>Full name</label><input id="buyerName" autocomplete="name"></div><div><label>Email</label><input id="buyerEmail" type="email" autocomplete="email"></div><div><label>Phone</label><input id="buyerPhone" type="tel" autocomplete="tel"></div></div><div id="buyError" class="error" style="margin-top:12px"></div><button class="btn f" id="reviewBtn" style="margin-top:16px">Review booking</button></div><div id="reviewStep" style="display:none"><h2>Review booking</h2><div class="checkout-review" id="reviewBox"></div><div id="payError" class="error"></div><button class="btn f" id="payButton">Continue to Payment</button></div></div>
+ </div><div class="booking-bar" id="bookingBar"><div class="booking-inner"><div class="booking-summary"><small id="summaryEvent">${esc2(e.name)}</small><strong id="summaryTotal">£0.00</strong></div><button class="btn f" id="summaryBtn">Review booking</button></div></div>`;
+ bind();updateSummary();
 }
-function ticketMoney(t){const p=Number.isFinite(Number(t.price_pence))?Number(t.price_pence):Math.round((Number(t.price_gbp)||0)*100);return '£'+(p/100).toLocaleString('en-GB',{minimumFractionDigits:2})}
-function ticketStatusText(t){
- const s=salesState(t);
- return s==='sold_out'?'Sold out':s==='out'?'Out of sale':s==='upcoming'?'Sales open '+publicDate(t.sales_start):'On sale';
+function bind(){
+ document.querySelectorAll('.ticket-card').forEach(card=>card.addEventListener('click',ev=>{if(ev.target.closest('button'))return;const id=card.dataset.ticket;const t=tickets.find(x=>String(x.id)===String(id));if(t&&salesState2(t)==='on'){selection[id]=selection[id]||1;render()}}));
+ document.querySelectorAll('.plus').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();const id=b.dataset.id,t=tickets.find(x=>String(x.id)===String(id));const cap=Number(t?.capacity)||9999,sold=Number(t?.quantity_sold)||0;selection[id]=Math.min((selection[id]||0)+1,Math.max(0,cap-sold));render()}));
+ document.querySelectorAll('.minus').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();const id=b.dataset.id;selection[id]=Math.max(0,(selection[id]||0)-1);render()}));
+ $('summaryBtn')?.addEventListener('click',()=>{if(!selectedCount())return;step=1;$('checkoutPanel').classList.add('show');$('checkoutPanel').scrollIntoView({behavior:'smooth',block:'start'})});
+ $('reviewBtn')?.addEventListener('click',()=>{const name=$('buyerName').value.trim(),email=$('buyerEmail').value.trim();if(!name||!email){$('buyError').textContent='Please enter your full name and email.';return}step=2;$('detailsStep').style.display='none';$('reviewStep').style.display='block';$('step1').classList.remove('active');$('step2').classList.add('active');const rows=tickets.filter(t=>selection[t.id]).map(t=>`<div class="review-row"><span>${esc2(t.name)} × ${selection[t.id]}</span><strong>${money2(pricePence(t)*selection[t.id])}</strong></div>`).join('');$('reviewBox').innerHTML=rows+`<div class="review-row"><span>Total</span><strong>${money2(selectedTotal())}</strong></div>`;$('reviewStep').scrollIntoView({behavior:'smooth',block:'start'})});
+ $('payButton')?.addEventListener('click',pay);
 }
-async function loadEvent(){
- const box=$('eventDetail');
- if(!id){box.innerHTML='<h2>Event not found</h2>';return}
- const {data:e,error}=await sb.from('events').select('*,ticket_types(*)').eq('id',id).maybeSingle();
- if(error||!e){box.innerHTML='<h2>Event not found</h2>';return}
- const tickets=e.ticket_types||[];
- const eventStatus=e.status==='cancelled'?'EVENT CANCELLED':(e.event_date&&new Date(e.event_date).getTime()<Date.now()?'EVENT COMPLETED':'');
- box.innerHTML=`${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}" style="width:100%;max-height:430px;object-fit:cover;border-radius:14px">`:''}
- <div style="padding-top:22px">
-   <div class="bar"></div>
-   <h1 style="font-size:clamp(28px,5vw,46px);margin-top:10px">${esc(e.name)}</h1>
-   <p class="mut">${esc(publicDate(e.event_date))}${e.start_time?' • '+esc(e.start_time):''}${e.venue?' • '+esc(e.venue):''}</p>
-   ${e.address?`<p class="mut">${esc(e.address)}</p>`:''}
-   ${eventStatus?`<div class="status" style="display:inline-block;margin:8px 0;padding:6px 10px;border-radius:999px;background:#292929;font-size:.78rem;font-weight:700">${eventStatus}</div>`:''}
-   ${e.description?`<p class="mut" style="margin-top:18px">${esc(e.description)}</p>`:''}
-   <h2 style="margin-top:30px">Tickets</h2>
-   <div id="ticketOptions" style="display:grid;gap:10px;margin-top:12px">
-     ${tickets.length?tickets.map((t,i)=>{
-       const state=salesState(t), disabled=state!=='on';
-       return `<label class="ticket-choice ${disabled?'is-disabled':''}">
-         <input type="radio" name="ticketChoice" value="${esc(t.id)}" ${i===0&&!disabled?'checked':''} ${disabled?'disabled':''}>
-         <span class="ticket-copy"><span class="ticket-name">${esc(t.name)}</span><span class="ticket-note">${esc(t.description||'')}${t.sales_start||t.sales_end?' • '+ticketStatusText(t):' • '+ticketStatusText(t)}</span></span>
-         <span class="ticket-price">${ticketMoney(t)}</span>
-       </label>`
-     }).join(''):'<p class="mut">Tickets are not available yet.</p>'}
-   </div>
-   ${tickets.some(t=>salesState(t)==='on')?`<button id="buyOpen" class="btn f" style="margin-top:18px">Buy Ticket Now</button>`:''}
-   <div id="buyPanel" style="display:none;margin-top:20px;padding-top:20px;border-top:1px solid var(--line)">
-     <h3>Buy Ticket</h3>
-     <div class="form-grid" style="margin-top:12px"><div><label>Full name</label><input id="buyerName"></div><div><label>Email</label><input id="buyerEmail" type="email"></div></div>
-     <div class="form-grid" style="margin-top:12px"><div><label>Phone</label><input id="buyerPhone" type="tel"></div><div><label>Quantity</label><input id="buyerQty" type="number" min="1" value="1"></div></div>
-     <div id="buyError" class="error" style="margin-top:10px"></div>
-     <button id="payButton" class="btn f" style="margin-top:14px">Continue to Payment</button>
-   </div>
- </div>`;
- $('buyOpen')?.addEventListener('click',()=>{
-   const checked=$('ticketOptions').querySelector('input:checked');
-   if(!checked){$('buyError').textContent='Please choose a ticket that is on sale.';return}
-   $('buyPanel').style.display='block';$('buyOpen').style.display='none';
- });
- $('payButton')?.addEventListener('click',async()=>{
-   const checked=$('ticketOptions').querySelector('input:checked');
-   const t=tickets.find(x=>x.id===checked?.value),name=$('buyerName').value.trim(),email=$('buyerEmail').value.trim(),qty=Math.max(1,Number($('buyerQty').value)||1);
-   if(!t||salesState(t)!=='on'||!name||!email){$('buyError').textContent='Please complete your name, email and choose a ticket that is on sale.';return}
-   $('buyError').textContent='Connecting to payment…';
-   try{
-     const r=await fetch('/api/paypal/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_id:e.id,ticket_type_id:t.id,quantity:qty,customer_name:name,customer_email:email,customer_phone:$('buyerPhone').value.trim()})});
-     const j=await r.json().catch(()=>({}));
-     if(!r.ok)throw new Error(j.error||'Payment could not be started.');
-     if(j.approval_url){location.href=j.approval_url;return}
-     $('buyError').textContent='Payment setup is not available yet.';
-   }catch(err){$('buyError').textContent=err.message}
- });
-}
+function updateSummary(){const count=selectedCount(),bar=$('bookingBar');if(!bar)return;if(count){bar.classList.add('show');$('summaryTotal').textContent=money2(selectedTotal());$('summaryBtn').textContent='Review booking'}else bar.classList.remove('show')}
+async function pay(){const name=$('buyerName').value.trim(),email=$('buyerEmail').value.trim(),phone=$('buyerPhone').value.trim();$('payError').textContent='Connecting to payment…';const chosen=tickets.filter(t=>selection[t.id]).map(t=>({ticket_type_id:t.id,quantity:selection[t.id]}));try{const r=await fetch('/api/paypal/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_id:currentEvent.id,tickets:chosen,customer_name:name,customer_email:email,customer_phone:phone})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Payment could not be started.');if(j.approval_url){location.href=j.approval_url;return}$('payError').textContent='Payment setup is not available yet.'}catch(err){$('payError').textContent=err.message}}
+async function loadEvent(){const box=$('eventDetail');if(!id){box.innerHTML='<h2>Event not found</h2>';return}const {data:e,error}=await sb.from('events').select('*,ticket_types(*)').eq('id',id).maybeSingle();if(error||!e){box.innerHTML='<h2>Event not found</h2>';return}currentEvent=e;tickets=(e.ticket_types||[]).sort((a,b)=>(a.created_at||'').localeCompare(b.created_at||''));render()}
 loadEvent();
 </script></body>
 </html>
