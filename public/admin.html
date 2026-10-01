@@ -41,7 +41,7 @@ textarea{min-height:88px;resize:vertical}
 .stat-label{color:#999fa2;font-size:9px;letter-spacing:.04em}.stat-value{font-size:20px;font-weight:800;margin-top:6px}
 .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:20px 0 10px}.section-head h2{font-size:14px;margin:0}
 .two{grid-template-columns:1.15fr .85fr}.table-wrap{overflow:auto}.table{width:100%;border-collapse:collapse;min-width:650px}.table th,.table td{padding:10px;border-bottom:1px solid var(--line);text-align:left;font-size:11.5px}.table th{color:#777d80;font-weight:500}
-.badge{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:9px;background:#202426}.badge.green{color:#a4dfba;background:#153224}.badge.gold{color:#f0d08a;background:#342817}.badge.red{color:#f3a3a3;background:#351b1b}
+.badge{display:inline-flex;padding:4px 7px;border-radius:99px;font-size:9px;background:#202426}.badge.green{color:#a4dfba;background:#153224}.badge.gold{color:#f0d08a;background:#342817}.badge.red{color:#f3a3a3;background:#351b1b}.badge.cancelled{color:#ffb0b0;background:#401d1d}
 .page{display:none}.page.active{display:block}
 .event-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .event-card{overflow:hidden;padding:0;position:relative}.event-img{width:100%;height:155px;object-fit:cover;background:#111;display:block}.event-img.empty-img{opacity:.25}
@@ -208,6 +208,16 @@ textarea{min-height:88px;resize:vertical}
       <div id="customTicketWrap" style="display:none"><label>Custom ticket name</label><input id="ttCustomName" placeholder="e.g. Platinum"></div>
       <label>Price (£)</label><input id="ttPrice" type="number" min="0" step="0.01" required>
       <label>Capacity</label><input id="ttCapacity" type="number" min="1" required>
+      <div class="form-grid" style="margin-top:4px">
+        <div><label>Ticket sales start</label><input id="ttSalesStart" type="date"></div>
+        <div><label>Ticket sales end</label><input id="ttSalesEnd" type="date"></div>
+      </div>
+      <label>Ticket status</label>
+      <select id="ttStatus">
+        <option value="on_sale">On sale</option>
+        <option value="out_of_sale">Out of sale</option>
+        <option value="sold_out">Sold out</option>
+      </select>
       <label>Description</label><textarea id="ttDescription"></textarea>
       <label>What's included</label><textarea id="ttIncluded"></textarea>
       <button class="btn" style="margin-top:16px">Add ticket type</button>
@@ -328,8 +338,12 @@ async function renderTicketEvents(){
      </div>
      <div class="ticket-event-body">
        ${tickets.length ? tickets.map(t=>`<div class="ticket-card ${ticketClass(t.name)}">
-          <div class="ticket-left">${ticketVisual(t.name)}<div><div class="ticket-name">${esc(t.name)}</div><div class="ticket-kind">${esc(t.description||'No description')}</div><div class="ticket-kind">${t.quantity_sold||0}/${t.capacity||0} sold</div></div></div>
-          <div style="text-align:right"><div class="ticket-price">${money(ticketPricePence(t))}</div><div class="ticket-kind">${esc(t.status||'on_sale')}</div></div>
+          <div class="ticket-left">${ticketVisual(t.name)}<div><div class="ticket-name">${esc(t.name)}</div><div class="ticket-kind">${esc(t.description||'No description')}</div><div class="ticket-kind">${t.quantity_sold||0}/${t.capacity||0} sold</div><div class="ticket-kind">${t.sales_start?`Sales: ${esc(String(t.sales_start).slice(0,10))}`:""}${t.sales_end?` → ${esc(String(t.sales_end).slice(0,10))}`:""}</div></div></div>
+          <div style="text-align:right">
+              <div class="ticket-price">${money(ticketPricePence(t))}</div>
+              <div class="ticket-kind">${esc(t.status||'on_sale')}</div>
+              <div style="margin-top:6px"><button class="btn small ${t.status==='out_of_sale'?'':'secondary'} ticket-toggle-sale" data-id="${t.id}" data-status="${t.status||'on_sale'}">${t.status==='out_of_sale'?'Put on sale':'Out of sale'}</button></div>
+            </div>
        </div>`).join('') : '<div class="empty">No tickets for this event yet. Use “+ Add ticket” above.</div>'}
      </div>
    </div>`;
@@ -337,8 +351,15 @@ async function renderTicketEvents(){
  wrap.innerHTML=cards;
  document.querySelectorAll('.add-ticket-for-event').forEach(b=>b.onclick=()=>{selectedEvent=events.find(e=>e.id===b.dataset.id)||null;openTicketModal();});
  document.querySelectorAll('.delete-event-ticket-page').forEach(b=>b.onclick=()=>deleteEvent(b.dataset.id));
+  document.querySelectorAll('.ticket-toggle-sale').forEach(b=>b.onclick=()=>toggleTicketSale(b.dataset.id,b.dataset.status));
 }
 
+async function toggleTicketSale(id,status){
+  const next=status==='out_of_sale'?'on_sale':'out_of_sale';
+  const r=await sb.from('ticket_types').update({status:next}).eq('id',id);
+  if(r.error){alert('Could not update ticket: '+r.error.message);return;}
+  await renderTicketEvents();
+}
 function selectEventAndShowTickets(id){
  selectedEvent=events.find(e=>e.id===id)||null;
  showPage('tickets');
@@ -432,7 +453,7 @@ $('eventForm').onsubmit=async e=>{
    if(image_url!==undefined)row.image_url=image_url;
    const r=editingEventId?await sb.from('events').update(row).eq('id',editingEventId).select().single():await sb.from('events').insert(row).select().single();
    if(r.error)throw r.error;
-   $('eventModal').classList.remove('open');$('eventForm').reset();editingEventId=null;
+   $('eventModal').classList.remove('open');editingEventId=null;
    await loadEvents();renderDashboard();await renderEvents();await renderTicketEvents();fillEventSelects();showPage('events');
  }catch(err){$('eventError').textContent=err.message||String(err);}
 };
@@ -448,7 +469,7 @@ $('ticketForm').onsubmit=async e=>{
  const slug=name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
  const priceGbp=Number($('ttPrice').value);
  if(!Number.isFinite(priceGbp)||priceGbp<0){$('ticketError').textContent='Enter a valid ticket price.';return}
- const row={event_id:selectedEvent.id,name,slug,price_gbp:Number(priceGbp.toFixed(2)),price_pence:Math.round(priceGbp*100),currency:'GBP',capacity:Number($('ttCapacity').value),quantity_sold:0,is_group_ticket:false,description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,status:'on_sale'};
+ const row={event_id:selectedEvent.id,name,slug,price_gbp:Number(priceGbp.toFixed(2)),price_pence:Math.round(priceGbp*100),currency:'GBP',capacity:Number($('ttCapacity').value),quantity_sold:0,is_group_ticket:false,description:$('ttDescription').value.trim()||null,whats_included:$('ttIncluded').value.trim()||null,status:$('ttStatus').value||'on_sale',sales_start:$('ttSalesStart').value||null,sales_end:$('ttSalesEnd').value||null};
  const r=await sb.from('ticket_types').insert(row);
  if(r.error){$('ticketError').textContent=r.error.message;return}
  $('ticketModal').classList.remove('open');await loadEvents();await renderEvents();await renderTicketEvents();
