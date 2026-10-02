@@ -196,14 +196,14 @@ textarea{min-height:88px;resize:vertical}
         <div class="card"><div class="stat-label">CHECK-INS</div><div id="statCheckins" class="stat-value">0</div></div>
       </div>
       <div class="grid two">
-        <div class="card"><div class="section-head"><h2>Revenue overview</h2><span class="muted">Paid orders</span></div><div id="revenueOverview" class="empty" style="height:180px;display:grid;place-items:center">No real sales data yet. The overview will populate automatically after paid orders are recorded.</div></div>
-        <div class="card"><div class="section-head"><h2>Upcoming events</h2><button class="btn small secondary" data-page-link="events">View all</button></div><div id="dashEvents"></div></div>
+        <div class="card"><div class="section-head"><h2>Revenue overview</h2><button type="button" id="downloadRevenueDashboard" class="btn small secondary">Download revenue</button></div><div id="revenueOverview" class="empty" style="height:180px;display:grid;place-items:center">No real sales data yet. The overview will populate automatically after paid orders are recorded.</div></div>
+        <div class="card"><div class="section-head"><h2>Upcoming events</h2><button type="button" id="viewAllEvents" class="btn small secondary" data-page-link="events">View all</button></div><div id="dashEvents"></div></div>
       </div>
-      <div class="card" style="margin-top:12px"><div class="section-head"><h2>Recent orders</h2><button class="btn small secondary" data-page-link="orders">View all</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Event</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="dashOrders"></tbody></table></div></div>
+      <div class="card" style="margin-top:12px"><div class="section-head"><h2>Recent bookings</h2><button type="button" id="viewAllBookings" class="btn small secondary" data-page-link="orders">View all</button></div><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Event</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="dashOrders"></tbody></table></div></div>
     </section>
 
     <section id="events" class="page">
-      <div class="section-head"><h2>Events</h2><button id="newEvent" class="btn">+ Create event</button></div>
+      <div class="section-head"><div><h2>Events</h2><div class="muted">All events, including completed and cancelled events</div></div><div class="act"><button id="downloadCompletedEvents" class="btn small secondary">Download completed</button><button id="newEvent" class="btn">+ Create event</button></div></div>
       <div id="eventList" class="event-list"></div>
     </section>
 
@@ -213,17 +213,17 @@ textarea{min-height:88px;resize:vertical}
     </section>
 
     <section id="orders" class="page">
-      <div class="section-head"><h2>Orders</h2></div>
-      <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Email</th><th>Amount</th><th>Payment</th><th>PayPal ID</th><th>Date</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div>
+      <div class="section-head"><div><h2>Ticket bookings</h2><div class="muted">Ticket purchases and payment records</div></div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="downloadOrders">Download CSV</button><button class="btn small secondary" id="downloadRevenue">Download Revenue CSV</button></div></div>
+      <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Customer</th><th>Email</th><th>Event</th><th>Amount</th><th>Payment</th><th>Date</th></tr></thead><tbody id="ordersTable"></tbody></table></div></div>
     </section>
 
     <section id="bookings" class="page">
-      <div class="section-head"><h2>DJ Bookings</h2><span class="muted">Negotiated bookings • starting from £400</span></div>
+      <div class="section-head"><div><h2>DJ Bookings</h2><span class="muted">Negotiated bookings • starting from £400</span></div><button class="btn small" id="downloadBookings">Download CSV</button></div>
       <div class="card"><div class="table-wrap"><table class="table"><thead><tr><th>Name</th><th>Event</th><th>Date</th><th>Venue</th><th>Contact</th><th>Sent via</th></tr></thead><tbody id="bookingsTable"></tbody></table></div></div>
     </section>
 
     <section id="gallery" class="page">
-      <div class="section-head"><div><h2>Gallery</h2><div class="muted">Photos and videos shown on the website Gallery page</div></div><button id="newGallery" class="btn">+ Add to gallery</button></div>
+      <div class="section-head"><div><h2>Gallery</h2><div class="muted">Photos shown on the website Gallery page</div></div><button id="newGallery" class="btn">+ Add to gallery</button></div>
       <div id="galleryList" class="g-grid"></div>
     </section>
 
@@ -283,10 +283,10 @@ textarea{min-height:88px;resize:vertical}
   <div class="modal-card">
     <div class="modal-head"><h2>Add to gallery</h2><button id="closeGallery" type="button" class="btn secondary small">Close</button></div>
     <form id="galleryForm">
-      <label>Photos or videos</label>
+      <label>Photos</label>
       <div class="upload">
-        <input id="gFiles" type="file" accept="image/*,video/*" multiple>
-        <div id="gStatus" class="muted" style="margin-top:7px">Choose one or more photos or videos. Photos are resized automatically. Videos up to 50 MB each.</div>
+        <input id="gFiles" type="file" accept="image/*" multiple>
+        <div id="gStatus" class="muted" style="margin-top:7px">Choose one or more photos. Photos are resized automatically.</div>
       </div>
       <div id="gPreview" class="g-prev"></div>
       <label>Caption (optional)</label>
@@ -341,7 +341,7 @@ textarea{min-height:88px;resize:vertical}
 const SUPABASE_URL='https://ocmediklvhioadhyzzwd.supabase.co';
 const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jbWVkaWtsdmhpb2FkaHl6endkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3NjYyODUsImV4cCI6MjEwNjM0MjI4NX0.8Ftoo3gRBWubqUaRckI3WjbxdIzvWrdrkOZHOL8aBjc';
 const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-let events=[],orders=[],selectedEvent=null,editingEventId=null;
+let events=[],orders=[],tickets=[],selectedEvent=null,editingEventId=null;
 
 const $=id=>document.getElementById(id);
 const money=p=>`£${((Number(p)||0)/100).toLocaleString('en-GB',{minimumFractionDigits:2})}`;
@@ -364,7 +364,7 @@ async function showApp(){
  await loadAll();
 }
 async function loadAll(){
- await Promise.all([loadEvents(),loadOrders(),loadBookings(),loadGallery()]);
+ await Promise.all([loadEvents(),loadOrders(),loadBookings(),loadGallery(),loadTicketStats()]);
  renderDashboard();renderEvents();renderTicketEvents();fillEventSelects();
 }
 async function loadEvents(){
@@ -373,20 +373,41 @@ async function loadEvents(){
 }
 async function loadOrders(){
  const r=await sb.from('orders').select('*').order('created_at',{ascending:false});
- if(!r.error) orders=r.data||[];
+ if(!r.error) orders=r.data||[]; else console.error(r.error);
+ renderOrders();
+}
+function orderCustomer(o){
+ return o.customer_name || [o.customer_first_name,o.customer_last_name].filter(Boolean).join(' ') || [o.first_name,o.last_name].filter(Boolean).join(' ') || '—';
+}
+function orderTotal(o){
+ if(o.total_gbp!=null) return `£${Number(o.total_gbp||0).toLocaleString('en-GB',{minimumFractionDigits:2})}`;
+ return money(o.total_pence);
+}
+function renderOrders(){
+ const body=$('ordersTable'); if(!body)return;
+ body.innerHTML=orders.map(o=>`<tr><td>${esc(orderCustomer(o))}</td><td>${esc(o.customer_email||o.email||'—')}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${orderTotal(o)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status||'pending')}</span></td><td>${esc(new Date(o.created_at).toLocaleDateString('en-GB'))}</td></tr>`).join('')||'<tr><td colspan="6">No ticket bookings yet.</td></tr>';
 }
 async function loadBookings(){
  const r=await sb.from('bookings').select('*').order('created_at',{ascending:false});
- if(r.data) $('bookingsTable').innerHTML=r.data.map(b=>`<tr><td>${esc(b.full_name)}</td><td>${esc(b.event_type)}</td><td>${esc(b.event_date)}</td><td>${esc(b.venue)}</td><td>${esc(b.phone||b.email)}</td><td>${esc(b.sent_via)}</td></tr>`).join('')||'<tr><td colspan="6">No bookings yet.</td></tr>';
+ if(r.error){console.error(r.error);return;}
+ const rows=r.data||[];
+ $('bookingsTable').innerHTML=rows.map(b=>`<tr><td>${esc(b.full_name)}</td><td>${esc(b.event_type||'—')}</td><td>${esc(b.event_date||'—')}</td><td>${esc(b.event_location||b.venue||'—')}</td><td>${esc(b.phone||b.email||'—')}</td><td>${esc(b.sent_via||'—')}</td></tr>`).join('')||'<tr><td colspan="6">No DJ bookings yet.</td></tr>';
 }
 
 function renderDashboard(){
- const paid=orders.filter(o=>o.status==='paid'), revenue=paid.reduce((s,o)=>s+(Number(o.total_pence)||0),0);
- $('statRevenue').textContent=money(revenue);$('statOrders').textContent=paid.length;
- $('statEvents').textContent=events.filter(e=>e.status==='published'&&!isDone(e)).length;
- $('statTickets').textContent='—';$('statCheckins').textContent='—';
- $('dashEvents').innerHTML=events.filter(e=>e.status==='published'&&!isDone(e)).slice(0,5).map(e=>`<div style="padding:9px 0;border-bottom:1px solid #292929"><b>${esc(e.name)}</b><div class="muted">${esc(e.event_date)} • ${esc(e.venue||'Venue TBA')}</div></div>`).join('')||'<div class="empty">No upcoming events yet.</div>';
- $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(o.customer_name||((o.first_name||'')+' '+(o.last_name||'')))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${money(o.total_pence)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status)}</span></td><td>${new Date(o.created_at).toLocaleDateString('en-GB')}</td></tr>`).join('')||'<tr><td colspan="5">No orders yet.</td></tr>';
+  const paid=orders.filter(o=>String(o.status).toLowerCase()==='paid');
+  const revenue=paid.reduce((sum,o)=>sum+(o.total_gbp!=null?Math.round(Number(o.total_gbp||0)*100):Number(o.total_pence)||0),0);
+  const sold=tickets.filter(t=>['valid','used'].includes(String(t.status).toLowerCase())).length;
+  const checkins=tickets.filter(t=>String(t.status).toLowerCase()==='used' || t.checked_in_at).length;
+  $('statRevenue').textContent=money(revenue);
+  $('statOrders').textContent=paid.length;
+  $('statTickets').textContent=sold;
+  $('statCheckins').textContent=checkins;
+  $('statEvents').textContent=events.filter(e=>e.status==='published'&&!isDone(e)).length;
+  const upcoming=events.filter(e=>e.status==='published'&&!isDone(e));
+  $('dashEvents').innerHTML=upcoming.slice(0,5).map(e=>`<div style="padding:9px 0;border-bottom:1px solid #292929"><b>${esc(e.name)}</b><div class="muted">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(timeOnly(e.start_time)||e.start_time):''}${e.venue?' • '+esc(e.venue):''}</div></div>`).join('')||'<div class="empty">No upcoming events yet.</div>';
+  $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(orderCustomer(o))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${esc(orderTotal(o))}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status||'pending')}</span></td><td>${esc(new Date(o.created_at).toLocaleDateString('en-GB'))}</td></tr>`).join('')||'<tr><td colspan="5">No ticket bookings yet.</td></tr>';
+  renderOrders();
 }
 
 async function getEventTickets(eventId){
@@ -418,7 +439,7 @@ async function renderEvents(){
       ${e.image_url?`<img class="event-img" src="${esc(e.image_url)}" alt="${esc(e.name)}">`:'<div class="event-img" style="display:grid;place-items:center;color:#666">No flyer</div>'}
       <div class="event-body">
         <div class="event-title">${esc(e.name)}</div>
-        <div class="event-meta">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(e.start_time):''} • ${esc(e.venue||'Venue TBA')}</div>
+        <div class="event-meta">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(timeOnly(e.start_time)||e.start_time):''} • ${esc(e.venue||'Venue TBA')}</div>
         <div style="margin-top:8px"><span class="badge ${e.status==='published'?'green':e.status==='closed'?'red':'gold'}">${esc(e.status)}</span> <span class="badge">${e.sales_open?'Sales open':'Sales closed'}</span></div>
         <div style="margin-top:10px">${tickets.length?tickets.slice(0,3).map(t=>`<span class="badge ${ticketClass(t.name)==='gold-ticket'?'gold':''}" style="margin:0 4px 4px 0">${esc(t.name)}</span>`).join(''):'<span class="muted">No ticket types yet</span>'}</div>
         <div class="event-actions"><button class="btn small manage-event-tickets" data-id="${e.id}">Tickets</button><button class="btn small secondary edit-event" data-id="${e.id}">Manage</button><button class="btn small danger delete-event" data-id="${e.id}">Delete</button></div>
@@ -574,15 +595,93 @@ function fillEventSelects(){
  const opts='<option value="">Select event</option>'+events.map(e=>`<option value="${e.id}">${esc(e.name)}</option>`).join('');
  $('checkinEvent').innerHTML=opts;
 }
-function showPage(id){
+async function showPage(id){
+ const target=$(id);
+ if(!target){console.error('Admin page not found:',id);return;}
  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
- $(id).classList.add('active');
+ target.classList.add('active');
  document.querySelectorAll('.nav button[data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));
- $('pageTitle').textContent=id==='bookings'?'DJ Bookings':id==='checkin'?'Check-in':id==='gallery'?'Add to gallery':id[0].toUpperCase()+id.slice(1);
+ const titles={dashboard:'Dashboard',events:'Events',tickets:'Tickets',orders:'Ticket bookings',bookings:'DJ Bookings',gallery:'Gallery',checkin:'Check-in',paypal:'PayPal',settings:'Settings'};
+ $('pageTitle').textContent=titles[id]||'Dashboard';
  closeMobileMenu();
+ try{
+   if(id==='dashboard'){await loadEvents();await loadOrders();await loadTicketStats();renderDashboard();}
+   else if(id==='events'){await loadEvents();await renderEvents();}
+   else if(id==='tickets'){await loadEvents();await renderTicketEvents();}
+   else if(id==='orders'){await loadEvents();await loadOrders();await loadTicketStats();renderOrders();}
+   else if(id==='bookings'){await loadBookings();}
+   else if(id==='gallery'){await loadGallery();}
+   else if(id==='checkin'){await loadEvents();await loadTicketStats();fillEventSelects();renderDashboard();}
+ }catch(err){
+   console.error('Could not load admin page',id,err);
+   target.querySelectorAll('.page-error').forEach(x=>x.remove());
+   const msg=document.createElement('div');msg.className='page-error error';msg.style.marginTop='15px';msg.textContent='Could not load this page. Please refresh and try again.';target.prepend(msg);
+ }
 }
-document.querySelectorAll('.nav button[data-page]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
-document.querySelectorAll('[data-page-link]').forEach(b=>b.onclick=()=>showPage(b.dataset.page));
+
+// Use event delegation so dashboard "View all" buttons remain clickable even after
+// dashboard content is refreshed/re-rendered.
+document.addEventListener('click',e=>{
+ const nav=e.target.closest('.nav button[data-page]');
+ if(nav){e.preventDefault();showPage(nav.dataset.page);return;}
+ const link=e.target.closest('[data-page-link]');
+ if(link){e.preventDefault();showPage(link.dataset.page);return;}
+});
+
+// Dashboard View All buttons also have direct handlers as a second layer of protection.
+// They must work even when the dashboard has zero events or zero bookings.
+function wireDashboardViewAll(){
+ const eventsBtn=$('viewAllEvents');
+ const bookingsBtn=$('viewAllBookings');
+ if(eventsBtn){
+   eventsBtn.type='button';
+   eventsBtn.onclick=async e=>{e.preventDefault();e.stopPropagation();await showPage('events');await renderEvents();};
+ }
+ if(bookingsBtn){
+   bookingsBtn.type='button';
+   bookingsBtn.onclick=async e=>{e.preventDefault();e.stopPropagation();await showPage('orders');await loadOrders();await renderOrders();};
+ }
+}
+wireDashboardViewAll();
+function csvCell(v){return '"'+String(v??'').replace(/"/g,'""')+'"';}
+function downloadCSV(filename,headers,rows){
+ const csv=[headers, ...rows].map(r=>r.map(csvCell).join(',')).join('\n');
+ const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}), url=URL.createObjectURL(blob);
+ const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+function downloadBookingsCSV(){
+ sb.from('bookings').select('*').order('created_at',{ascending:false}).then(({data,error})=>{
+  if(error){alert(error.message);return;}
+  const rows=(data||[]).map(b=>[b.full_name,b.email||'',b.phone||'',b.event_type||'',b.event_date||'',b.event_location||b.venue||'',b.guests??'',b.message||'',b.created_at||'']);
+  downloadCSV('dj-garvin-bookings.csv',['Name','Email','Phone','Event type','Event date','Location','Guests','Message','Received'],rows);
+ });
+}
+function downloadCompletedEventsCSV(){
+ const rows=events.filter(e=>isDone(e)||e.status==='closed').map(e=>[e.name,e.status,formatEventDate(e.event_date),timeOnly(e.start_time)||e.start_time||'',e.venue||'',e.location||e.address||'',e.description||'']);
+ downloadCSV('dj-garvin-completed-events.csv',['Event','Status','Date','Start time','Venue','Location','Description'],rows);
+}
+function downloadRevenueCSV(){
+  const paid=orders.filter(o=>String(o.status).toLowerCase()==='paid');
+  const rows=paid.map(o=>[
+    orderCustomer(o),
+    o.customer_email||o.email||'',
+    events.find(e=>e.id===o.event_id)?.name||'',
+    Number(o.total_gbp||0).toFixed(2),
+    o.paypal_order_id||'',
+    o.paypal_capture_id||'',
+    o.paid_at||o.created_at||''
+  ]);
+  downloadCSV('dj-garvin-event-ticket-revenue.csv',['Customer','Email','Event','Revenue GBP','PayPal order','PayPal capture','Paid at'],rows);
+}
+function downloadOrdersCSV(){
+ const rows=orders.map(o=>[orderCustomer(o),o.customer_email||o.email||'',events.find(e=>e.id===o.event_id)?.name||'',orderTotal(o),o.status||'',o.paypal_order_id||'',o.created_at||'',o.paid_at||'']);
+ downloadCSV('dj-garvin-ticket-bookings.csv',['Customer','Email','Event','Amount','Status','PayPal order','Created','Paid'],rows);
+}
+$('downloadBookings')?.addEventListener('click',downloadBookingsCSV);
+$('downloadCompletedEvents')?.addEventListener('click',downloadCompletedEventsCSV);
+$('downloadOrders')?.addEventListener('click',downloadOrdersCSV);
+$('downloadRevenue')?.addEventListener('click',downloadRevenueCSV);
+$('downloadRevenueDashboard')?.addEventListener('click',downloadRevenueCSV);
 $('mobileMenu').onclick=()=>document.body.classList.toggle('mobile-open');
 $('menuBackdrop').onclick=closeMobileMenu;
 function closeMobileMenu(){document.body.classList.remove('mobile-open')}
@@ -705,7 +804,7 @@ $('ticketForm').onsubmit=async e=>{
 };
 
 /* ---------- Gallery ---------- */
-const GALLERY_BUCKET='gallery', MAX_VIDEO_MB=50;
+const GALLERY_BUCKET='gallery';
 let galleryItems=[];
 async function loadGallery(){
  const r=await sb.from('gallery_items').select('*').order('created_at',{ascending:false});
@@ -713,16 +812,16 @@ async function loadGallery(){
  galleryItems=r.data||[];renderGallery();
 }
 function renderGallery(){
- $('galleryList').innerHTML=galleryItems.length?galleryItems.map(g=>`<div class="g-item">
-   <span class="g-badge">${g.media_type==='video'?'VIDEO':'PHOTO'}</span>
-   ${g.media_type==='video'?`<video src="${esc(g.url)}#t=0.1" preload="metadata" muted playsinline></video>`:`<img src="${esc(g.url)}" alt="${esc(g.caption||'Gallery photo')}" loading="lazy">`}
-   <div class="g-meta"><span class="g-cap">${esc(g.caption||'No caption')}</span><button class="btn small danger delete-gallery" data-id="${esc(g.id)}">Delete</button></div>
- </div>`).join(''):'<div class="empty" style="grid-column:1/-1">Nothing in the gallery yet. Click “+ Add to gallery” to upload the first photo or video.</div>';
- document.querySelectorAll('.delete-gallery').forEach(b=>b.onclick=()=>deleteGalleryItem(b.dataset.id));
+  $('galleryList').innerHTML=galleryItems.length?galleryItems.map(g=>`<div class="g-item">
+    <span class="g-badge">PHOTO</span>
+    <img src="${esc(g.url)}" alt="${esc(g.caption||'Gallery photo')}" loading="lazy">
+    <div class="g-meta"><span class="g-cap">${esc(g.caption||'No caption')}</span><button class="btn small danger delete-gallery" data-id="${esc(g.id)}">Delete</button></div>
+  </div>`).join(''):'<div class="empty" style="grid-column:1/-1">Nothing in the gallery yet. Click “+ Add to gallery” to upload the first photo.</div>';
+  document.querySelectorAll('.delete-gallery').forEach(b=>b.onclick=()=>deleteGalleryItem(b.dataset.id));
 }
 async function deleteGalleryItem(id){
  const g=galleryItems.find(x=>x.id===id);if(!g)return;
- if(!confirm('Delete this '+(g.media_type==='video'?'video':'photo')+' from the gallery? This cannot be undone.'))return;
+ if(!confirm('Delete this photo from the gallery? This cannot be undone.'))return;
  try{
   if(g.storage_path){const rm=await sb.storage.from(GALLERY_BUCKET).remove([g.storage_path]);if(rm.error)throw rm.error}
   const r=await sb.from('gallery_items').delete().eq('id',id);if(r.error)throw r.error;
@@ -731,7 +830,7 @@ async function deleteGalleryItem(id){
 }
 function openGalleryModal(){
  $('galleryForm').reset();$('gPreview').innerHTML='';$('galleryError').textContent='';$('gBar').style.display='none';$('gBarFill').style.width='0';
- $('gStatus').textContent='Choose one or more photos or videos. Photos are resized automatically. Videos up to '+MAX_VIDEO_MB+' MB each.';
+ $('gStatus').textContent='Choose one or more photos. Photos are resized automatically.';
  $('saveGalleryBtn').disabled=false;$('saveGalleryBtn').textContent='Upload to gallery';
  $('galleryModal').classList.add('open');
 }
@@ -800,7 +899,7 @@ $('createAccess').onclick=async()=>{
  const expires=new Date(Date.now()+hours*3600000).toISOString();
  const r=await sb.from('checkin_sessions').insert({event_id:eventId,access_code:code,expires_at:expires}).select().single();
  if(r.error){$('accessResult').innerHTML='<div class="error">'+esc(r.error.message)+'</div>';return}
- const link=location.origin+'/checkin?code='+encodeURIComponent(code);
+ const link=location.origin+'/checkin.html?code='+encodeURIComponent(code);
  $('accessResult').innerHTML=`<div class="card" style="padding:12px"><b>Staff access created</b><div class="muted" style="margin-top:5px">Expires ${new Date(expires).toLocaleString()}</div><input style="margin-top:10px" value="${esc(link)}" readonly onclick="this.select()"></div>`;
 };
 
