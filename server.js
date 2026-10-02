@@ -110,7 +110,7 @@ app.post("/api/paypal/create-order",requireSupabase,async(req,res)=>{
     const cart=await getCart(eventId,req.body.items); const total=(cart.totalPence/100).toFixed(2); const paypalOrder=await paypalRequest("/v2/checkout/orders",{
       method:"POST",headers:{"PayPal-Request-Id":crypto.randomUUID(),Prefer:"return=representation"},body:JSON.stringify({
         intent:"CAPTURE",purchase_units:[{reference_id:String(cart.event.id),description:cart.event.name.slice(0,127),custom_id:eventId,amount:{currency_code:"GBP",value:total,breakdown:{item_total:{currency_code:"GBP",value:total}}},items:cart.items.map(i=>({name:i.name.slice(0,127),quantity:String(i.quantity),unit_amount:{currency_code:"GBP",value:(i.unit_price_pence/100).toFixed(2)},category:"DIGITAL_GOODS"}))}],
-        application_context:{brand_name:"DJ Garvin",user_action:"PAY_NOW",shipping_preference:"NO_SHIPPING",return_url:`${BASE}/payment-success.html`,cancel_url:`${BASE}/payment-cancelled.html`}
+        application_context:{brand_name:"DJ Garvin",user_action:"PAY_NOW",shipping_preference:"NO_SHIPPING",return_url:`${BASE}/payment-success`,cancel_url:`${BASE}/payment-cancelled`}
       })
     });
     const {data:order,error:orderError}=await supabase.from("orders").insert([{
