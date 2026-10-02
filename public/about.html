@@ -19,6 +19,65 @@ header{position:sticky;top:0;z-index:20;background:rgba(9,9,9,.82);backdrop-filt
 .logo{font-weight:900;letter-spacing:.1em;font-size:1.15rem}
 .links{display:flex;gap:24px;color:#c8c3bb;font-size:.92rem}
 .links a:hover{color:var(--gold)}
+
+/* Mobile menu: added only for the mobile header */
+.menu-toggle{
+  display:none;
+  width:42px;
+  height:42px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:transparent;
+  color:var(--fg);
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+}
+.menu-toggle span,
+.menu-toggle span::before,
+.menu-toggle span::after{
+  display:block;
+  width:20px;
+  height:2px;
+  background:var(--fg);
+  content:"";
+  position:relative;
+  transition:.2s ease;
+}
+.menu-toggle span::before{position:absolute;top:-6px;left:0}
+.menu-toggle span::after{position:absolute;top:6px;left:0}
+.menu-toggle.open span{background:transparent}
+.menu-toggle.open span::before{top:0;transform:rotate(45deg)}
+.menu-toggle.open span::after{top:0;transform:rotate(-45deg)}
+
+.mobile-nav{
+  display:none;
+  position:fixed;
+  top:76px;
+  left:0;
+  right:0;
+  z-index:19;
+  background:rgba(9,9,9,.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.mobile-nav.open{display:block}
+.mobile-nav-inner{
+  width:min(100% - 30px,680px);
+  margin:auto;
+  padding:8px 0 14px;
+}
+.mobile-nav a{
+  display:block;
+  padding:13px 2px;
+  border-bottom:1px solid var(--line);
+  color:#c8c3bb;
+  font-size:.92rem;
+}
+.mobile-nav a:last-child{border-bottom:0}
+.mobile-nav a:hover{color:var(--gold)}
+
 .hero{padding:92px 0 48px}
 .kicker{color:var(--gold);font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
 h1{font-size:clamp(3rem,8vw,6.8rem);line-height:.92;letter-spacing:-.055em;margin:14px 0 0;max-width:850px}
@@ -44,9 +103,11 @@ linear-gradient(135deg,rgba(255,210,135,.14),transparent 55%);filter:blur(18px);
 .card h3{margin:0 0 9px;font-size:1.15rem}
 .card p{margin:0;color:var(--muted);font-size:.9rem}
 footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.86rem}
+
 @media(max-width:820px){
   .container{width:min(100% - 30px,680px)}
   .links{display:none}
+  .menu-toggle{display:flex}
   .hero{padding:62px 0 28px}
   h1{font-size:clamp(3rem,16vw,5rem)}
   .layout{grid-template-columns:1fr;gap:28px;padding-bottom:70px}
@@ -78,8 +139,22 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
       <a href="/gallery">Gallery</a>
       <a href="/contact">Contact</a>
     </nav>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+    </button>
   </div>
 </header>
+
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <div class="mobile-nav-inner">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/music">What I Play</a>
+    <a href="/events">Events</a>
+    <a href="/gallery">Gallery</a>
+    <a href="/contact">Contact</a>
+  </div>
+</nav>
 
 <main>
 <section class="hero">
@@ -123,5 +198,26 @@ footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-s
 <footer>
   <div class="container">© 2026 DJ Garvin. All rights reserved.</div>
 </footer>
+
+<script>
+const menuToggle = document.getElementById('menuToggle');
+const mobileNav = document.getElementById('mobileNav');
+
+menuToggle.addEventListener('click', () => {
+  const isOpen = mobileNav.classList.toggle('open');
+  menuToggle.classList.toggle('open', isOpen);
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+});
+
+mobileNav.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileNav.classList.remove('open');
+    menuToggle.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Open menu');
+  });
+});
+</script>
 </body>
 </html>
