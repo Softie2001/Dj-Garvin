@@ -7,12 +7,20 @@
   ],
   "rewrites": [
     {
-      "source": "/about",
-      "destination": "/about.html"
+      "source": "/admin",
+      "destination": "/admin.html"
+    },
+    {
+      "source": "/checkin",
+      "destination": "/checkin.html"
     },
     {
       "source": "/events",
       "destination": "/events.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about.html"
     },
     {
       "source": "/videos",
@@ -21,14 +29,38 @@
     {
       "source": "/contact",
       "destination": "/contact.html"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/admin.html",
+      "destination": "/admin",
+      "permanent": true
     },
     {
-      "source": "/checkin",
-      "destination": "/checkin.html"
+      "source": "/checkin.html",
+      "destination": "/checkin",
+      "permanent": true
     },
     {
-      "source": "/admin",
-      "destination": "/admin.html"
+      "source": "/events.html",
+      "destination": "/events",
+      "permanent": true
+    },
+    {
+      "source": "/about.html",
+      "destination": "/about",
+      "permanent": true
+    },
+    {
+      "source": "/videos.html",
+      "destination": "/videos",
+      "permanent": true
+    },
+    {
+      "source": "/contact.html",
+      "destination": "/contact",
+      "permanent": true
     }
   ]
 }
