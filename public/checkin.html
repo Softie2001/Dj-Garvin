@@ -233,8 +233,8 @@ details.dropdown-select summary::-webkit-details-marker {
   <button id="mb" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="ln"><span></span><span></span><span></span></button>
  </div>
 </div></header>
-<div id="mbd"></div><main><div class="ticket-wrap"><div class="bar"></div><h1>Ticket Check-in</h1><p class="mut">Scan the QR code on the guest's ticket using this phone camera. No QR token typing is required.</p><div class="ticket-card" style="margin-top:28px"><div id="reader" style="width:100%;max-width:520px;margin:0 auto;border-radius:16px;overflow:hidden;background:#080808;display:none"></div><div id="scanStatus" class="notice" style="margin-top:0;text-align:center">Tap Scan Ticket when you are ready to check in a guest.</div><button id="scanTicketBtn" class="btn f" type="button" style="width:100%;margin-top:16px">Scan Ticket</button><div id="result" style="margin-top:16px"></div></div></div></main><footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>&copy; 2026 DJ Garvin. All rights reserved.</div></div></footer><script>
-const result=document.getElementById('result'), statusBox=document.getElementById('scanStatus'), scanBtn=document.getElementById('scanTicketBtn'), reader=document.getElementById('reader');
+<div id="mbd"></div><main><div class="ticket-wrap"><div class="bar"></div><h1>Ticket Check-in</h1><p class="mut">Scan the QR code on the guest's ticket using this phone camera. No QR token typing is required.</p><div class="ticket-card" style="margin-top:28px"><div id="reader" style="width:100%;max-width:520px;margin:0 auto;border-radius:16px;overflow:hidden;background:#080808;display:none"></div><div id="scanStatus" class="notice" style="margin-top:0;text-align:center">Tap Scan Ticket when you are ready to check in a guest.</div><button id="scanTicketBtn" class="btn f" type="button" style="width:100%;margin-top:16px">Scan Ticket</button><button id="cancelScanBtn" class="btn" type="button" style="width:100%;margin-top:10px;display:none">Cancel</button><div id="result" style="margin-top:16px"></div></div></div></main><footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>&copy; 2026 DJ Garvin. All rights reserved.</div></div></footer><script>
+const result=document.getElementById('result'), statusBox=document.getElementById('scanStatus'), scanBtn=document.getElementById('scanTicketBtn'), cancelBtn=document.getElementById('cancelScanBtn'), reader=document.getElementById('reader');
 let scanner=null, busy=false, scanning=false;
 function setMenu(o){document.getElementById('ln').classList.toggle('o',o);document.getElementById('mbd').classList.toggle('o',o);document.getElementById('mb').classList.toggle('x',o)}
 document.getElementById('mb').onclick=()=>setMenu(!document.getElementById('ln').classList.contains('o'));
@@ -247,14 +247,14 @@ function extractToken(text){
 }
 async function stopScanner(){
  if(scanner&&scanning){try{await scanner.stop()}catch(e){} try{scanner.clear()}catch(e){}}
- scanning=false; reader.style.display='none'; scanBtn.style.display='block'; scanBtn.disabled=false;
+ scanning=false; reader.style.display='none'; scanBtn.style.display='block'; scanBtn.disabled=false; cancelBtn.style.display='none';
 }
 async function startScanner(){
  if(scanning||busy)return;
  if(location.protocol!=='https:' && location.hostname!=='localhost'){statusBox.textContent='Camera scanning requires HTTPS.';return;}
  if(!window.Html5Qrcode){statusBox.textContent='QR scanner could not load. Check your internet connection.';return;}
  result.innerHTML=''; statusBox.textContent='Allow camera access when your browser asks, then point the camera at the QR code.';
- scanBtn.style.display='none'; reader.style.display='block';
+ scanBtn.style.display='none'; cancelBtn.style.display='block'; reader.style.display='block';
  scanner=new Html5Qrcode('reader');
  try{
   const cameras=await Html5Qrcode.getCameras();
@@ -291,9 +291,10 @@ async function completeCheckin(token){
   statusBox.textContent='Guest checked in successfully.'; document.getElementById('afterScan').onclick=resetForScan; busy=false;
  }catch(e){statusBox.textContent='Check-in service unavailable.';busy=false}
 }
-function resetForScan(){result.innerHTML='';statusBox.textContent='Tap Scan Ticket when you are ready to check in a guest.';scanBtn.style.display='block';scanBtn.disabled=false;busy=false;window.scrollTo({top:0,behavior:'smooth'});}
+async function cancelScan(){busy=false;await stopScanner();result.innerHTML='';statusBox.textContent='Scan cancelled. Tap Scan Ticket when you are ready to check in a guest.';window.scrollTo({top:0,behavior:'smooth'});}
+function resetForScan(){result.innerHTML='';statusBox.textContent='Tap Scan Ticket when you are ready to check in a guest.';scanBtn.style.display='block';scanBtn.disabled=false;cancelBtn.style.display='none';busy=false;window.scrollTo({top:0,behavior:'smooth'});}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function onScanSuccess(decodedText){if(!busy)checkToken(decodedText)}
 function onScanError(){/* scanner keeps looking */}
-scanBtn.addEventListener('click',startScanner);
+scanBtn.addEventListener('click',startScanner); cancelBtn.addEventListener('click',cancelScan);
 </script></body></html>
