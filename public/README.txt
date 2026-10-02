@@ -5,7 +5,7 @@ MENU
 About → about.html
 Music → music.html
 Events → events.html
-Videos → videos.html
+Gallery → gallery.html
 Contact → contact.html
 Book DJ → book.html
 
