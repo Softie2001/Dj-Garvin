@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>About DJ Garvin</title>
+<style>
+:root {
+  --bg:#090909; --fg:#f5f2ed; --muted:#aaa59d; --gold:#e7b96d;
+  --line:rgba(255,255,255,.11); --panel:rgba(255,255,255,.035);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,sans-serif;line-height:1.7}
+a{color:inherit;text-decoration:none}
+.container{width:min(1120px,calc(100% - 40px));margin:auto}
+header{position:sticky;top:0;z-index:20;background:rgba(9,9,9,.82);backdrop-filter:blur(16px);border-bottom:1px solid var(--line)}
+.nav{height:76px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-weight:900;letter-spacing:.1em;font-size:1.15rem}
+.links{display:flex;gap:24px;color:#c8c3bb;font-size:.92rem}
+.links a:hover{color:var(--gold)}
+
+/* Mobile menu: added only for the mobile header */
+.menu-toggle{
+  display:none;
+  width:42px;
+  height:42px;
+  padding:0;
+  border:1px solid var(--line);
+  border-radius:10px;
+  background:transparent;
+  color:var(--fg);
+  cursor:pointer;
+  align-items:center;
+  justify-content:center;
+}
+.menu-toggle span,
+.menu-toggle span::before,
+.menu-toggle span::after{
+  display:block;
+  width:20px;
+  height:2px;
+  background:var(--fg);
+  content:"";
+  position:relative;
+  transition:.2s ease;
+}
+.menu-toggle span::before{position:absolute;top:-6px;left:0}
+.menu-toggle span::after{position:absolute;top:6px;left:0}
+.menu-toggle.open span{background:transparent}
+.menu-toggle.open span::before{top:0;transform:rotate(45deg)}
+.menu-toggle.open span::after{top:0;transform:rotate(-45deg)}
+
+.mobile-nav{
+  display:none;
+  position:fixed;
+  top:76px;
+  left:0;
+  right:0;
+  z-index:19;
+  background:rgba(9,9,9,.96);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line);
+}
+.mobile-nav.open{display:block}
+.mobile-nav-inner{
+  width:min(100% - 30px,680px);
+  margin:auto;
+  padding:8px 0 14px;
+}
+.mobile-nav a{
+  display:block;
+  padding:13px 2px;
+  border-bottom:1px solid var(--line);
+  color:#c8c3bb;
+  font-size:.92rem;
+}
+.mobile-nav a:last-child{border-bottom:0}
+.mobile-nav a:hover{color:var(--gold)}
+
+.hero{padding:92px 0 48px}
+.kicker{color:var(--gold);font-size:.78rem;letter-spacing:.22em;text-transform:uppercase;font-weight:700}
+h1{font-size:clamp(3rem,8vw,6.8rem);line-height:.92;letter-spacing:-.055em;margin:14px 0 0;max-width:850px}
+.layout{display:grid;grid-template-columns:minmax(260px,420px) 1fr;gap:70px;align-items:center;padding:34px 0 100px}
+.photo-wrap{position:relative;min-height:420px;display:grid;place-items:center}
+.photo-wrap::before{content:"";position:absolute;inset:-30px -55px;background:
+radial-gradient(circle at 40% 40%,rgba(230,180,100,.28),transparent 38%),
+radial-gradient(circle at 70% 70%,rgba(110,70,150,.18),transparent 48%),
+linear-gradient(135deg,rgba(255,210,135,.14),transparent 55%);filter:blur(18px);z-index:0}
+.photo{position:relative;z-index:1;width:min(100%,370px);aspect-ratio:4/5;object-fit:cover;object-position:center;border-radius:28px;mask-image:linear-gradient(to bottom,#000 70%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 70%,transparent 100%);box-shadow:0 30px 80px rgba(0,0,0,.5)}
+.bio{border-top:1px solid var(--line);padding-top:28px}
+.bio p{margin:0 0 23px;color:var(--muted);font-size:1.02rem}
+.bio strong{color:var(--fg);font-weight:800}
+.proof{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px}
+.proof-card{border:1px solid var(--line);background:var(--panel);border-radius:16px;padding:20px}
+.proof-card b{display:block;color:var(--gold);font-size:1.05rem;margin-bottom:5px}
+.proof-card span{color:var(--muted);font-size:.88rem}
+.explore{border-top:1px solid var(--line);padding:70px 0 100px}
+.explore h2{font-size:clamp(2rem,5vw,4rem);line-height:1;margin:0 0 30px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{border:1px solid var(--line);background:var(--panel);border-radius:18px;padding:24px;min-height:160px;transition:.2s}
+.card:hover{transform:translateY(-3px);border-color:rgba(231,185,109,.55)}
+.card h3{margin:0 0 9px;font-size:1.15rem}
+.card p{margin:0;color:var(--muted);font-size:.9rem}
+footer{border-top:1px solid var(--line);padding:30px 0;color:var(--muted);font-size:.86rem}
+
+@media(max-width:820px){
+  .container{width:min(100% - 30px,680px)}
+  .links{display:none}
+  .menu-toggle{display:flex}
+  .hero{padding:62px 0 28px}
+  h1{font-size:clamp(3rem,16vw,5rem)}
+  .layout{grid-template-columns:1fr;gap:28px;padding-bottom:70px}
+  .photo-wrap{min-height:300px;margin:0 -10px}
+  .photo-wrap::before{inset:-10px -30px}
+  .photo{width:min(72vw,300px);aspect-ratio:1/1;mask-image:linear-gradient(to bottom,#000 62%,transparent 100%);-webkit-mask-image:linear-gradient(to bottom,#000 62%,transparent 100%)}
+  .bio{padding-top:24px}
+  .bio p{font-size:.98rem;line-height:1.75;margin-bottom:20px}
+  .proof{grid-template-columns:1fr;gap:10px}
+  .proof-card{padding:16px}
+  .explore{padding:55px 0 70px}
+  .cards{grid-template-columns:1fr 1fr}
+}
+@media(max-width:500px){
+  .cards{grid-template-columns:1fr}
+  .card{min-height:auto}
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="container nav">
+    <a class="logo" href="/">DJ GARVIN</a>
+    <nav class="links" aria-label="Main navigation">
+      <a href="/">Home</a>
+      <a href="/about">About</a>
+      <a href="/music">What I Play</a>
+      <a href="/events">Events</a>
+      <a href="/gallery">Gallery</a>
+      <a href="/contact">Contact</a>
+    </nav>
+    <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
+  <div class="mobile-nav-inner">
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+    <a href="/music">What I Play</a>
+    <a href="/events">Events</a>
+    <a href="/gallery">Gallery</a>
+    <a href="/contact">Contact</a>
+  </div>
+</nav>
+
+<main>
+<section class="hero">
+  <div class="container">
+    <div class="kicker">The DJ • The Experience • The Brand</div>
+    <h1>About<br>DJ Garvin</h1>
+  </div>
+</section>
+
+<section class="container layout">
+  <div class="photo-wrap">
+    <img class="photo" src="dj-garvin-photo.jpg" alt="DJ Garvin performing behind his DJ controller">
+  </div>
+
+  <div>
+    <div class="bio">
+      <p><strong>DJ journey:</strong> Originally from Edo State, Nigeria, DJ Garvin began his DJ journey in 2002, building his early experience and passion for music before taking a short break after two years. His passion for music never faded, and after relocating to the United Kingdom, he returned to DJing and has since built approximately 3–4 years of continuous professional experience in the UK entertainment scene.</p><p><strong>Versatility &amp; professionalism:</strong> DJ Garvin is known for his versatility, professionalism, and ability to create the right atmosphere for every occasion. His work spans across the UK, with a strong presence in London, Manchester, West Yorkshire, and other locations.</p><p><strong>Events &amp; live entertainment:</strong> Over the years, DJ Garvin has performed at a wide range of events, including weddings, marriage ceremonies, birthdays, private parties, corporate functions, formal dinners, award nights, club events, concerts, festivals, open-air entertainment, cultural celebrations, social gatherings, and live artist performances. He also provides DJ support for artists and live entertainment, helping create an energetic and engaging experience for audiences.</p><p><strong>Supporting artists &amp; events:</strong> Beyond performing, DJ Garvin is passionate about supporting upcoming artists and creating opportunities within the entertainment industry. He is also involved in organising and hosting events, bringing together DJs, artists, entertainers, and audiences through carefully planned entertainment experiences.</p><p><strong>Nigerian &amp; UK connection:</strong> With a strong connection to both Nigerian and UK entertainment culture, DJ Garvin continues to grow his brand while using music and events to connect people, support emerging talent, and deliver memorable experiences wherever he performs.</p>
+    </div>
+
+    <div class="proof" aria-label="Key booking highlights">
+      <div class="proof-card"><b>3–4 Years</b><span>Continuous professional UK experience</span></div>
+      <div class="proof-card"><b>UK-Wide</b><span>London, Manchester, West Yorkshire & beyond</span></div>
+      <div class="proof-card"><b>Live & Events</b><span>Weddings, parties, corporate events, awards, concerts & more</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="explore">
+  <div class="container">
+    <h2>Explore DJ Garvin</h2>
+    <div class="cards">
+      <a class="card" href="/music"><h3>What I Play</h3><p>Explore the sounds and genres DJ Garvin brings to every crowd.</p></a>
+      <a class="card" href="/events"><h3>Events</h3><p>See upcoming events and ticket information.</p></a>
+      <a class="card" href="/gallery"><h3>Gallery</h3><p>View photos posted through the DJ Garvin website.</p></a>
+      <a class="card" href="/contact"><h3>Contact</h3><p>Get in touch for bookings, collaborations and enquiries.</p></a>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="container">© 2026 DJ Garvin. All rights reserved.</div>
+</footer>
+
+<script>
+const menuToggle = document.getElementById('menuToggle');
+const mobileNav = document.getElementById('mobileNav');
+
+menuToggle.addEventListener('click', () => {
+  const isOpen = mobileNav.classList.toggle('open');
+  menuToggle.classList.toggle('open', isOpen);
+  menuToggle.setAttribute('aria-expanded', String(isOpen));
+  menuToggle.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
+});
+
+mobileNav.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    mobileNav.classList.remove('open');
+    menuToggle.classList.remove('open');
+    menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.setAttribute('aria-label', 'Open menu');
+  });
+});
+</script>
+</body>
+</html>

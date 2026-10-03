@@ -1,0 +1,373 @@
+<!doctype html>
+<!DOCTYPE html>
+
+<html lang="en-GB">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"/>
+<title>DJ Garvin | Event</title>
+<meta content="DJ Garvin is a professional UK DJ for weddings, birthdays, corporate events, clubs and private parties, playing Afrobeats, Amapiano, Afrofusion, Hip Hop and R&amp;B." name="description"/>
+<meta content="DJ Garvin | Professional DJ" property="og:title"/>
+<meta content="Afrobeats, Amapiano, Afrofusion, Hip Hop and R&amp;B for weddings, birthdays, corporate events and clubs." property="og:description"/>
+<meta content="website" property="og:type"/>
+<meta content="#0b0b0b" name="theme-color"/>
+
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&amp;family=DM+Sans:wght@400;500;700&amp;display=swap" rel="stylesheet"/>
+<style>
+:root{--bg:#0b0b0b;--card:#151514;--fg:#f3efe8;--mut:#9d988d;--acc:#f0c48a;--line:#262522}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px}
+body{margin:0;background:var(--bg);color:var(--fg);font:400 1rem/1.65 "DM Sans",system-ui,sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+h1,h2,h3{font-family:Syne,Impact,sans-serif;font-weight:800;line-height:1.08;margin:0}
+h1{font-size:clamp(2.3rem,5.6vw,4.2rem);text-transform:uppercase}
+h2{font-size:clamp(1.8rem,3.6vw,2.6rem)}
+p{margin:0 0 1rem}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--acc);outline-offset:3px}
+.w{max-width:1140px;margin:0 auto;padding:0 22px}
+section{padding:84px 0}
+.mut{color:var(--mut)}
+.bar{width:44px;height:3px;background:var(--acc);margin-bottom:22px}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:50px;padding:0 26px;border-radius:999px;border:1.5px solid var(--fg);background:none;color:var(--fg);font:700 .95rem "DM Sans",sans-serif;text-decoration:none;cursor:pointer}
+.btn:hover{border-color:var(--acc)}
+.btn.f{background:var(--acc);border-color:var(--acc);color:#111}
+.btn.f:hover{filter:brightness(1.08)}
+header{position:sticky;top:0;z-index:9;background:rgba(11,11,11,.9);backdrop-filter:blur(10px);padding-top:env(safe-area-inset-top)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:68px}
+.logo{font:800 1.15rem Syne,sans-serif;letter-spacing:.08em;text-decoration:none}
+.links{display:flex;gap:30px}
+.links a{text-decoration:none;font-size:.92rem;color:var(--mut)}
+.links a:hover{color:var(--fg)}
+.nav .btn{min-height:42px;padding:0 20px}
+#mb{display:none;background:none;border:1px solid var(--line);color:var(--fg);border-radius:999px;min-height:42px}
+.hero{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center;padding:56px 22px 72px}
+.tag{display:inline-block;padding:6px 14px;border:1px solid var(--line);border-radius:999px;font-size:.85rem;color:var(--mut);margin-bottom:22px}
+.hero p.mut{max-width:46ch;margin:22px 0 28px}
+.cta{display:flex;gap:14px;flex-wrap:wrap}
+.pic{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);aspect-ratio:1/1.05}
+.pic img{width:100%;height:100%;object-fit:cover;object-position:45% 30%;filter:saturate(.85) brightness(.92)}
+.pic::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,rgba(0,0,0,.55))}
+.play{position:absolute;z-index:2;right:18px;bottom:18px;width:56px;height:56px;border-radius:50%;background:var(--acc);display:grid;place-items:center;text-decoration:none}
+.play::after{content:"";border-left:15px solid #111;border-top:9px solid transparent;border-bottom:9px solid transparent;margin-left:4px}
+.about{display:grid;grid-template-columns:.9fr 1.1fr;gap:56px;align-items:center}
+.about img{width:100%;aspect-ratio:1/1;object-fit:cover;object-position:45% 30%;border-radius:22px;border:1px solid var(--line);filter:saturate(.85)}
+.center{text-align:center}
+.center .bar{margin-left:auto;margin-right:auto}
+.rows{margin-top:36px;border-top:1px solid var(--line)}
+.rows div{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:22px 0;border-bottom:1px solid var(--line)}
+.rows h3{font-size:clamp(1.2rem,3vw,1.7rem);min-width:170px}
+.rows p{flex:1;margin:0;color:var(--mut);font-size:.95rem}
+.rows i{width:38px;height:38px;border-radius:50%;background:var(--fg);flex:none;position:relative}
+.rows i::after{content:"";position:absolute;left:14px;top:12px;width:8px;height:8px;border-top:2px solid #111;border-right:2px solid #111;transform:rotate(45deg)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:22px;margin-top:36px}
+.grid.e{grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+.c{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px}
+.c h3{font-size:1.3rem;margin-bottom:6px}
+.c p{margin:0;color:var(--mut);font-size:.95rem}
+.reel iframe{width:100%;height:720px;border:0;border-radius:12px;background:#fff;display:block}
+.reel .btn{width:100%;margin-top:14px}
+.strip{overflow:hidden;white-space:nowrap;border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0}
+.strip span{display:inline-block;font:800 clamp(2rem,6vw,4rem) Syne,sans-serif;color:#2b2a27;text-transform:uppercase;animation:mq 30s linear infinite}
+@keyframes mq{to{transform:translateX(-50%)}}
+.contact{display:grid;grid-template-columns:.8fr 1.2fr;gap:56px}
+.contact a{display:block;margin-bottom:8px;text-decoration:none}
+form{display:grid;gap:16px}
+.r{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+label,legend{display:block;font-size:.88rem;font-weight:500;margin-bottom:6px}
+input,select,textarea{width:100%;min-height:50px;padding:12px 14px;background:#101010;border:1px solid #33312d;color:var(--fg);font:400 1rem "DM Sans",sans-serif;border-radius:12px}
+
+.r>div,form>div{min-width:0}
+input,select,textarea{display:block;max-width:100%;min-width:0;-webkit-appearance:none;appearance:none;text-align:left}
+input[type=date],input[type=time],input[type=number]{height:50px;line-height:1.2}
+input[type=date]::-webkit-date-and-time-value,input[type=time]::-webkit-date-and-time-value{text-align:left;min-height:1.2em;margin:0;padding:0}
+input[type=date]::-webkit-datetime-edit,input[type=time]::-webkit-datetime-edit{padding:0}
+input[type=number]{-moz-appearance:textfield}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+select{background-image:linear-gradient(45deg,transparent 50%,var(--mut) 50%),linear-gradient(135deg,var(--mut) 50%,transparent 50%);background-position:calc(100% - 20px) 22px,calc(100% - 14px) 22px;background-size:6px 6px;background-repeat:no-repeat;padding-right:38px}
+.ck input,.ck-list input[type=checkbox]{display:inline-block;-webkit-appearance:auto;appearance:auto}
+
+.cl{display:flex;flex-direction:row;gap:14px;flex-wrap:wrap}
+.cl a{display:flex;align-items:center;justify-content:center;width:58px;height:58px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--card);color:var(--fg);text-decoration:none;transition:border-color .2s,transform .2s,background .2s,box-shadow .2s;-webkit-tap-highlight-color:transparent}
+.cl a:hover,.cl a:active{border-color:var(--acc);background:var(--acc);transform:translateY(-3px);box-shadow:0 8px 20px rgba(240,196,138,.25)}
+.cl svg{width:26px;height:26px;flex:none;fill:var(--acc);transition:fill .2s}
+.cl a:hover svg,.cl a:active svg{fill:#111}
+.cl-m{display:none;margin-top:22px}
+@media(max-width:820px){.cl-d{display:none}.cl-m{display:flex}}
+textarea{min-height:110px;resize:vertical}
+fieldset{border:0;margin:0;padding:0}
+.ck{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}
+.ck label{display:flex;align-items:center;gap:10px;min-height:46px;padding:0 14px;margin:0;border:1px solid #33312d;border-radius:999px;background:#101010;cursor:pointer}
+.ck input{width:18px;min-height:18px;accent-color:var(--acc)}
+.ck label:has(input:checked){border-color:var(--acc)}
+#msg{display:none;padding:14px 16px;border-left:3px solid var(--acc);background:#101010;border-radius:6px}
+#msg ul{margin:6px 0 0;padding-left:18px}
+.act{display:flex;gap:12px;flex-wrap:wrap}
+.act .btn{flex:1 1 200px}
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--mut);font-size:.9rem}
+footer .w{display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between}
+@media(max-width:820px){
+ .links{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;gap:0;background:var(--bg);padding:6px 22px 18px;border-bottom:1px solid var(--line)}
+ .links.o{display:flex}.links a{padding:13px 0;font-size:1.05rem}
+ #mb{display:block}.rt>.btn{display:none}.links{z-index:10}
+ .hero,.about,.contact{grid-template-columns:1fr;gap:32px}
+ .hero{padding-top:28px;padding-bottom:56px}.pic{order:-1;aspect-ratio:1/.9}
+ section{padding:60px 0}.btn{flex:1 1 100%}
+ .rows p{display:none}
+ .reel iframe{height:700px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;scroll-behavior:auto!important}}
+@media (max-width: 820px) {
+  /* Fix oversized main headline */
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  /* Fix wide and large stats section (9, 6, 2) */
+  .stats {
+    max-width: 300px;
+    margin: 0 auto;
+    padding: 18px 0;
+  }
+}
+ details.dropdown-select {
+  position: relative;
+  background: #101010;
+  border: 1px solid #33312d;
+  border-radius: 12px;
+  padding: 12px 14px;
+}
+
+details.dropdown-select summary {
+  cursor: pointer;
+  color: var(--fg);
+  font-weight: 500;
+  list-style: none;
+}
+
+details.dropdown-select summary::-webkit-details-marker {
+  display: none;
+}
+
+.ck-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  max-height: 300px; /* Allows scrolling if list gets too tall */
+  overflow-y: auto;
+}
+
+.ck-list label {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 10px !important;
+  cursor: pointer;
+  width: 100% !important;
+  font-size: 0.95rem;
+}
+
+.ck-list label:has(input:checked) {
+  color: var(--acc);
+}
+
+/* Fixes the giant white boxes and aligns checkmarks properly */
+.ck-list input[type="checkbox"] {
+  width: 18px !important;
+  height: 18px !important;
+  min-width: 18px !important;
+  margin: 0 !important;
+  accent-color: var(--acc);
+  cursor: pointer;
+}
+
+.vcarousel{position:relative}
+.vtrack{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:22px;scroll-behavior:smooth;-webkit-overflow-scrolling:touch;padding-bottom:4px;scrollbar-width:none}
+.vtrack::-webkit-scrollbar{display:none}
+.vtrack .c.reel{flex:0 0 100%;scroll-snap-align:start;margin:0}
+.vnav{display:flex;gap:14px;justify-content:center;margin-top:18px}
+.varrow{width:46px;height:46px;border-radius:50%;background:var(--card);border:1px solid var(--line);color:var(--fg);font-size:1.3rem;line-height:1;cursor:pointer}
+.varrow:hover{border-color:var(--acc);color:var(--acc)}
+.nm{margin-bottom:26px}
+.nmt{position:relative;display:inline-block;font:800 clamp(2rem,8.6vw,5.6rem)/1 Syne,Impact,sans-serif;letter-spacing:.05em;white-space:nowrap;
+ background:linear-gradient(100deg,#f3efe8 0%,#f3efe8 38%,#f0c48a 46%,#ff2d6f 50%,#2df0ff 54%,#f3efe8 62%,#f3efe8 100%);background-size:250% 100%;background-position:120% 0;
+ -webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+ clip-path:inset(0 100% 0 0);animation:nmwipe 1s cubic-bezier(.7,0,.2,1) .2s forwards,nmshine 5s ease-in-out 1.6s infinite,nmglow 5s ease-in-out 1.6s infinite}
+.nmt::before,.nmt::after{content:attr(data-t);position:absolute;left:0;top:0;-webkit-text-fill-color:currentColor;background:none;opacity:0;pointer-events:none}
+.nmt::before{color:#ff2d6f;animation:nmg1 5s steps(1) 1.6s infinite}
+.nmt::after{color:#2df0ff;animation:nmg2 5s steps(1) 1.6s infinite}
+@keyframes nmwipe{to{clip-path:inset(0 0 0 0)}}
+@keyframes nmshine{0%{background-position:120% 0}45%,100%{background-position:-20% 0}}
+@keyframes nmglow{0%,100%{filter:drop-shadow(0 0 0 rgba(240,196,138,0))}20%{filter:drop-shadow(0 0 16px rgba(240,196,138,.55))}}
+@keyframes nmg1{0%,60%,100%{opacity:0;transform:none}61%{opacity:.8;transform:translate(-4px,1px);clip-path:inset(15% 0 55% 0)}63%{opacity:.8;transform:translate(3px,-1px);clip-path:inset(60% 0 10% 0)}65%{opacity:0}}
+@keyframes nmg2{0%,60%,100%{opacity:0;transform:none}62%{opacity:.8;transform:translate(4px,-1px);clip-path:inset(50% 0 20% 0)}64%{opacity:.8;transform:translate(-3px,1px);clip-path:inset(10% 0 65% 0)}66%{opacity:0}}
+.nmw{display:block;width:min(100%,360px);height:22px;margin:10px 0 12px;overflow:hidden}
+.nmw path{stroke-dasharray:820;stroke-dashoffset:820;animation:nmdraw 1.4s ease-out .9s forwards,nmflow 2.2s ease-in-out 2.3s infinite;transform-origin:center}
+@keyframes nmdraw{to{stroke-dashoffset:0}}
+@keyframes nmflow{0%,100%{transform:scaleY(1) translateX(0)}50%{transform:scaleY(.35) translateX(-25px)}}
+.nms{font:600 clamp(.66rem,2.9vw,.8rem) "DM Sans",sans-serif;letter-spacing:.26em;text-transform:uppercase;color:var(--acc);opacity:0;animation:nmfade .8s ease 1.6s forwards}
+@keyframes nmfade{to{opacity:1}}
+@media(prefers-reduced-motion:reduce){.nmt{clip-path:none;animation:none;background-position:-20% 0}.nmt::before,.nmt::after{display:none}.nmw path{animation:none;stroke-dashoffset:0}.nms{animation:none;opacity:1}}
+
+.logo{display:inline-flex;align-items:center;position:relative}
+.lt{display:inline-flex}
+.lt b{display:inline-block;font-weight:800;color:transparent;-webkit-background-clip:text;background-clip:text;
+ background-image:linear-gradient(100deg,var(--fg) 0 42%,var(--acc) 50%,var(--fg) 58% 100%);background-size:300% 100%;background-position:100% 0;
+ opacity:0;transform:translateY(40%);
+ animation:rise .6s cubic-bezier(.2,.8,.2,1) forwards,shine 5s ease-in-out infinite;
+ animation-delay:calc(var(--i)*60ms),calc(1.2s + var(--i)*60ms)}
+.lt b.sp{width:.4em}
+@keyframes rise{to{opacity:1;transform:none}}
+@keyframes shine{0%{background-position:100% 0}40%,100%{background-position:0 0}}
+@media(prefers-reduced-motion:reduce){.lt b{animation:none;opacity:1;transform:none;color:var(--fg);background:none}}
+
+.rt{display:flex;align-items:center;gap:12px}
+.eq{position:relative;display:flex;align-items:center;gap:3px;height:34px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:linear-gradient(180deg,rgba(240,196,138,.08),rgba(255,45,111,.06))}
+.eq::after{content:"";position:absolute;inset:-1px;border-radius:999px;border:1.5px solid var(--acc);opacity:0;animation:ring 1.84s ease-out infinite;pointer-events:none}
+@keyframes ring{0%{opacity:.7;transform:scale(1)}60%,100%{opacity:0;transform:scale(1.35,1.6)}}
+.eq i{display:block;width:3px;height:22px;border-radius:3px;background:linear-gradient(180deg,#ff2d6f,var(--acc) 55%,#2df0ff);box-shadow:0 0 8px rgba(240,196,138,.45);transform:scaleY(.2);animation:eqb 1.84s ease-in-out infinite;animation-delay:calc(var(--d,0)*-1s)}
+.eq i:nth-child(1){--d:.3}.eq i:nth-child(2){--d:1.1}.eq i:nth-child(3){--d:.6}.eq i:nth-child(4){--d:1.5}.eq i:nth-child(5){--d:.1}.eq i:nth-child(6){--d:.9}.eq i:nth-child(7){--d:1.7}.eq i:nth-child(8){--d:.4}.eq i:nth-child(9){--d:1.3}.eq i:nth-child(10){--d:.75}.eq i:nth-child(11){--d:.2}
+@keyframes eqb{0%{transform:scaleY(.2)}8%{transform:scaleY(1)}16%{transform:scaleY(.35)}25%{transform:scaleY(.85)}34%{transform:scaleY(.25)}50%{transform:scaleY(.95)}58%{transform:scaleY(.3)}70%{transform:scaleY(.7)}82%{transform:scaleY(.22)}92%{transform:scaleY(.6)}100%{transform:scaleY(.2)}}
+@media(prefers-reduced-motion:reduce){.eq i{animation:none;transform:scaleY(.6)}.eq::after{animation:none}}
+#mb{position:relative;width:46px;padding:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#mb span{position:absolute;left:13px;right:13px;height:2px;background:var(--fg);border-radius:2px;transition:transform .25s,opacity .2s,top .25s}
+#mb span:nth-child(1){top:15px}#mb span:nth-child(2){top:20px}#mb span:nth-child(3){top:25px}
+#mb.x span:nth-child(1){top:20px;transform:rotate(45deg)}#mb.x span:nth-child(2){opacity:0}#mb.x span:nth-child(3){top:20px;transform:rotate(-45deg)}
+#mbd{display:none;position:fixed;inset:0;z-index:8;background:rgba(0,0,0,.55);backdrop-filter:blur(2px)}
+#mbd.o{display:block}
+
+@media(min-width:760px){.vtrack .c.reel{flex:0 0 calc(50% - 11px)}}
+
+/* Ticket shopping flow */
+.event-shell{max-width:920px;margin:20px auto 110px}
+.event-hero{position:relative;border:1px solid var(--line);border-radius:24px;overflow:hidden;background:#111;min-height:280px}
+.event-hero img{display:block;width:100%;height:min(58vw,470px);min-height:260px;object-fit:cover;object-position:center 35%;filter:brightness(.78) saturate(.9)}
+.event-hero::after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(0,0,0,.86));pointer-events:none}
+.event-hero-copy{position:absolute;z-index:2;left:24px;right:24px;bottom:24px}
+.event-meta{display:flex;flex-wrap:wrap;gap:8px;color:#ddd;font-size:.9rem;margin-top:10px}
+.ticket-heading{display:flex;align-items:end;justify-content:space-between;gap:18px;margin:42px 0 16px}
+.ticket-list{display:grid;gap:16px}
+.ticket-card{position:relative;display:grid;grid-template-columns:112px 1fr auto;gap:18px;align-items:center;background:#121212;border:1px solid #2c2a26;border-radius:20px;padding:16px;overflow:hidden;cursor:pointer;transition:border-color .2s,transform .2s,background .2s}
+.ticket-card:hover{transform:translateY(-1px);border-color:#75603a}
+.ticket-card.selected{border-color:var(--acc);background:linear-gradient(110deg,rgba(240,196,138,.08),#121212 55%)}
+.ticket-art{height:118px;border-radius:15px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;padding:16px;background:linear-gradient(145deg,#c79842,#f4d48e 48%,#7b5b24);color:#111}
+.ticket-art.silver{background:linear-gradient(145deg,#777,#e7e7e7 48%,#777);color:#111}
+.ticket-art.dark{background:linear-gradient(145deg,#1b1b1b,#39352d 50%,#0e0e0e);color:#f3efe8}
+.ticket-art::before,.ticket-art::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:#121212;top:50%;transform:translateY(-50%);z-index:1}
+.ticket-art::before{left:-11px}.ticket-art::after{right:-11px}
+.ticket-art small{font-size:.62rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;opacity:.72}
+.ticket-art strong{font:800 1.15rem Syne,sans-serif;text-transform:uppercase;line-height:1.05;margin-top:7px}
+.ticket-art span{font-size:.72rem;margin-top:7px;opacity:.8}
+.ticket-copy h3{font-size:1.25rem;margin:0 0 6px}
+.ticket-copy p{font-size:.88rem;color:var(--mut);margin:0 0 8px}
+.ticket-included{display:flex;flex-wrap:wrap;gap:7px;margin-top:8px}
+.ticket-included span{font-size:.72rem;color:#d9d4ca;border:1px solid #2d2b27;border-radius:999px;padding:4px 8px}
+.ticket-price{align-self:start;text-align:right;min-width:105px}.ticket-price strong{font-size:1.15rem;color:var(--acc);display:block}.ticket-price small{color:var(--mut);font-size:.75rem}
+.qty{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-top:12px}.qty button{width:34px;height:34px;border-radius:50%;border:1px solid #44413a;background:#0e0e0e;color:var(--fg);font-size:1.1rem;cursor:pointer}.qty output{min-width:24px;text-align:center;font-weight:700}
+.ticket-state{display:inline-block;margin-top:7px;font-size:.72rem;color:var(--mut)}
+.ticket-state.out{color:#e69b9b}.ticket-state.up{color:var(--acc)}
+.booking-bar{position:fixed;left:0;right:0;bottom:0;z-index:30;padding:10px max(14px,env(safe-area-inset-left)) max(10px,env(safe-area-inset-bottom));background:rgba(12,12,12,.96);border-top:1px solid #302d27;backdrop-filter:blur(14px);display:none}
+.booking-bar.show{display:block}.booking-inner{max-width:920px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.booking-summary small{display:block;color:var(--mut);font-size:.72rem}.booking-summary strong{display:block;font-size:1rem}.booking-bar .btn{min-height:44px;padding:0 18px;white-space:nowrap}
+.stepper{display:flex;gap:8px;margin:30px 0 18px}.step{flex:1;border:1px solid var(--line);border-radius:999px;padding:8px 12px;text-align:center;color:var(--mut);font-size:.8rem}.step.active{border-color:var(--acc);color:var(--fg);background:rgba(240,196,138,.07)}
+.checkout-panel{display:none;border-top:1px solid var(--line);margin-top:30px;padding-top:28px}.checkout-panel.show{display:block}.checkout-review{display:grid;gap:10px;margin:15px 0 20px}.review-row{display:flex;justify-content:space-between;gap:15px;padding:12px 0;border-bottom:1px solid var(--line)}
+.details-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.details-grid .full{grid-column:1/-1}
+@media(max-width:680px){.event-shell{margin-top:8px}.event-hero{border-radius:18px}.event-hero img{height:330px;min-height:0}.event-hero-copy{left:18px;right:18px;bottom:18px}.ticket-heading{margin-top:30px}.ticket-card{grid-template-columns:1fr;gap:13px}.ticket-art{height:130px}.ticket-price{text-align:left;display:flex;align-items:center;justify-content:space-between;gap:10px}.qty{justify-content:flex-start}.details-grid{grid-template-columns:1fr}.details-grid .full{grid-column:auto}.booking-inner{align-items:center}.booking-bar .btn{padding:0 14px;font-size:.85rem}.ticket-included span{font-size:.68rem}}
+</style>
+<style>
+.event-countdown{margin-top:12px;padding:10px 14px;border:1px solid #2c2a26;border-radius:12px;background:rgba(240,196,138,.05);text-align:left}
+.event-countdown-label{display:block;font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:#a9a39a;margin-bottom:4px}
+.event-countdown-value{display:block;font-size:1rem;font-weight:700;color:#f0c48a;letter-spacing:.04em}
+</style>
+</head>
+<body>
+<header><div class="w nav">
+ <a class="logo" href="/" aria-label="DJ Garvin"><span class="lt" aria-hidden="true" data-t="DJ GARVIN">DJ GARVIN</span></a>
+ <div class="links" id="ln"><a href="/">Home</a><a href="/about">About</a><a href="/music">Music</a><a href="/gallery">Gallery</a><a href="/events">Events</a><a href="/contact">Contact</a><a class="btn f" href="/book" style="color:#111;display:none" id="mbk">Book DJ</a></div>
+ <div class="rt"><a class="btn f" href="/book">Book DJ</a><span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span><button id="mb" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="ln"><span></span><span></span><span></span></button></div>
+</div></header><div id="mbd"></div>
+<main id="top"><section><div class="w"><div class="card" id="eventDetail" style="max-width:850px;margin:20px auto"></div></div></section></main>
+<footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br/>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>© 2026 DJ Garvin. All rights reserved.</div></div></footer>
+
+
+<script>
+const $=i=>document.getElementById(i);
+document.querySelectorAll('.lt').forEach(e=>{e.innerHTML=[...e.dataset.t].map((c,i)=>'<b'+(c===' '?' class="sp"':'')+' style="--i:'+i+'">'+(c===' '?'&nbsp;':c)+'</b>').join('')});
+const setMenu=o=>{const ln=$('ln'),mbd=$('mbd'),btn=$('mb');if(ln)ln.classList.toggle('o',o);if(mbd)mbd.classList.toggle('o',o);if(btn){btn.classList.toggle('x',o);btn.setAttribute('aria-expanded',o);btn.setAttribute('aria-label',o?'Close menu':'Open menu')}};
+if($('mb'))$('mb').addEventListener('click',e=>{e.stopPropagation();setMenu(!$('ln').classList.contains('o'))});
+if($('ln'))$('ln').addEventListener('click',e=>{if(e.target.closest('a'))setMenu(false)});
+if($('mbd'))$('mbd').addEventListener('click',()=>setMenu(false));
+document.addEventListener('click',e=>{if($('ln')?.classList.contains('o')&&!e.target.closest('#ln')&&!e.target.closest('#mb'))setMenu(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenu(false)});
+window.addEventListener('resize',()=>{if(innerWidth>820)setMenu(false)});
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SUPABASE_URL='https://ocmediklvhioadhyzzwd.supabase.co';
+const SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jbWVkaWtsdmhpb2FkaHl6endkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTA3NjYyODUsImV4cCI6MjEwNjM0MjI4NX0.8Ftoo3gRBWubqUaRckI3WjbxdIzvWrdrkOZHOL8aBjc';
+const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+const esc=v=>String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+const money=t=>{const p=Number.isFinite(Number(t.price_pence))?Number(t.price_pence):Math.round((Number(t.price_gbp)||0)*100);return '£'+(p/100).toLocaleString('en-GB',{minimumFractionDigits:2})};
+function salesState(t){const now=new Date(),start=t.sales_start?new Date(t.sales_start+'T00:00:00'):null,end=t.sales_end?new Date(t.sales_end+'T23:59:59'):null;if(t.status==='sold_out')return'sold_out';if(t.status==='out_of_sale'||t.status==='inactive'||t.status==='closed')return'out';if(start&&now<start)return'upcoming';if(end&&now>end)return'out';return'on'}
+</script>
+<script>
+const params=new URLSearchParams(location.search),id=params.get('id');
+let currentEvent=null,tickets=[],selection={},step=1;
+function esc2(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function ticketKind(t){const n=(t.name||'').toLowerCase();if(n.includes('gold'))return'gold';if(n.includes('silver'))return'silver';return'dark'}
+function included(t){let a=[];if(Array.isArray(t.whats_included))a=t.whats_included;else if(typeof t.whats_included==='string')a=t.whats_included.split(/\n|,/).map(x=>x.trim()).filter(Boolean);if(!a.length&&t.description)a=[t.description];return a.slice(0,4)}
+function fmtDate(v){if(!v)return'';const d=new Date(String(v).includes('T')?v:v+'T00:00:00');if(isNaN(d))return String(v).split('T')[0];return d.toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})}
+function fmtTime(v){if(!v)return'';const m=String(v).match(/(\d{1,2}):(\d{2})/);if(!m)return'';let h=Number(m[1]);const ap=h>=12?'PM':'AM';h=h%12||12;return `${h}:${m[2]} ${ap}`}
+function salesState2(t){const now=new Date(),start=t.sales_start?new Date(t.sales_start+'T00:00:00'):null,end=t.sales_end?new Date(t.sales_end+'T23:59:59'):null;if(t.status==='sold_out')return'sold';if(['out_of_sale','inactive','closed'].includes(t.status))return'out';if(start&&now<start)return'up';if(end&&now>end)return'out';const cap=Number(t.capacity)||0,sold=Number(t.quantity_sold)||0;if(cap&&sold>=cap)return'sold';return'on'}
+function pricePence(t){if(Number.isFinite(Number(t.price_pence)))return Number(t.price_pence);return Math.round((Number(t.price_gbp)||0)*100)}
+function money2(p){return'£'+(Number(p)/100).toLocaleString('en-GB',{minimumFractionDigits:2})}
+function selectedTotal(){return tickets.reduce((sum,t)=>sum+(selection[t.id]||0)*pricePence(t),0)}
+function selectedCount(){return tickets.reduce((sum,t)=>sum+(selection[t.id]||0),0)}
+function render(){const box=$('eventDetail');if(!currentEvent){box.innerHTML='<h2>Event not found</h2>';return}
+ const e=currentEvent;
+ box.innerHTML=`<div class="event-shell">
+ <div class="event-hero">${e.image_url?`<img src="${esc2(e.image_url)}" alt="${esc2(e.name)}">`:''}<div class="event-hero-copy"><div class="bar"></div><h1>${esc2(e.name)}</h1><div class="event-meta"><span>${fmtDate(e.event_date)}</span>${e.start_time?`<span>• ${esc2(fmtTime(e.start_time))}</span>`:''}${e.venue?`<span>• ${esc2(e.venue)}</span>`:''}</div><div class="event-countdown"><span class="event-countdown-label">Event starts in</span><strong class="event-countdown-value" id="eventCountdown">Loading…</strong></div></div></div>
+ ${e.address?`<p class="mut" style="margin:14px 4px 0">${esc2(e.address)}</p>`:''}${e.description?`<p class="mut" style="margin:14px 4px 0">${esc2(e.description)}</p>`:''}
+ <div class="ticket-heading"><div><div class="bar"></div><h2>Explore Tickets</h2><p class="mut">Choose your ticket and quantity.</p></div></div>
+ <div class="ticket-list">${tickets.length?tickets.map((t,i)=>{const st=salesState2(t),q=selection[t.id]||0,inc=included(t);return `<article class="ticket-card ${q?'selected':''}" data-ticket="${esc2(t.id)}"><div class="ticket-art ${ticketKind(t)}"><small>DJ GARVIN</small><strong>${esc2(t.name)}</strong><span>${t.is_group_ticket?'Group ticket':'Entry ticket'}</span></div><div class="ticket-copy"><h3>${esc2(t.name)}</h3><p>${esc2(t.description||'Premium event access.')}</p>${inc.length?`<div class="ticket-included">${inc.map(x=>`<span>✓ ${esc2(x)}</span>`).join('')}</div>`:''}<span class="ticket-state ${st==='out'?'out':st==='up'?'up':''}">${st==='out'?'Out of sale':st==='sold'?'Sold out':st==='up'?`Sales start ${fmtDate(t.sales_start)}`:'Available'}</span></div><div class="ticket-price"><div><strong>${money2(pricePence(t))}</strong><small>${t.is_group_ticket?'per table':'per person'}</small></div>${st==='on'?`<div class="qty"><button type="button" class="minus" data-id="${esc2(t.id)}" aria-label="Decrease ${esc2(t.name)}">−</button><output>${q}</output><button type="button" class="plus" data-id="${esc2(t.id)}" aria-label="Increase ${esc2(t.name)}">+</button></div>`:''}</div></article>`}).join(''):'<p class="mut">Tickets are not available yet.</p>'}</div>
+ <div class="checkout-panel" id="checkoutPanel"><div class="stepper"><div class="step active" id="step1">1. Your details</div><div class="step" id="step2">2. Review</div></div><div id="detailsStep"><h2>Your details</h2><p class="mut">Enter the details for the person making this booking.</p><div class="details-grid"><div class="full"><label>Full name</label><input id="buyerName" autocomplete="name"></div><div><label>Email</label><input id="buyerEmail" type="email" autocomplete="email"></div><div><label>Phone</label><input id="buyerPhone" type="tel" autocomplete="tel"></div></div><div id="buyError" class="error" style="margin-top:12px"></div><button class="btn f" id="reviewBtn" style="margin-top:16px">Review booking</button></div><div id="reviewStep" style="display:none"><h2>Review booking</h2><div class="checkout-review" id="reviewBox"></div><div id="payError" class="error"></div><button class="btn f" id="payButton">Continue to Payment</button></div></div>
+ </div><div class="booking-bar" id="bookingBar"><div class="booking-inner"><div class="booking-summary"><small id="summaryEvent">${esc2(e.name)}</small><strong id="summaryTotal">£0.00</strong></div><button class="btn f" id="summaryBtn">Review booking</button></div></div>`;
+ bind();updateSummary();
+}
+function bind(){
+ document.querySelectorAll('.ticket-card').forEach(card=>card.addEventListener('click',ev=>{if(ev.target.closest('button'))return;const id=card.dataset.ticket;const t=tickets.find(x=>String(x.id)===String(id));if(t&&salesState2(t)==='on'){selection[id]=selection[id]||1;render()}}));
+ document.querySelectorAll('.plus').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();const id=b.dataset.id,t=tickets.find(x=>String(x.id)===String(id));const cap=Number(t?.capacity)||9999,sold=Number(t?.quantity_sold)||0;selection[id]=Math.min((selection[id]||0)+1,Math.max(0,cap-sold));render()}));
+ document.querySelectorAll('.minus').forEach(b=>b.addEventListener('click',ev=>{ev.stopPropagation();const id=b.dataset.id;selection[id]=Math.max(0,(selection[id]||0)-1);render()}));
+ $('summaryBtn')?.addEventListener('click',()=>{if(!selectedCount())return;step=1;$('checkoutPanel').classList.add('show');$('checkoutPanel').scrollIntoView({behavior:'smooth',block:'start'})});
+ const restoreBuyerDetails=()=>{try{const d=JSON.parse(sessionStorage.getItem('djGarvinBuyer')||'{}');if(d.name&&$('buyerName')&&!$('buyerName').value)$('buyerName').value=d.name;if(d.email&&$('buyerEmail')&&!$('buyerEmail').value)$('buyerEmail').value=d.email;if(d.phone&&$('buyerPhone')&&!$('buyerPhone').value)$('buyerPhone').value=d.phone}catch(e){}};
+ const saveBuyerDetails=()=>{try{sessionStorage.setItem('djGarvinBuyer',JSON.stringify({name:$('buyerName')?.value.trim()||'',email:$('buyerEmail')?.value.trim()||'',phone:$('buyerPhone')?.value.trim()||''}))}catch(e){}};
+ window.djGarvinRestoreBuyerDetails=restoreBuyerDetails;
+ ['buyerName','buyerEmail','buyerPhone'].forEach(id=>$(id)?.addEventListener('input',saveBuyerDetails));
+ restoreBuyerDetails();
+ $('reviewBtn')?.addEventListener('click',()=>{restoreBuyerDetails();const name=$('buyerName').value.trim(),email=$('buyerEmail').value.trim();$('buyError').textContent='';if(!name||!email||!/^\S+@\S+\.\S+$/.test(email)){ $('buyError').textContent='Please enter your full name and a valid email above.';$('detailsStep').style.display='block';$('reviewStep').style.display='none';$('checkoutPanel').scrollIntoView({behavior:'smooth',block:'start'});return }saveBuyerDetails();step=2;$('detailsStep').style.display='none';$('reviewStep').style.display='block';$('step1').classList.remove('active');$('step2').classList.add('active');const rows=tickets.filter(t=>selection[t.id]).map(t=>`<div class="review-row"><span>${esc2(t.name)} × ${selection[t.id]}</span><strong>${money2(pricePence(t)*selection[t.id])}</strong></div>`).join('');$('reviewBox').innerHTML=rows+`<div class="review-row"><span>Total</span><strong>${money2(selectedTotal())}</strong></div>`;$('reviewStep').scrollIntoView({behavior:'smooth',block:'start'})});
+ $('payButton')?.addEventListener('click',pay);
+}
+function updateSummary(){const count=selectedCount(),bar=$('bookingBar');if(!bar)return;if(count){bar.classList.add('show');$('summaryTotal').textContent=money2(selectedTotal());$('summaryBtn').textContent='Review booking'}else bar.classList.remove('show')}
+async function pay(){window.djGarvinRestoreBuyerDetails?.();const fullName=$('buyerName').value.trim(),email=$('buyerEmail').value.trim(),phone=$('buyerPhone').value.trim();const parts=fullName.split(/\s+/).filter(Boolean),first=parts.shift()||'',last=parts.join(' ')||first;$('payError').textContent='Connecting to payment…';const chosen=tickets.filter(t=>selection[t.id]).map(t=>({ticket_type_id:t.id,quantity:selection[t.id]}));if(!first||!last||!email){$('payError').textContent='Please enter your full name and a valid email above.';$('detailsStep').style.display='block';$('reviewStep').style.display='none';return}try{const r=await fetch('/api/paypal/create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({event_id:currentEvent.id,items:chosen,first_name:first,last_name:last,email,phone})});const j=await r.json().catch(()=>({}));if(!r.ok)throw new Error(j.error||'Payment could not be started.');if(j.approval_url){location.href=j.approval_url;return}$('payError').textContent='Payment setup is not available yet.'}catch(err){$('payError').textContent=err.message}}
+function updateEventCountdown(){
+ const el=$('eventCountdown'); if(!el||!currentEvent)return;
+ let raw=String(currentEvent.event_date||'').trim();
+ let tm=String(currentEvent.start_time||'00:00:00').trim();
+ if(/^\d{2}:\d{2}$/.test(tm))tm+=':00';
+ let target=/T\d{2}:\d{2}/.test(raw)?new Date(raw):new Date(raw+'T'+tm);
+ if(isNaN(target.getTime())){el.textContent='Date unavailable';return}
+ let diff=target.getTime()-Date.now();
+ if(diff<=0){el.textContent='Event has started';return}
+ const days=Math.floor(diff/86400000); diff%=86400000;
+ const hours=Math.floor(diff/3600000); diff%=3600000;
+ const mins=Math.floor(diff/60000); diff%=60000;
+ const secs=Math.floor(diff/1000);
+ el.textContent=days+'d '+String(hours).padStart(2,'0')+'h '+String(mins).padStart(2,'0')+'m '+String(secs).padStart(2,'0')+'s';
+}
+setInterval(updateEventCountdown,1000);
+
+async function loadEvent(){const box=$('eventDetail');if(!id){box.innerHTML='<h2>Event not found</h2>';return}const {data:e,error}=await sb.from('events').select('*,ticket_types(*)').eq('id',id).maybeSingle();if(error||!e){box.innerHTML='<h2>Event not found</h2>';return}currentEvent=e;tickets=(e.ticket_types||[]).sort((a,b)=>(a.created_at||'').localeCompare(b.created_at||''));render();updateEventCountdown()}
+loadEvent();
+</script></body>
+</html>
