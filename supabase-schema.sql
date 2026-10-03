@@ -15,6 +15,10 @@ create table if not exists public.events (
   updated_at timestamptz not null default now()
 );
 
+alter table public.events add column if not exists start_time time;
+alter table public.events add column if not exists end_time time;
+alter table public.events add column if not exists address text;
+
 create table if not exists public.ticket_types (
   id uuid primary key default gen_random_uuid(),
   event_id uuid not null references public.events(id) on delete cascade,
@@ -30,6 +34,12 @@ create table if not exists public.ticket_types (
   status text not null default 'active' check (status in ('active','sold_out','hidden')),
   created_at timestamptz not null default now()
 );
+
+alter table public.ticket_types add column if not exists price_pence integer;
+alter table public.ticket_types add column if not exists currency text default 'GBP';
+alter table public.ticket_types add column if not exists quantity_sold integer not null default 0;
+alter table public.ticket_types add column if not exists whats_included text;
+alter table public.ticket_types add column if not exists is_group_ticket boolean not null default false;
 
 create table if not exists public.orders (
   id uuid primary key default gen_random_uuid(),
@@ -104,6 +114,23 @@ create table if not exists public.bookings (
   created_at timestamptz not null default now()
 );
 
+create table if not exists public.gallery_items (
+  id uuid primary key default gen_random_uuid(),
+  media_type text not null default 'image' check (media_type = 'image'),
+  url text not null,
+  storage_path text,
+  caption text,
+  created_at timestamptz not null default now()
+);
+
+create table if not exists public.checkin_sessions (
+  id uuid primary key default gen_random_uuid(),
+  event_id uuid not null references public.events(id) on delete cascade,
+  access_code text unique not null,
+  expires_at timestamptz not null,
+  created_at timestamptz not null default now()
+);
+
 create index if not exists idx_ticket_types_event on public.ticket_types(event_id);
 create index if not exists idx_orders_event on public.orders(event_id);
 create index if not exists idx_tickets_event on public.tickets(event_id);
@@ -135,3 +162,31 @@ for select using (
 drop policy if exists "Public can submit booking" on public.bookings;
 create policy "Public can submit booking" on public.bookings
 for insert with check (true);
+
+
+alter table public.gallery_items enable row level security;
+alter table public.checkin_sessions enable row level security;
+
+drop policy if exists "Authenticated admin gallery access" on public.gallery_items;
+create policy "Authenticated admin gallery access" on public.gallery_items for all to authenticated using (true) with check (true);
+
+drop policy if exists "Authenticated admin checkin access" on public.checkin_sessions;
+create policy "Authenticated admin checkin access" on public.checkin_sessions for all to authenticated using (true) with check (true);
+
+drop policy if exists "Authenticated admin orders read" on public.orders;
+create policy "Authenticated admin orders read" on public.orders for select to authenticated using (true);
+
+drop policy if exists "Authenticated admin tickets read" on public.tickets;
+create policy "Authenticated admin tickets read" on public.tickets for select to authenticated using (true);
+
+drop policy if exists "Authenticated admin events manage" on public.events;
+create policy "Authenticated admin events manage" on public.events for all to authenticated using (true) with check (true);
+
+drop policy if exists "Authenticated admin ticket types manage" on public.ticket_types;
+create policy "Authenticated admin ticket types manage" on public.ticket_types for all to authenticated using (true) with check (true);
+
+drop policy if exists "Authenticated admin order items read" on public.order_items;
+create policy "Authenticated admin order items read" on public.order_items for select to authenticated using (true);
+
+drop policy if exists "Authenticated admin payments read" on public.payments;
+create policy "Authenticated admin payments read" on public.payments for select to authenticated using (true);

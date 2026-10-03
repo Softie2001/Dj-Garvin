@@ -38,3 +38,7 @@ Add SMTP settings to `.env` for production email delivery.
 
 ## Important
 This package is a development starter. Do not treat the placeholder PayPal endpoints as production payment verification until the actual PayPal Orders API and official webhook signature verification are configured.
+
+
+## Ticket email delivery (Resend)
+Set these server-side environment variables in Vercel: `RESEND_API_KEY` and `RESEND_FROM`. Verify `djgarvin.com` in Resend and use an address on that verified domain, such as `DJ Garvin <tickets@djgarvin.com>`. The server sends both HTML and plain text, embeds each QR image using CID, and includes the requested transactional headers.

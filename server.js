@@ -3,7 +3,6 @@ const express = require("express");
 const path = require("path");
 const crypto = require("crypto");
 const { createClient } = require("@supabase/supabase-js");
-const nodemailer = require("nodemailer");
 const QRCode = require("qrcode");
 
 const app = express();
@@ -31,24 +30,62 @@ function clean(v, max=200) { return String(v ?? "").trim().slice(0,max); }
 function positiveInt(v) { const n=Number(v); return Number.isInteger(n)&&n>0?n:0; }
 function paypalConfigured(){ return !!(process.env.PAYPAL_CLIENT_ID && process.env.PAYPAL_CLIENT_SECRET); }
 
-function emailConfigured(){ return !!(process.env.SMTP_HOST && process.env.SMTP_USER && process.env.SMTP_PASS); }
-function transporter(){
-  if(!emailConfigured()) return null;
-  return nodemailer.createTransport({
-    host:process.env.SMTP_HOST,
-    port:Number(process.env.SMTP_PORT||587),
-    secure:String(process.env.SMTP_SECURE).toLowerCase()==="true",
-    auth:{user:process.env.SMTP_USER,pass:process.env.SMTP_PASS}
-  });
+function emailConfigured(){
+  return Boolean(process.env.RESEND_API_KEY && process.env.RESEND_FROM);
 }
+
+async function sendResendEmail(payload){
+  if(!emailConfigured()) throw new Error("Resend email is not configured. Set RESEND_API_KEY and RESEND_FROM.");
+  const response=await fetch("https://api.resend.com/emails",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json",
+      "Authorization":`Bearer ${process.env.RESEND_API_KEY}`
+    },
+    body:JSON.stringify(payload)
+  });
+  const text=await response.text();
+  let data={};
+  try{data=text?JSON.parse(text):{};}catch{data={raw:text};}
+  if(!response.ok){
+    const err=new Error(data?.message||data?.name||data?.raw||`Resend request failed (${response.status})`);
+    err.status=response.status;
+    throw err;
+  }
+  return data;
+}
+
+function formatEmailDate(value){
+  if(!value)return "—";
+  const raw=String(value);
+  const d=new Date(raw);
+  if(Number.isNaN(d.getTime()))return raw.slice(0,10)||"—";
+  return new Intl.DateTimeFormat("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric",timeZone:"Europe/London"}).format(d);
+}
+
+function formatEmailTime(event){
+  const value=event?.start_time || event?.event_time || "";
+  if(value){
+    const m=String(value).match(/(\d{1,2}):(\d{2})/);
+    if(m){
+      const d=new Date(`1970-01-01T${m[1].padStart(2,"0")}:${m[2]}:00Z`);
+      return new Intl.DateTimeFormat("en-GB",{hour:"numeric",minute:"2-digit",hour12:true,timeZone:"UTC"}).format(d);
+    }
+  }
+  if(event?.event_date){
+    const d=new Date(event.event_date);
+    if(!Number.isNaN(d.getTime()) && /T\d{2}:\d{2}/.test(String(event.event_date))) return new Intl.DateTimeFormat("en-GB",{hour:"numeric",minute:"2-digit",hour12:true,timeZone:"Europe/London"}).format(d);
+  }
+  return "—";
+}
+
 function escapeHtml(v){ return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;", "'":"&#39;"}[m])); }
 async function getOrderTickets(orderId){
-  const {data,error}=await supabase.from("tickets").select("id,ticket_code,qr_token,customer_name,status,event_id,ticket_type_id,ticket_types(name),events(name,event_date,venue,location)").eq("order_id",orderId).order("created_at");
+  const {data,error}=await supabase.from("tickets").select("id,ticket_code,qr_token,customer_name,status,event_id,ticket_type_id,ticket_types(name),events(name,event_date,start_time,end_time,venue,location,address)").eq("order_id",orderId).order("created_at");
   if(error) throw new Error(error.message); return data||[];
 }
 async function sendTicketEmail(order,tickets){
-  const mailer=transporter();
-  if(!mailer) return {sent:false,reason:"smtp_not_configured"};
+  if(!emailConfigured()) return {sent:false,reason:"resend_not_configured"};
   if(!order?.customer_email||!tickets?.length) return {sent:false,reason:"missing_email_or_tickets"};
 
   const attachments=[];
@@ -58,138 +95,102 @@ async function sendTicketEmail(order,tickets){
     const ticket=tickets[i];
     const event=ticket.events||{};
     const ticketType=ticket.ticket_types?.name||"Event Ticket";
-    const verifyUrl=`${BASE}/ticket/verify/${encodeURIComponent(ticket.qr_token)}`;
-    const cid=`djgarvin-qr-${ticket.id||i}@djgarvin`;
+    const verifyUrl=`${String(BASE).replace(/\/+$/,'')}/ticket/verify/${encodeURIComponent(ticket.qr_token)}`;
+    const cid=`djgarvin-qr-${ticket.id||i}`;
+    const qrDataUrl=await QRCode.toDataURL(verifyUrl,{width:520,margin:2,errorCorrectionLevel:"M"});
+    const qrBase64=qrDataUrl.replace(/^data:image\/png;base64/,"");
 
-    let qrDataUrl=null;
-    try{
-      qrDataUrl=await QRCode.toDataURL(verifyUrl,{
-        width:420,
-        margin:2,
-        errorCorrectionLevel:"M"
-      });
-    }catch(err){
-      console.error("QR generation failed:",err);
-    }
+    attachments.push({
+      content:qrBase64,
+      filename:`DJ-Garvin-${ticket.ticket_code}.png`,
+      content_type:"image/png",
+      content_id:cid
+    });
 
-    if(qrDataUrl){
-      attachments.push({
-        filename:`DJ-Garvin-${ticket.ticket_code}.png`,
-        content:Buffer.from(qrDataUrl.replace(/^data:image\/png;base64,/,""),"base64"),
-        contentType:"image/png",
-        cid
-      });
-    }
-
-    const eventDate=event.event_date
-      ? new Intl.DateTimeFormat("en-GB",{weekday:"short",day:"numeric",month:"short",year:"numeric",timeZone:"Europe/London"}).format(new Date(event.event_date))
-      : "—";
-
-    const eventTime=event.event_date
-      ? new Intl.DateTimeFormat("en-GB",{hour:"numeric",minute:"2-digit",hour12:true,timeZone:"Europe/London"}).format(new Date(event.event_date))
-      : "—";
+    const eventDate=formatEmailDate(event.event_date);
+    const eventTime=formatEmailTime(event);
+    const venueLocation=[event.venue,event.location||event.address].filter(Boolean).join(", ")||"—";
+    const attendee=ticket.customer_name||`${order.customer_first_name||""} ${order.customer_last_name||""}`.trim()||"Guest";
 
     passes.push(`
-      <div style="width:100%;max-width:390px;margin:0 auto 24px;background:#fff;border:1px solid #dedede;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.08);">
-        <div style="background:#0b0b0b;color:#fff;padding:24px 20px;text-align:center;">
+      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:390px;margin:0 auto 24px;background:#fff;border:1px solid #dedede;border-radius:20px;overflow:hidden;box-shadow:0 8px 24px rgba(0,0,0,.08);">
+        <tr><td style="background:#0b0b0b;color:#fff;padding:24px 20px;text-align:center;">
           <div style="color:#e7b96d;font-size:11px;letter-spacing:2.5px;font-weight:800;">DJ GARVIN</div>
           <div style="font-size:12px;color:#c9c9c9;margin-top:8px;">DIGITAL EVENT PASS</div>
-          ${qrDataUrl?`<div style="margin:20px auto 10px;background:#fff;border-radius:14px;padding:12px;width:220px;"><img src="cid:${cid}" alt="Scan this QR code at entry" width="196" style="display:block;width:196px;height:196px;margin:auto;"></div>`:""}
+          <div style="margin:20px auto 10px;background:#fff;border-radius:14px;padding:12px;width:220px;box-sizing:border-box;">
+            <img src="cid:${cid}" alt="Scan this QR code at entry" width="196" height="196" style="display:block;width:196px;height:196px;margin:auto;border:0;">
+          </div>
           <div style="font-size:12px;color:#ddd;margin-top:8px;">Scan this QR code at entry</div>
-        </div>
-
-        <div style="height:20px;position:relative;background:#fff;">
-          <div style="border-top:2px dashed #cfcfcf;position:absolute;left:18px;right:18px;top:9px;"></div>
-          <span style="position:absolute;left:-10px;top:-2px;width:20px;height:20px;border-radius:50%;background:#f5f5f5;"></span>
-          <span style="position:absolute;right:-10px;top:-2px;width:20px;height:20px;border-radius:50%;background:#f5f5f5;"></span>
-        </div>
-
-        <div style="padding:4px 20px 24px;">
+        </td></tr>
+        <tr><td style="height:20px;position:relative;background:#fff;padding:0 18px;">
+          <div style="border-top:2px dashed #cfcfcf;width:100%;"></div>
+        </td></tr>
+        <tr><td style="padding:4px 20px 24px;">
           <div style="font-size:20px;line-height:1.25;font-weight:800;color:#111;margin:0 0 18px;">${escapeHtml(event.name||"DJ Garvin Event")}</div>
-
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px 16px;">
-            <div>
-              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Attendee Name</div>
-              <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml(ticket.customer_name||`${order.customer_first_name||""} ${order.customer_last_name||""}`.trim())}</div>
-            </div>
-            <div>
-              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Event Date</div>
-              <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml(eventDate)}</div>
-            </div>
-            <div>
-              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Venue / Location</div>
-              <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml([event.venue,event.location].filter(Boolean).join(", ")||"—")}</div>
-            </div>
-            <div>
-              <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Event Time</div>
-              <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml(eventTime)}</div>
-            </div>
-          </div>
-
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+              <td width="50%" valign="top" style="padding:0 8px 14px 0;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Attendee Name</div>
+                <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml(attendee)}</div>
+              </td>
+              <td width="50%" valign="top" style="padding:0 0 14px 8px;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Event Date</div>
+                <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml(eventDate)}</div>
+              </td>
+            </tr>
+            <tr>
+              <td width="50%" valign="top" style="padding:0 8px 0 0;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Venue / Location</div>
+                <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml(venueLocation)}</div>
+              </td>
+              <td width="50%" valign="top" style="padding:0 0 0 8px;">
+                <div style="font-size:10px;text-transform:uppercase;letter-spacing:.8px;color:#888;">Event Time</div>
+                <div style="font-size:14px;font-weight:700;color:#111;margin-top:3px;">${escapeHtml(eventTime)}</div>
+              </td>
+            </tr>
+          </table>
           <div style="margin-top:18px;padding-top:14px;border-top:1px solid #ececec;font-size:12px;color:#666;">
-            <strong style="color:#111;">Ticket:</strong> ${escapeHtml(ticket.ticket_code)}
-            &nbsp; • &nbsp;
-            <strong style="color:#111;">Type:</strong> ${escapeHtml(ticketType)}
+            <strong style="color:#111;">Ticket:</strong> ${escapeHtml(ticket.ticket_code)} &nbsp;•&nbsp; <strong style="color:#111;">Type:</strong> ${escapeHtml(ticketType)}
           </div>
-        </div>
-      </div>
-    `);
+        </td></tr>
+      </table>`);
   }
 
-  const subject=`DJ Garvin — Your ticket${tickets.length>1?"s":""} (${order.order_number})`;
-
-  const html=`<!doctype html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
-<body style="margin:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;color:#171717;">
-  <div style="width:100%;padding:24px 12px;">
-    <div style="max-width:620px;margin:0 auto;">
-      <div style="text-align:center;padding:8px 12px 22px;">
-        <div style="font-size:12px;letter-spacing:3px;font-weight:800;color:#111;">DJ GARVIN</div>
-        <h1 style="font-size:24px;line-height:1.2;margin:10px 0 6px;color:#111;">Your Ticket Confirmation</h1>
-        <p style="margin:0;color:#777;font-size:14px;">Your digital event pass is ready.</p>
-      </div>
-
-      <p style="font-size:15px;line-height:1.6;margin:0 auto 18px;max-width:390px;">
-        Hello ${escapeHtml(order.customer_first_name||"")},<br>
-        Your payment has been received. Keep this email and present your QR code at the event entrance.
-      </p>
-
-      ${passes.join("")}
-
-      <div style="max-width:390px;margin:0 auto;text-align:center;color:#777;font-size:12px;line-height:1.6;">
-        Order: ${escapeHtml(order.order_number)}<br>
-        Total paid: £${Number(order.total_gbp||0).toFixed(2)}
-      </div>
-    </div>
-  </div>
-</body>
-</html>`;
-
+  const eventName=tickets[0]?.events?.name||"DJ Garvin Event";
+  const firstTicketId=tickets[0]?.id||order.id;
+  const subject=`Your Ticket Pass for ${eventName} - ${tickets[0]?.ticket_code||order.order_number}`;
+  const html=`<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body style="margin:0;background:#f5f5f5;font-family:Arial,Helvetica,sans-serif;color:#171717;"><div style="width:100%;padding:24px 12px;"><div style="max-width:620px;margin:0 auto;"><div style="text-align:center;padding:8px 12px 22px;"><div style="font-size:12px;letter-spacing:3px;font-weight:800;color:#111;">DJ GARVIN</div><h1 style="font-size:24px;line-height:1.2;margin:10px 0 6px;color:#111;">Your Ticket Confirmation</h1><p style="margin:0;color:#777;font-size:14px;">Your digital event pass is ready.</p></div><p style="font-size:15px;line-height:1.6;margin:0 auto 18px;max-width:390px;">Hello ${escapeHtml(order.customer_first_name||"")},<br>Your payment has been received. Keep this email and present your QR code at the event entrance.</p>${passes.join("")}<div style="max-width:390px;margin:0 auto;text-align:center;color:#777;font-size:12px;line-height:1.6;">Order: ${escapeHtml(order.order_number)}<br>Total paid: £${Number(order.total_gbp||0).toFixed(2)}</div></div></div></body></html>`;
   const text=[
     "DJ GARVIN — TICKET CONFIRMATION",
     "",
     `Hello ${order.customer_first_name||""},`,
     "Your payment has been received. Your digital event pass is ready.",
     "",
-    ...tickets.map(t=>`${t.ticket_types?.name||"Event Ticket"} — ${t.ticket_code}`),
+    ...tickets.map(t=>{
+      const e=t.events||{};
+      return `${e.name||"DJ Garvin Event"} — ${t.ticket_code} — ${t.customer_name||"Guest"}`;
+    }),
     "",
     `Order: ${order.order_number}`,
     `Total paid: £${Number(order.total_gbp||0).toFixed(2)}`,
     "",
-    "Present the QR code from this email at the event entrance."
+    "Scan the QR code in this email at entry."
   ].join("\n");
 
-  await mailer.sendMail({
-    from:process.env.SMTP_FROM||process.env.SMTP_USER,
-    to:order.customer_email,
+  const result=await sendResendEmail({
+    from:process.env.RESEND_FROM,
+    to:[order.customer_email],
     subject,
     text,
     html,
+    headers:{
+      "X-Entity-Ref-ID":String(firstTicketId),
+      "Importance":"high",
+      "X-Priority":"1"
+    },
     attachments
   });
-
-  return {sent:true};
+  return {sent:true,id:result?.id||null};
 }
 
 async function isTicketEmailSent(orderId){
@@ -366,7 +367,7 @@ app.post("/api/paypal/capture-order",requireSupabase,async(req,res)=>{
 app.get("/api/orders/:orderNumber",requireSupabase,async(req,res)=>{
   const {data:order,error}=await supabase.from("orders").select("id,order_number,event_id,customer_first_name,customer_last_name,customer_email,total_gbp,currency,status,paid_at").eq("order_number",req.params.orderNumber).maybeSingle();
   if(error)return res.status(500).json({error:error.message}); if(!order)return res.status(404).json({error:"Order not found"});
-  const {data:tickets}=await supabase.from("tickets").select("ticket_code,qr_token,customer_name,status,event_id,ticket_type_id,ticket_types(name),events(name,event_date,venue,location)").eq("order_id",order.id).order("created_at");
+  const {data:tickets}=await supabase.from("tickets").select("ticket_code,qr_token,customer_name,status,event_id,ticket_type_id,ticket_types(name),events(name,event_date,start_time,end_time,venue,location,address)").eq("order_id",order.id).order("created_at");
   res.json({order,tickets:tickets||[]});
 });
 
@@ -375,7 +376,7 @@ app.get("/api/tickets/verify",requireSupabase,async(req,res)=>{
   try{
     const token=clean(req.query.token||req.query.qr_token,500);
     if(!token)return res.status(400).json({valid:false,message:"No ticket QR token was provided."});
-    const {data,error}=await supabase.from("tickets").select("id,ticket_code,qr_token,status,customer_name,event_id,ticket_type_id,ticket_types(name),events(name,event_date,venue,location)").eq("qr_token",token).maybeSingle();
+    const {data,error}=await supabase.from("tickets").select("id,ticket_code,qr_token,status,customer_name,event_id,ticket_type_id,ticket_types(name),events(name,event_date,start_time,end_time,venue,location,address)").eq("qr_token",token).maybeSingle();
     if(error){console.error("Ticket verification error:",error);return res.status(500).json({valid:false,message:"Ticket verification service is unavailable."});}
     if(!data)return res.status(404).json({valid:false,message:"Ticket not found."});
     if(data.status!=="valid")return res.status(409).json({valid:false,message:data.status==="used"?"This ticket has already been used.":`This ticket is ${data.status}.`,ticket_ref:data.ticket_code,status:data.status});
@@ -384,7 +385,7 @@ app.get("/api/tickets/verify",requireSupabase,async(req,res)=>{
 });
 
 app.get("/ticket/verify/:token",requireSupabase,async(req,res)=>{
-  const {data,error}=await supabase.from("tickets").select("ticket_code,status,customer_name,event_id,events(name,event_date,venue,location),ticket_types(name)").eq("qr_token",req.params.token).maybeSingle();
+  const {data,error}=await supabase.from("tickets").select("ticket_code,status,customer_name,event_id,events(name,event_date,start_time,end_time,venue,location,address),ticket_types(name)").eq("qr_token",req.params.token).maybeSingle();
   if(error||!data)return res.status(404).send("Ticket not found."); const event=data.events;
   res.send(`<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"><title>Ticket Verification</title></head><body><div style="font-family:Arial;max-width:520px;margin:40px auto;padding:20px"><h2>${data.status==="valid"?"✓ VALID TICKET":"⚠ TICKET "+data.status.toUpperCase()}</h2><p><b>${data.customer_name}</b></p><p>${event?.name||""}</p><p>${data.ticket_types?.name||""}</p><p>Ticket: ${data.ticket_code}</p>${data.status==="valid"?`<form method="post" action="/api/checkin/${data.qr_token}"><button style="padding:14px 20px">CHECK IN</button></form>`:""}</div></body></html>`);
 });
