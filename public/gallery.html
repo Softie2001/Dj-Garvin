@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>DJ Garvin | Gallery</title>
-<meta name="description" content="Photos and videos of DJ Garvin performing at weddings, birthdays, corporate events, clubs and private parties across the UK.">
+<meta name="description" content="Photos of DJ Garvin performing at weddings, birthdays, corporate events, clubs and private parties across the UK.">
 <meta name="theme-color" content="#0b0b0b">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -258,7 +258,6 @@ details.dropdown-select summary::-webkit-details-marker {
 .vw{position:relative}
 .vt{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;-webkit-overflow-scrolling:touch;padding:2px 22px 8px;margin:0 -22px;scroll-padding-left:22px}.vt::-webkit-scrollbar{display:none}
 .vc{flex:none;position:relative;width:clamp(138px,41vw,185px);aspect-ratio:3/4;padding:0;border:1px solid var(--line);border-radius:16px;overflow:hidden;background:#111;scroll-snap-align:start;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.vc video{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .vc .pl{position:absolute;right:9px;bottom:9px;width:34px;height:34px;border-radius:50%;background:var(--acc);display:grid;place-items:center}
 .vc .pl::after{content:"";border-left:10px solid #111;border-top:6px solid transparent;border-bottom:6px solid transparent;margin-left:3px}
 .vc small{position:absolute;left:0;right:48px;bottom:0;padding:22px 10px 10px;font-size:.78rem;text-align:left;background:linear-gradient(transparent,rgba(0,0,0,.7));overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--fg)}
@@ -267,7 +266,6 @@ details.dropdown-select summary::-webkit-details-marker {
 .note{padding:30px 0;text-align:center;color:var(--mut)}
 #lb{position:fixed;inset:0;z-index:100;display:none;background:rgba(0,0,0,.94);align-items:center;justify-content:center;padding:max(56px,env(safe-area-inset-top)) 12px max(48px,env(safe-area-inset-bottom));touch-action:pan-y}
 #lb.o{display:flex}#lbm{max-width:100%;max-height:100%;display:flex}
-#lbm img,#lbm video{max-width:100%;max-height:calc(100dvh - 120px);border-radius:12px;display:block;background:#000}
 #lbc{position:absolute;left:0;right:0;bottom:max(14px,env(safe-area-inset-bottom));text-align:center;font-size:.85rem;color:var(--mut);padding:0 60px}
 #lbx{position:absolute;top:max(12px,env(safe-area-inset-top));right:12px}
 #lb .ab{background:rgba(255,255,255,.1)}
@@ -285,7 +283,7 @@ details.dropdown-select summary::-webkit-details-marker {
 </div></header>
 <div id="mbd"></div>
 <main id="top"><div class="w">
-<div class="gh center"><div class="bar"></div><h1>Gallery</h1><p class="mut">Photos and videos from DJ Garvin's sets and events.</p></div>
+<div class="gh center"><div class="bar"></div><h1>Gallery</h1><p class="mut">Photos from DJ Garvin's sets and events.</p></div>
 <div id="empty" class="note" hidden>Loading gallery&hellip;</div>
 <section class="sec" id="photos" hidden style="padding-bottom:10px"><h3>Photos</h3>
  <div class="ss" id="ss" aria-roledescription="carousel" aria-label="Photo slideshow">
@@ -295,10 +293,7 @@ details.dropdown-select summary::-webkit-details-marker {
  </div>
  <div class="th" id="th"></div>
 </section>
-<section class="sec" id="videos" hidden><h3>Videos</h3>
- <div class="vw"><div class="vt" id="vt"></div>
- <div class="vn"><button id="vp" type="button" aria-label="Scroll videos left">&lsaquo;</button><button id="vx" type="button" aria-label="Scroll videos right">&rsaquo;</button></div></div>
-</section>
+
 </div></main>
 <div id="lb" role="dialog" aria-modal="true" aria-label="Gallery viewer">
  <button class="ab" id="lbx" type="button" aria-label="Close" style="position:absolute;margin:0;top:max(12px,env(safe-area-inset-top));right:12px">&times;</button>
@@ -326,7 +321,7 @@ document.addEventListener('visibilitychange',()=>pause(document.hidden));
 swipe(ss,d=>show(cur+d));
 $('sp').onclick=e=>{e.stopPropagation();show(cur-1)};$('sn').onclick=e=>{e.stopPropagation();show(cur+1)};
 ss.onclick=()=>openLb(P,cur);
-function drawLb(){const it=L[li];$('lbm').innerHTML=it.media_type==='video'?'<video src="'+esc(it.url)+'" controls autoplay playsinline></video>':'<img src="'+esc(it.url)+'" alt="'+esc(it.caption||'DJ Garvin')+'">';$('lbc').textContent=(it.caption?it.caption+' \u00b7 ':'')+(li+1)+' / '+L.length;$('lbp').hidden=$('lbn').hidden=L.length<2}
+function drawLb(){const it=L[li];$('lbm').innerHTML='<img src="'+esc(it.url)+'" alt="'+esc(it.caption||'DJ Garvin')+'">';$('lbc').textContent=(it.caption?it.caption+' · ':'')+(li+1)+' / '+L.length;$('lbp').hidden=$('lbn').hidden=L.length<2}
 function openLb(list,i){L=list;li=i;$('lb').classList.add('o');document.body.style.overflow='hidden';pause(true);drawLb()}
 function closeLb(){$('lb').classList.remove('o');$('lbm').innerHTML='';document.body.style.overflow='';if(L===P)show(li);pause(false)}
 const step=d=>{li=(li+d+L.length)%L.length;drawLb()};
@@ -337,8 +332,8 @@ $('vp').onclick=()=>$('vt').scrollBy({left:-380,behavior:'smooth'});$('vx').oncl
 (async()=>{
  const em=$('empty'),r=await sb.from('gallery_items').select('*').order('created_at',{ascending:false});
  if(r.error){console.error(r.error);em.textContent='The gallery could not be loaded right now. Please try again later.';return}
- const d=r.data||[];P=d.filter(x=>x.media_type==='image');V=d.filter(x=>x.media_type==='video');
- if(!d.length){em.textContent='New photos and videos are coming soon.';return}
+ const d=(r.data||[]).filter(x=>x.media_type==='image');P=d;V=[];
+ if(!d.length){em.textContent='New photos are coming soon.';return}
  em.hidden=true;
  if(P.length){$('photos').hidden=false;
   sv.innerHTML=P.map((p,i)=>'<div class="sl"><i style="background-image:url('+esc(p.url)+')"></i><img src="'+esc(p.url)+'" alt="'+esc(p.caption||'DJ Garvin photo')+'" draggable="false"'+(i>1?' loading="lazy"':'')+'></div>').join('');
@@ -346,10 +341,6 @@ $('vp').onclick=()=>$('vt').scrollBy({left:-380,behavior:'smooth'});$('vx').oncl
   $('th').onclick=e=>{const b=e.target.closest('.tb');if(b)show(+b.dataset.i)};
   if(P.length<2){$('sp').hidden=$('sn').hidden=true}
   show(0)}
- if(V.length){$('videos').hidden=false;
-  $('vt').innerHTML=V.map((v,i)=>'<button class="vc" type="button" data-i="'+i+'" aria-label="Play video '+(i+1)+'"><video src="'+esc(v.url)+'#t=0.1" preload="metadata" muted playsinline></video><span class="pl"></span>'+(v.caption?'<small>'+esc(v.caption)+'</small>':'')+'</button>').join('');
-  $('vt').onclick=e=>{const b=e.target.closest('.vc');if(b)openLb(V,+b.dataset.i)}}
-})();
 </script>
 </body>
 </html>
