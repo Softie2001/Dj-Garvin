@@ -299,7 +299,7 @@ app.post("/api/paypal/create-order",requireSupabase,async(req,res)=>{
     const cart=await getCart(eventId,req.body.items); const total=(cart.totalPence/100).toFixed(2); const paypalOrder=await paypalRequest("/v2/checkout/orders",{
       method:"POST",headers:{"PayPal-Request-Id":crypto.randomUUID(),Prefer:"return=representation"},body:JSON.stringify({
         intent:"CAPTURE",purchase_units:[{reference_id:String(cart.event.id),description:cart.event.name.slice(0,127),custom_id:eventId,amount:{currency_code:"GBP",value:total,breakdown:{item_total:{currency_code:"GBP",value:total}}},items:cart.items.map(i=>({name:i.name.slice(0,127),quantity:String(i.quantity),unit_amount:{currency_code:"GBP",value:(i.unit_price_pence/100).toFixed(2)},category:"DIGITAL_GOODS"}))}],
-        application_context:{brand_name:"DJ Garvin",user_action:"PAY_NOW",shipping_preference:"NO_SHIPPING",return_url:`${BASE}/payment-success.html`,cancel_url:`${BASE}/payment-cancelled.html`}
+        application_context:{brand_name:"DJ Garvin",user_action:"PAY_NOW",shipping_preference:"NO_SHIPPING",return_url:`${BASE}/payment-success`,cancel_url:`${BASE}/payment-cancelled`}
       })
     });
     const {data:order,error:orderError}=await supabase.from("orders").insert([{
@@ -404,6 +404,19 @@ app.post("/api/checkin/:token",requireSupabase,async(req,res)=>{
 });
 
 app.post("/api/paypal/webhook",requireSupabase,async(req,res)=>{const event=req.body||{};if(!event.id)return res.status(400).send("Missing event id");const {data:existing}=await supabase.from("webhook_events").select("id").eq("provider_event_id",event.id).maybeSingle();if(existing)return res.json({ok:true,duplicate:true});await supabase.from("webhook_events").insert([{provider:"paypal",provider_event_id:event.id,event_type:event.event_type,payload:event}]);res.json({ok:true});});
+
+// Clean public routes. These keep .html out of customer/staff-facing URLs.
+app.get("/checkin",(req,res)=>res.sendFile(path.join(__dirname,"public","checkin.html")));
+app.get("/about",(req,res)=>res.sendFile(path.join(__dirname,"public","about.html")));
+app.get("/music",(req,res)=>res.sendFile(path.join(__dirname,"public","music.html")));
+app.get("/gallery",(req,res)=>res.sendFile(path.join(__dirname,"public","gallery.html")));
+app.get("/events",(req,res)=>res.sendFile(path.join(__dirname,"public","events.html")));
+app.get("/event",(req,res)=>res.sendFile(path.join(__dirname,"public","event.html")));
+app.get("/contact",(req,res)=>res.sendFile(path.join(__dirname,"public","contact.html")));
+app.get("/book",(req,res)=>res.sendFile(path.join(__dirname,"public","book.html")));
+app.get("/ticket",(req,res)=>res.sendFile(path.join(__dirname,"public","ticket.html")));
+app.get("/payment-success",(req,res)=>res.sendFile(path.join(__dirname,"public","payment-success.html")));
+app.get("/payment-cancelled",(req,res)=>res.sendFile(path.join(__dirname,"public","payment-cancelled.html")));
 
 app.use(express.static(path.join(__dirname,"public")));
 app.get("/{*splat}",(req,res)=>res.sendFile(path.join(__dirname,"public","index.html")));
