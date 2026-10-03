@@ -240,8 +240,7 @@ details.dropdown-select summary::-webkit-details-marker {
 .ev-body{padding:22px;display:flex;flex-direction:column;gap:6px;flex:1}
 .ev-body h3{font-size:1.5rem;margin-bottom:4px}
 .ev-body p{margin:0;color:var(--mut)}
-.ev-price{margin-top:10px!important;color:var(--mut)}
-.ev-price strong{color:var(--fg)}
+.ev-countdown{margin-top:10px!important;color:var(--acc);font-weight:700;letter-spacing:.01em}
 .ev-body .btn{margin-top:14px;align-self:flex-start;flex:none}
 @media(max-width:820px){.ev-body .btn{flex:none}}
 </style>
@@ -267,8 +266,8 @@ details.dropdown-select summary::-webkit-details-marker {
 
 
 <section id="events"><div class="w center">
- <h2>Events</h2>
- <p class="mut" style="margin-top:14px">Upcoming events and tickets.</p>
+ <h2>Upcoming Events</h2>
+ <p class="mut" style="margin-top:14px">Explore events and tickets</p>
  <div class="ev-grid" id="evList"><p class="mut" style="grid-column:1/-1">Loading events…</p></div>
 </div></section>
 
@@ -335,10 +334,26 @@ function fmtTime(v){if(!v)return'';const m=String(v).match(/(\d{1,2}):(\d{2})/);
 function pence(t){return Number.isFinite(Number(t.price_pence))&&t.price_pence!==null?Number(t.price_pence):Math.round((Number(t.price_gbp)||0)*100)}
 function money(p){return'£'+(p/100).toLocaleString('en-GB',{minimumFractionDigits:2,maximumFractionDigits:2})}
 function card(e){
- const ts=(e.ticket_types||[]).filter(t=>!['inactive','closed'].includes(t.status));
- const min=ts.length?Math.min(...ts.map(pence)):null;
- const when=[fmtDate(e.event_date),fmtTime(e.start_time)].filter(Boolean).join(' • ');
- return `<article class="ev-card">${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}" loading="lazy">`:''}<div class="ev-body"><h3>${esc(e.name)}</h3>${when?`<p>${esc(when)}</p>`:''}${e.venue?`<p>${esc(e.venue)}</p>`:''}${min!==null?`<p class="ev-price">From <strong>${money(min)}</strong></p>`:''}<a class="btn f" href="event.html?id=${encodeURIComponent(e.id)}">Buy Ticket</a></div></article>`}
+  const when=[fmtDate(e.event_date),fmtTime(e.start_time)].filter(Boolean).join(' • ');
+ const target=e.event_date?`${String(e.event_date).slice(0,10)}T${e.start_time||'00:00'}:00`:'';
+ return `<article class="ev-card">${e.image_url?`<img src="${esc(e.image_url)}" alt="${esc(e.name)}" loading="lazy">`:''}<div class="ev-body"><h3>${esc(e.name)}</h3>${when?`<p>${esc(when)}</p>`:''}${e.venue?`<p>${esc(e.venue)}</p>`:''}${target?`<p class="ev-countdown" data-event-countdown="${esc(e.id)}" data-target="${esc(target)}">Calculating countdown…</p>`:''}<a class="btn f" href="/event?id=${encodeURIComponent(e.id)}">Buy Ticket</a></div></article>`}
+function startEventCountdowns(){
+ document.querySelectorAll('[data-event-countdown]').forEach(el=>{
+  const target=new Date(el.dataset.target);
+  const tick=()=>{
+   const diff=target.getTime()-Date.now();
+   if(Number.isNaN(target.getTime())){el.textContent='Event date coming soon';return;}
+   if(diff<=0){el.textContent='Event time has arrived';return;}
+   const days=Math.floor(diff/86400000);
+   const hours=Math.floor((diff%86400000)/3600000);
+   const mins=Math.floor((diff%3600000)/60000);
+   const secs=Math.floor((diff%60000)/1000);
+   el.textContent=`Countdown: ${days}d ${hours}h ${mins}m ${secs}s`;
+  };
+  tick();
+  const timer=setInterval(()=>{tick();if(target.getTime()<=Date.now())clearInterval(timer)},1000);
+ });
+}
 async function load(){
  try{
   const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
@@ -347,6 +362,7 @@ async function load(){
   const today=new Date().toISOString().slice(0,10);
   const up=(data||[]).filter(e=>e.event_date&&String(e.event_date).slice(0,10)>=today&&e.status!=='draft'&&e.status!=='cancelled'&&e.is_published!==false);
   list.innerHTML=up.length?up.map(card).join(''):'<p class="mut" style="grid-column:1/-1">No upcoming events right now. Check back soon.</p>';
+  startEventCountdowns();
  }catch(err){console.error(err);list.innerHTML='<p class="mut" style="grid-column:1/-1">Events could not be loaded right now.</p>'}
 }
 load();

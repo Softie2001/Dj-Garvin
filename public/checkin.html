@@ -226,14 +226,14 @@ details.dropdown-select summary::-webkit-details-marker {
 @media(min-width:760px){.vtrack .c.reel{flex:0 0 calc(50% - 11px)}}
 </style><style> .ticket-wrap{max-width:1140px;margin:0 auto;padding:90px 22px}.ticket-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.ticket-card{padding:24px;border:1px solid var(--line);border-radius:18px;background:var(--card);transition:.25s}.ticket-card:hover{transform:translateY(-4px);border-color:var(--acc)}.ticket-price{font:800 2rem Syne;margin:12px 0}.qty{display:flex;align-items:center;gap:16px}.qty button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);background:none;color:var(--fg);font-size:1.3rem}.qty span{min-width:28px;text-align:center;font-weight:700}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.form-grid label{display:block;font-size:.85rem;margin-bottom:7px;color:var(--mut)}.form-grid input,.form-grid textarea,.form-grid select{width:100%;padding:14px;border:1px solid var(--line);background:#0f0f0e;color:var(--fg);border-radius:12px;font:inherit}.form-grid textarea{min-height:100px}.total{font:800 1.6rem Syne;margin:20px 0}.notice{padding:16px;border:1px dashed var(--line);border-radius:14px;color:var(--mut)}@media(max-width:820px){.ticket-grid{grid-template-columns:1fr}.form-grid{grid-template-columns:1fr}}</style><script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script></head><body><header><div class="w nav">
  <a class="logo" href="#top" aria-label="DJ Garvin"><span class="lt" aria-hidden="true" data-t="DJ GARVIN">DJ GARVIN</span></a>
- <div class="links" id="ln"><a href="index.html">Home</a><a href="about.html">About</a><a href="about.html#music">Music</a><a href="events.html">Events</a><a href="#book">Contact</a><a class="btn f" href="#book" style="color:#111;display:none" id="mbk">Book now</a></div>
+ <div class="links" id="ln"><a href="index.html">Home</a><a href="about.html">About</a><a href="about.html#music">Music</a><a href="gallery.html">Gallery</a><a href="events.html">Events</a><a href="#book">Contact</a><a class="btn f" href="#book" style="color:#111;display:none" id="mbk">Book now</a></div>
  <div class="rt">
   <a class="btn f" href="#book">Book now</a>
   <span class="eq" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
   <button id="mb" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="ln"><span></span><span></span><span></span></button>
  </div>
 </div></header>
-<div id="mbd"></div><main><div class="ticket-wrap"><div class="bar"></div><h1>Ticket Check-in</h1><p class="mut">Scan the QR code on the guest's ticket using this phone camera. No QR token typing is required.</p><div class="ticket-card" style="margin-top:28px"><div id="reader" style="width:100%;max-width:520px;margin:0 auto;border-radius:16px;overflow:hidden;background:#080808;display:none"></div><div id="scanStatus" class="notice" style="margin-top:0;text-align:center">Tap Scan Ticket when you are ready to check in a guest.</div><div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px"><button id="scanTicketBtn" class="btn f" type="button" style="width:100%">Scan Ticket</button><button id="cancelScanBtn" class="btn secondary" type="button" style="width:100%">Cancel</button></div><div id="result" style="margin-top:16px"></div></div></div></main><footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>&copy; 2026 DJ Garvin. All rights reserved.</div></div></footer><script>
+<div id="mbd"></div><main><div class="ticket-wrap"><div class="bar"></div><h1>Ticket Check-in</h1><p class="mut">Scan the QR code on the guest's ticket using this phone camera. No QR token typing is required.</p><div class="ticket-card" style="margin-top:28px"><div id="reader" style="width:100%;max-width:520px;margin:0 auto;border-radius:16px;overflow:hidden;background:#080808;display:none"></div><div id="scanStatus" class="notice" style="margin-top:0;text-align:center">Tap Scan Ticket when you are ready to check in a guest.</div><button id="scanTicketBtn" class="btn f" type="button" style="width:100%;margin-top:16px">Scan Ticket</button><div id="result" style="margin-top:16px"></div></div></div></main><footer><div class="w"><div><strong style="font-family:Syne;letter-spacing:.08em;color:var(--fg)">DJ GARVIN</strong><br>Afrobeats, Amapiano, Afrofusion, Hip Hop, R&amp;B, Dancehall, Pop, House, EDM</div><div>&copy; 2026 DJ Garvin. All rights reserved.</div></div></footer><script>
 const result=document.getElementById('result'), statusBox=document.getElementById('scanStatus'), scanBtn=document.getElementById('scanTicketBtn'), reader=document.getElementById('reader');
 let scanner=null, busy=false, scanning=false;
 function setMenu(o){document.getElementById('ln').classList.toggle('o',o);document.getElementById('mbd').classList.toggle('o',o);document.getElementById('mb').classList.toggle('x',o)}
@@ -248,13 +248,6 @@ function extractToken(text){
 async function stopScanner(){
  if(scanner&&scanning){try{await scanner.stop()}catch(e){} try{scanner.clear()}catch(e){}}
  scanning=false; reader.style.display='none'; scanBtn.style.display='block'; scanBtn.disabled=false;
-}
-async function cancelScan(){
- busy=false;
- await stopScanner();
- result.innerHTML='';
- statusBox.textContent='Scan cancelled. Tap Scan Ticket when you are ready.';
- window.scrollTo({top:0,behavior:'smooth'});
 }
 async function startScanner(){
  if(scanning||busy)return;
@@ -288,37 +281,52 @@ async function checkToken(raw){
   if(!r.ok||!j.valid){
    result.innerHTML='<div class="notice" style="border-color:#8d3333">'+esc(j.message||'Ticket could not be verified.')+'</div>';
    statusBox.textContent='Ticket not accepted.';
-   busy=false; scanBtn.style.display='block'; scanBtn.disabled=false; return;
+   scanBtn.style.display='block';
+   scanBtn.disabled=false;
+   busy=false;
+   return;
   }
   result.innerHTML='<div class="card" style="padding:18px"><div style="font-size:22px;font-weight:800">✓ VALID TICKET</div><div style="margin-top:10px"><b>'+esc(j.customer_name||j.ticket_ref||'Guest')+'</b><br>'+esc(j.event_name||'')+'<br>'+esc(j.ticket_type||'')+'</div><button id="checkinBtn" class="btn f" style="margin-top:16px;width:100%">CHECK IN GUEST</button></div>';
   document.getElementById('checkinBtn').onclick=()=>completeCheckin(token);
   statusBox.textContent='Ticket verified — confirm check-in.';
  }catch(e){
   statusBox.textContent='Verification service unavailable.';
-  result.innerHTML='<div class="notice">Please check your connection and try again.</div>';
+  result.innerHTML='<div class="notice">Please check your connection and scan again.</div>';
+  scanBtn.style.display='block';
+  scanBtn.disabled=false;
  }
  busy=false;
 }
 async function completeCheckin(token){
  if(busy)return;
- busy=true; statusBox.textContent='Checking guest in…';
+ busy=true;
+ statusBox.textContent='Checking guest in…';
  try{
   const r=await fetch('/api/checkin/'+encodeURIComponent(token),{method:'POST',headers:{Accept:'application/json'}});
   const j=await r.json().catch(()=>({}));
   if(!r.ok){
    result.innerHTML='<div class="notice" style="border-color:#8d3333">'+esc(j.message||'Check-in failed.')+'</div>';
-   statusBox.textContent='Check-in failed.'; busy=false; scanBtn.style.display='block'; scanBtn.disabled=false; return;
+   statusBox.textContent='Check-in failed.';
+   scanBtn.style.display='block';
+   scanBtn.disabled=false;
+   busy=false;
+   return;
   }
   result.innerHTML='<div class="card" style="padding:20px;text-align:center"><div style="font-size:28px;font-weight:800">✓ CHECK-IN SUCCESSFUL</div><p class="mut">Guest admitted successfully.</p></div>';
   statusBox.textContent='Guest checked in successfully. Tap Scan Ticket for the next guest.';
-  scanBtn.style.display='block'; scanBtn.disabled=false; busy=false;
+  scanBtn.style.display='block';
+  scanBtn.disabled=false;
+  busy=false;
  }catch(e){
-  statusBox.textContent='Check-in service unavailable.'; scanBtn.style.display='block'; scanBtn.disabled=false; busy=false;
+  statusBox.textContent='Check-in service unavailable.';
+  scanBtn.style.display='block';
+  scanBtn.disabled=false;
+  busy=false;
  }
 }
-function resetForScan(){cancelScan()}
+function resetForScan(){result.innerHTML='';statusBox.textContent='Tap Scan Ticket when you are ready to check in a guest.';scanBtn.style.display='block';scanBtn.disabled=false;busy=false;window.scrollTo({top:0,behavior:'smooth'});}
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function onScanSuccess(decodedText){if(!busy)checkToken(decodedText)}
 function onScanError(){/* scanner keeps looking */}
-scanBtn.addEventListener('click',startScanner);document.getElementById('cancelScanBtn').addEventListener('click',cancelScan);
+scanBtn.addEventListener('click',startScanner);
 </script></body></html>

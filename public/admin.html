@@ -364,22 +364,8 @@ async function showApp(){
  await loadAll();
 }
 async function loadAll(){
- const results=await Promise.allSettled([loadEvents(),loadOrders(),loadBookings(),loadGallery(),loadTicketStats()]);
- results.filter(x=>x.status==='rejected').forEach(x=>console.error('Admin data load failed:',x.reason));
- renderDashboard();
- await renderEvents();
- await renderTicketEvents();
- fillEventSelects();
-}
-
-async function loadTicketStats(){
- const r=await sb.from('tickets').select('id,status,checked_in_at,event_id,order_id,ticket_type_id,created_at').order('created_at',{ascending:false});
- if(r.error){
-   console.error('Could not load ticket stats:',r.error);
-   tickets=[];
-   return;
- }
- tickets=r.data||[];
+ await Promise.all([loadEvents(),loadOrders(),loadBookings(),loadGallery(),loadTicketStats()]);
+ renderDashboard();renderEvents();renderTicketEvents();fillEventSelects();
 }
 async function loadEvents(){
  const r=await sb.from('events').select('*').order('event_date',{ascending:true});
@@ -399,13 +385,7 @@ function orderTotal(o){
 }
 function renderOrders(){
  const body=$('ordersTable'); if(!body)return;
- body.innerHTML=orders.map(o=>`<tr><td>${esc(orderCustomer(o))}</td><td>${esc(o.customer_email||o.email||'—')}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${orderTotal(o)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status||'pending')}</span></td><td>${esc(o.created_at?new Date(o.created_at).toLocaleDateString('en-GB'):'—')}</td></tr>`).join('')||'<tr><td colspan="6">No ticket bookings yet.</td></tr>';
-}
-
-async function refreshOrdersPage(){
- await Promise.allSettled([loadEvents(),loadOrders(),loadTicketStats()]);
- renderOrders();
- renderDashboard();
+ body.innerHTML=orders.map(o=>`<tr><td>${esc(orderCustomer(o))}</td><td>${esc(o.customer_email||o.email||'—')}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${orderTotal(o)}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status||'pending')}</span></td><td>${esc(new Date(o.created_at).toLocaleDateString('en-GB'))}</td></tr>`).join('')||'<tr><td colspan="6">No ticket bookings yet.</td></tr>';
 }
 async function loadBookings(){
  const r=await sb.from('bookings').select('*').order('created_at',{ascending:false});
@@ -426,7 +406,7 @@ function renderDashboard(){
   $('statEvents').textContent=events.filter(e=>e.status==='published'&&!isDone(e)).length;
   const upcoming=events.filter(e=>e.status==='published'&&!isDone(e));
   $('dashEvents').innerHTML=upcoming.slice(0,5).map(e=>`<div style="padding:9px 0;border-bottom:1px solid #292929"><b>${esc(e.name)}</b><div class="muted">${esc(formatEventDate(e.event_date))}${e.start_time?' • '+esc(timeOnly(e.start_time)||e.start_time):''}${e.venue?' • '+esc(e.venue):''}</div></div>`).join('')||'<div class="empty">No upcoming events yet.</div>';
-  $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(orderCustomer(o))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${esc(orderTotal(o))}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status||'pending')}</span></td><td>${esc(o.created_at?new Date(o.created_at).toLocaleDateString('en-GB'):'—')}</td></tr>`).join('')||'<tr><td colspan="5">No ticket bookings yet.</td></tr>';
+  $('dashOrders').innerHTML=orders.slice(0,8).map(o=>`<tr><td>${esc(orderCustomer(o))}</td><td>${esc(events.find(e=>e.id===o.event_id)?.name||'—')}</td><td>${esc(orderTotal(o))}</td><td><span class="badge ${o.status==='paid'?'green':'gold'}">${esc(o.status||'pending')}</span></td><td>${esc(new Date(o.created_at).toLocaleDateString('en-GB'))}</td></tr>`).join('')||'<tr><td colspan="5">No ticket bookings yet.</td></tr>';
   renderOrders();
 }
 
@@ -474,15 +454,9 @@ async function renderEvents(){
 
 function formatEventDate(v){
  if(!v)return '';
- const raw=String(v).trim();
- const dateOnlyMatch=raw.match(/^(\d{4})-(\d{2})-(\d{2})$/);
- if(dateOnlyMatch){
-   const d=new Date(Date.UTC(Number(dateOnlyMatch[1]),Number(dateOnlyMatch[2])-1,Number(dateOnlyMatch[3])));
-   return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});
- }
- const d=new Date(raw);
- if(Number.isNaN(d.getTime()))return '';
- return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'Europe/London'});
+ const d=new Date(v);
+ if(Number.isNaN(d.getTime()))return String(v).slice(0,10);
+ return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'});
 }
 function formatTicketSales(t){
  const a=t.sales_start?formatEventDate(t.sales_start):'', b=t.sales_end?formatEventDate(t.sales_end):'';
@@ -634,10 +608,10 @@ async function showPage(id){
    if(id==='dashboard'){await loadEvents();await loadOrders();await loadTicketStats();renderDashboard();}
    else if(id==='events'){await loadEvents();await renderEvents();}
    else if(id==='tickets'){await loadEvents();await renderTicketEvents();}
-   else if(id==='orders'){await refreshOrdersPage();}
+   else if(id==='orders'){await loadEvents();await loadOrders();await loadTicketStats();renderOrders();}
    else if(id==='bookings'){await loadBookings();}
    else if(id==='gallery'){await loadGallery();}
-   else if(id==='checkin'){await loadEvents();await loadTicketStats();fillEventSelects();}
+   else if(id==='checkin'){await loadEvents();await loadTicketStats();fillEventSelects();renderDashboard();}
  }catch(err){
    console.error('Could not load admin page',id,err);
    target.querySelectorAll('.page-error').forEach(x=>x.remove());
@@ -665,7 +639,7 @@ function wireDashboardViewAll(){
  }
  if(bookingsBtn){
    bookingsBtn.type='button';
-   bookingsBtn.onclick=async e=>{e.preventDefault();e.stopPropagation();await showPage('orders');await refreshOrdersPage();};
+   bookingsBtn.onclick=async e=>{e.preventDefault();e.stopPropagation();await showPage('orders');await loadOrders();await renderOrders();};
  }
 }
 wireDashboardViewAll();
@@ -867,9 +841,8 @@ $('gFiles').onchange=()=>{
  $('gPreview').innerHTML='';
  files.slice(0,24).forEach(f=>{
   const u=URL.createObjectURL(f);
-  const el=document.createElement('img');
-  el.src=u;
-  el.alt='Gallery preview';
+  const el=document.createElement(f.type.startsWith('video/')?'video':'img');
+  el.src=f.type.startsWith('video/')?u+'#t=0.1':u;if(el.tagName==='VIDEO'){el.muted=true;el.preload='metadata';el.playsInline=true}
   $('gPreview').appendChild(el);
  });
  $('gStatus').textContent=files.length?files.length+' file'+(files.length===1?'':'s')+' selected.':'No files selected.';
@@ -889,22 +862,23 @@ async function compressImage(file){
 $('galleryForm').onsubmit=async e=>{
  e.preventDefault();$('galleryError').textContent='';
  const files=[...$('gFiles').files];
- if(!files.length){$('galleryError').textContent='Choose at least one photo.';return}
+ if(!files.length){$('galleryError').textContent='Choose at least one photo or video.';return}
  const caption=$('gCaption').value.trim()||null, errors=[];let done=0;
  $('saveGalleryBtn').disabled=true;$('gBar').style.display='block';
  for(let i=0;i<files.length;i++){
-  let f=files[i];const isImage=f.type.startsWith('image/');
+  let f=files[i];const isVideo=f.type.startsWith('video/'),isImage=f.type.startsWith('image/');
   $('gStatus').textContent='Uploading '+(i+1)+' of '+files.length+'…';
   $('gBarFill').style.width=Math.round(i/files.length*100)+'%';
   try{
-   if(!isImage)throw new Error(f.name+' is not an image.');
-   f=await compressImage(f);
+   if(!isVideo&&!isImage)throw new Error(f.name+' is not a photo or video.');
+   if(isVideo&&f.size>MAX_VIDEO_MB*1048576)throw new Error(f.name+' is larger than '+MAX_VIDEO_MB+' MB.');
+   if(isImage)f=await compressImage(f);
    const safe=f.name.toLowerCase().replace(/[^a-z0-9.]+/g,'-');
    const path=`${crypto.randomUUID()}-${safe}`;
-   const up=await sb.storage.from(GALLERY_BUCKET).upload(path,f,{upsert:false,contentType:f.type||'image/jpeg'});
+   const up=await sb.storage.from(GALLERY_BUCKET).upload(path,f,{upsert:false,contentType:f.type||(isVideo?'video/mp4':'image/jpeg')});
    if(up.error)throw up.error;
    const url=sb.storage.from(GALLERY_BUCKET).getPublicUrl(path).data.publicUrl;
-   const ins=await sb.from('gallery_items').insert({media_type:'image',url,storage_path:path,caption});
+   const ins=await sb.from('gallery_items').insert({media_type:isVideo?'video':'image',url,storage_path:path,caption});
    if(ins.error){await sb.storage.from(GALLERY_BUCKET).remove([path]);throw ins.error}
    done++;
   }catch(err){errors.push((err.message||String(err)))}
